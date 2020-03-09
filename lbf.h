@@ -36,9 +36,19 @@ struct Options {
 	bool wopt_dead_code;   /* warn on dead code */
 	bool wopt_ignored_dbg; /* warn on ignored # command */
 	bool wopt_all;
+
+	u8   fopt_cell_size;   /* cell size (8, 16, 32, or 64) */
+	bool fopt_cell_signed; /* enable signed cells */
+	bool fopt_cell_wrap;   /* allow '-' to cell0 to 255 */
 }
 
+/* our cmd options */
 struct Options *opts;
+
+/* buffer for bf code */
+char *program_data;
+
+/* our parsed program buffer */
 struct Instruction *program;
 
 #endif

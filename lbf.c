@@ -17,6 +17,7 @@ main(int argc, char **argv)
 	--argc;
 	++argv;
 
+	char *path = NULL;
 	opts = (struct Options*) calloc(1, sizeof(struct Options));
 
 	/* parse arguments */
@@ -92,7 +93,15 @@ main(int argc, char **argv)
 		else
 			die("lbf: error: invalid argument to -W.");
 		break;
+	/* TODO: make it possible to specify files without -i option */
+	case 'i':
+		char *path = ARGF();
+		break;
+	default:
+		die("lbf: error: invalid argument.");
+		break;
 	} ARGEND
 
-	return lbfi_main(stdin);
+	if (path == NULL) die("lbf: error: nothing to do, exiting.");
+	return lbfi_main(path);
 }

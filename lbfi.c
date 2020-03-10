@@ -39,29 +39,29 @@ lbfi_main(char *path, struct Options *opts)
 
 	/* TODO: warnings, optimizations */
 	/* execute instructions */
-	struct Tape *tape;
-	bf_init(tape);
+	struct Tape *tape = NULL;
+	bf_init(opts, tape);
 
 	struct Instruction *current = &program[0];
 	for (; current->next != NULL; current = current->next) {
 		switch (current->command) {
 		case COMMAND_CELL_NULLIFY:
-			bf_cell_nullify();
+			bf_cell_nullify(tape);
 			break;
 		case COMMAND_CELL_INC:
-			bf_cell_inc(current->repeat);
+			bf_cell_inc(tape, current->repeat);
 			break;
 		case COMMAND_CELL_DEC:
-			bf_cell_dec(current->repeat);
+			bf_cell_dec(tape, current->repeat);
 			break;
 		case COMMAND_PTR_MOV_INIT:
-			bf_ptr_mov_init();
+			bf_ptr_mov_init(tape);
 			break;
 		case COMMAND_PTR_MOV_L:
-			bf_ptr_mov_l(current->repeat);
+			bf_ptr_mov_l(tape, current->repeat);
 			break;
 		case COMMAND_PTR_MOV_R:
-			bf_ptr_mov_r(current->repeat);
+			bf_ptr_mov_r(tape, current->repeat);
 			break;
 		case COMMAND_LOOP_START:
 			if (*(tape->pointer) == 0) {
@@ -91,25 +91,25 @@ lbfi_main(char *path, struct Options *opts)
 			}
 			break;
 		case COMMAND_READ_STDIN:
-			bf_read_stdin();
+			bf_read_stdin(tape);
 			break;
 		case COMMAND_PRINT_STDOUT:
-			bf_print_stdout();
+			bf_print_stdout(tape);
 			break;
 		case COMMAND_PRINT_STDERR:
-			bf_print_stderr();
+			bf_print_stderr(tape);
 			break;
 		case COMMAND_PRINT_DEBUG:
-			bf_print_debug();
+			bf_print_debug(tape);
 			break;
 		case COMMAND_SCAN_L:
-			bf_scan_l();
+			bf_scan_l(tape);
 			break;
 		case COMMAND_SCAN_R:
-			bf_scan_r();
+			bf_scan_r(tape);
 			break;
 		case COMMAND_SUICIDE:
-			bf_suicide();
+			bf_suicide(tape);
 			break;
 		default:
 			break;
@@ -117,7 +117,7 @@ lbfi_main(char *path, struct Options *opts)
 	}
 
 	/* cleanup */
-	bf_suicide();
+	bf_suicide(tape);
 
 	return 0;
 }

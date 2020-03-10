@@ -20,7 +20,7 @@ void
 bf_init(struct Options *opts, struct Tape *tape)
 {
 	tape          = (struct Tape*) calloc(1, sizeof(struct Tape));
-	tape->cells   = (i64*) calloc(opts->initial_tape_size, sizeof(i64));
+	tape->cells   = calloc(opts->fopt_initial_tape_size, sizeof(i64));
 	tape->tp_size = opts->fopt_initial_tape_size;
 	tape->pointer = &tape->cells[0];
 

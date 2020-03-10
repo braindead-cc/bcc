@@ -14,6 +14,8 @@
 #include "lbfi.h"
 #include "util.h"
 
+char argv0;
+
 int
 main(int argc, char **argv)
 {
@@ -26,6 +28,7 @@ main(int argc, char **argv)
 	struct Options *opts = calloc(1, sizeof(struct Options));
 
 	/* parse arguments */
+	argv0 = argv[0];
 	ARGBEGIN {
 	case 'v':
 		opts->verbose = TRUE;

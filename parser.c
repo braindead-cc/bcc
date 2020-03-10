@@ -5,7 +5,7 @@
 #include "parser.h"
 
 void
-parse(char *program_data, struct Instructions *program)
+parse(char *program_data, struct Instruction *program)
 {
 	usize line = 0;
 	usize column = 0;

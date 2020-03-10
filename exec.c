@@ -132,18 +132,6 @@ bf_print_debug(void)
 }
 
 void
-bf_get_reg(void)
-{
-	/* TODO: add registers */
-}
-
-void
-bf_set_reg(void)
-{
-	/* TODO: add registers */
-}
-
-void
 bf_scan_l(void)
 {
 	tape->pointer -= (i32) ((void *)*(tape->pointer)

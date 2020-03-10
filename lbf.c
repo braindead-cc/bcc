@@ -5,9 +5,14 @@
  * See the LICENSE.md file for more information.
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "args.h"
 #include "bool.h"
 #include "lbf.h"
+#include "lbfi.h"
+#include "util.h"
 
 int
 main(int argc, char **argv)
@@ -17,15 +22,15 @@ main(int argc, char **argv)
 	--argc;
 	++argv;
 
-	char *path = NULL;
-	opts = (struct Options*) calloc(1, sizeof(struct Options));
+	char *path = NULL;           /* input file */
+	struct Options *opts = calloc(1, sizeof(struct Options));
 
 	/* parse arguments */
 	ARGBEGIN {
 	case 'v':
 		opts->verbose = TRUE;
 		break;
-	case 'b':
+	case 'b':;
 		char *backend = ARGF();
 
 		switch (*backend) {
@@ -59,7 +64,7 @@ main(int argc, char **argv)
 			break;
 		}
 		break;
-	case 'f':
+	case 'f':;
 		char *option = ARGF();
 
 		if (!strcmp(option, "enable-dbg"))
@@ -75,7 +80,7 @@ main(int argc, char **argv)
 		else
 			die("lbf: error: invalid argument to -f.");
 		break;
-	case 'W':
+	case 'W':;
 		char *warning = ARGF();
 
 		if (!strcmp(warning, "error"))
@@ -95,7 +100,7 @@ main(int argc, char **argv)
 		break;
 	/* TODO: make it possible to specify files without -i option */
 	case 'i':
-		char *path = ARGF();
+		path = ARGF();
 		break;
 	default:
 		die("lbf: error: invalid argument.");
@@ -103,5 +108,5 @@ main(int argc, char **argv)
 	} ARGEND
 
 	if (path == NULL) die("lbf: error: nothing to do, exiting.");
-	return lbfi_main(path);
+	return lbfi_main(path, opts);
 }

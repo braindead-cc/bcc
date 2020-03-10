@@ -1,5 +1,6 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
+#include "types.h"
 
 enum Registers {
 	REG_A,
@@ -8,7 +9,7 @@ enum Registers {
 	REG_D,
 	REG_E,
 	REG_F,
-}
+};
 
 enum Command {
 	COMMAND_CELL_NULLIFY,  /* '*' -- set cell to 0 */
@@ -28,14 +29,14 @@ enum Command {
 	COMMAND_SUICIDE,       /* '@' -- exit with exit code of cell value */
 
 	COMMAND_UNKNOWN,
-}
+};
 
 struct Instruction {
 	enum Command command;
 
 	/* context */
 	usize line;
-	usize char;
+	usize column;
 
 	/* number of times to repeat command */
 	usize repeat;
@@ -44,6 +45,6 @@ struct Instruction {
 	 * so that it becomes super easy to remove
 	 * Instructions in case we can optimize it away */
 	struct Instruction *prev, *next;
-}
+};
 
 #endif

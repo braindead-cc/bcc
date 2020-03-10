@@ -15,7 +15,7 @@ VERSION = \"0.1.0\"
 BIN     = lbf
 SRC     = exec.c lbf.c lbfi.c parser.c util.c
 OBJ     = $(SRC:.c=.o)
-LIBUTF  = sub/libutf/lib/libutf.a
+LIBUTF  = libutf/lib/libutf.a
 
 WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
@@ -44,7 +44,7 @@ $(BIN): $(OBJ) $(LIBUTF)
 	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS)
 
 $(LIBUTF):
-	$(CMD)cd sub/libutf && make
+	$(CMD)cd libutf && make
 
 $(BIN).1: $(BIN).scd
 	@echo "  SCDOC    $^"

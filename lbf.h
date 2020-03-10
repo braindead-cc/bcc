@@ -3,6 +3,7 @@
 
 #include "bool.h"
 #include "instructions.h"
+#include "types.h"
 
 /* compiler backends */
 enum bparams {
@@ -13,7 +14,7 @@ enum bparams {
 	BOPT_V,      /* V backend */
 	BOPT_GO,     /* Go backend */
 	BOPT_QBE,    /* QBE backend */
-}
+};
 
 struct Options {
 	bool verbose;
@@ -34,21 +35,15 @@ struct Options {
 	bool wopt_comments;    /* warn on encountering comments */
 	bool wopt_long_lines;  /* warn on lines longer than 80 */
 	bool wopt_dead_code;   /* warn on dead code */
-	bool wopt_ignored_dbg; /* warn on ignored # command */
+	bool wopt_ignore_dbg;  /* warn on ignored # command */
 	bool wopt_all;
 
 	u8   fopt_cell_size;   /* cell size (8, 16, 32, or 64) */
 	bool fopt_cell_signed; /* enable signed cells */
 	bool fopt_cell_wrap;   /* allow '-' to cell0 to 255 */
-}
 
-/* our cmd options */
-struct Options *opts;
-
-/* buffer for bf code */
-char *program_data;
-
-/* our parsed program buffer */
-struct Instruction *program;
+	/* initial amount of memory allocated for tape */
+	bool fopt_initial_tape_size;
+};
 
 #endif

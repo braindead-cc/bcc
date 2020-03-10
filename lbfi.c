@@ -1,19 +1,24 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "exec.h"
+#include "instructions.h"
 #include "lbfi.h"
+#include "parser.h"
 #include "types.h"
+#include "util.h"
 
 int
-lbfi_main(char *path)
+lbfi_main(char *path, struct Options *opts)
 {
 	/* get size of file so we can allocate a buffer for it */
 	struct stat st;
 	if (lstat(path, &st) == -1)
 		die("lbfi: error: cannot stat %s:", path);
-	program_data = (char*) calloc(st.st_size + 1, sizeof(char));
+	char *program_data = (char*) calloc(st.st_size + 1, sizeof(char));
 
 	FILE *f;
 	if ((f = fopen(path, "r")) == NULL)
@@ -22,21 +27,23 @@ lbfi_main(char *path)
 	/* copy file data onto buffer */
 	int c = 0;
 	usize i = 0;
-	for (; (c = fget(f)) != EOF; ++i)
+	for (; (c = fgetc(f)) != EOF; ++i)
 		program_data[i] = c;
 	program_data[i + 1] = '\0';
 
 	/* parse instructions */
-	parse();
+	struct Instruction *program = calloc(st.st_size,
+			sizeof(struct Instruction));
+	parse(program_data, program);
 
 
 	/* TODO: warnings, optimizations */
 	/* execute instructions */
-	bf_init();
+	struct Tape *tape;
+	bf_init(tape);
 
-	struct Instruction *current;
-	for (current = &program[i]; current->next != NULL;
-			current = current->next) {
+	struct Instruction *current = &program[0];
+	for (; current->next != NULL; current = current->next) {
 		switch (current->command) {
 		case COMMAND_CELL_NULLIFY:
 			bf_cell_nullify();
@@ -111,4 +118,6 @@ lbfi_main(char *path)
 
 	/* cleanup */
 	bf_suicide();
+
+	return 0;
 }

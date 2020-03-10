@@ -4,30 +4,31 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "exec.h"
-#include "instruction.h"
+#include "instructions.h"
 #include "lbf.h"
 #include "utf.h"
 
 static u32 cell_max = 0;
 static u32 cell_min = 0;
-static void get_cell_min_max(void);
+static void get_cell_min_max(struct Options *opts);
 
 /* allocate tape and get cell max/min */
 void
-bf_init(void)
+bf_init(struct Options *opts, struct Tape *tape)
 {
 	tape          = (struct Tape*) calloc(1, sizeof(struct Tape));
-	tape->cells   = (i64*) calloc(tape_initial_size, sizeof(i64));
-	tape->tp_size = tape_initial_size;
+	tape->cells   = (i64*) calloc(opts->initial_tape_size, sizeof(i64));
+	tape->tp_size = opts->fopt_initial_tape_size;
 	tape->pointer = &tape->cells[0];
 
-	get_cell_min_max();
+	get_cell_min_max(opts);
 }
 
 static void
-get_cell_min_max(void)
+get_cell_min_max(struct Options *opts)
 {
 	if (opts->fopt_cell_size == 8) {
 		if (opts->fopt_cell_signed)
@@ -53,75 +54,77 @@ get_cell_min_max(void)
 }
 
 void
-bf_cell_nullify(void)
+bf_cell_nullify(struct Tape *tape)
 {
 	*(tape->pointer) = 0;
 }
 
 void
-bf_cell_inc(usize amount)
+bf_cell_inc(struct Tape *tape, usize amount)
 {
 	/* TODO: wrapping */
 	*(tape->pointer) += amount;
 }
 
 void
-bf_cell_dec(usize amount)
+bf_cell_dec(struct Tape *tape, usize amount)
 {
 	*(tape->pointer) -= amount;
 }
 
 void
-bf_ptr_mov_init(void)
+bf_ptr_mov_init(struct Tape *tape)
 {
 	tape->pointer = &tape->cells[0];
 }
 
 void
-bf_ptr_mov_l(void)
+bf_ptr_mov_l(struct Tape *tape, usize amount)
 {
 	/* TODO: handle segfault */
-	--tape->pointer;
+	tape->pointer -= amount;
 }
 
 void
-bf_ptr_mov_r(void)
+bf_ptr_mov_r(struct Tape *tape, usize amount)
 {
 	/* TODO: handle segfault */
-	++tape->pointer;
+	tape->pointer += amount;
 }
 
 void
-bf_read_stdin(void)
+bf_read_stdin(struct Tape *tape)
 {
 	int c = fgetc(stdin);
 	*(tape->pointer) = c == EOF ? c : 0;
 }
 
 void
-bf_print(FILE *f)
+bf_print(struct Tape *tape, FILE *f)
 {
-	*(tape->pointer) < 256 ? fputc(*(tape->pointer), f) : {
-		char buf[runelen((Rune*) tape->pointer)];
+	if (*(tape->pointer) < 256) {
+		fputc(*(tape->pointer), f);
+	} else {
+		char buf[runelen((Rune) *tape->pointer)];
 		runetochar(&buf, (Rune*) tape->pointer);
-		fprintf(f, "%s", &buf);
-	};
+		fprintf(f, "%s", (char*) &buf);
+	}
 }
 
 void
-bf_print_stdout(void)
+bf_print_stdout(struct Tape *tape)
 {
-	bf_print(stdout);
+	bf_print(tape, stdout);
 }
 
 void
-bf_print_stderr(void)
+bf_print_stderr(struct Tape *tape)
 {
-	bf_print(stderr);
+	bf_print(tape, stderr);
 }
 
 void
-bf_print_debug(void)
+bf_print_debug(struct Tape *tape)
 {
 	/* TODO: define -fdebug-context
 	 * to specify how many cells should be printed */
@@ -132,21 +135,21 @@ bf_print_debug(void)
 }
 
 void
-bf_scan_l(void)
+bf_scan_l(struct Tape *tape)
 {
 	tape->pointer -= (i32) ((void *)*(tape->pointer)
 			- memrchr(tape->cells, 0, tape->pointer + 1));
 }
 
 void
-bf_scan_r(void)
+bf_scan_r(struct Tape *tape)
 {
 	tape->pointer += (i32) (memchr(tape->pointer, 0, tape->tp_size)
 			- (void *)(tape->pointer));
 }
 
 void
-bf_suicide(void)
+bf_suicide(struct Tape *tape)
 {
 	free(tape->cells);
 	free(tape);

@@ -1,10 +1,10 @@
 #ifndef EXEC_H
 #define EXEC_H
 
-#include "types.h"
+#include <stdio.h>
 
-/* initial size of tape */
-const usize tape_initial_size = 128;
+#include "lbf.h"
+#include "types.h"
 
 struct Tape {
 	/* number of cells */
@@ -16,25 +16,23 @@ struct Tape {
 
 	/* cell pointer */
 	i32 *pointer;
-}
-
-struct Tape *tape;
+};
 
 /* prototypes */
-void bf_init(void);
-void bf_cell_nullify(void);
-void bf_cell_inc(void);
-void bf_cell_dec(void);
-void bf_ptr_mov_init(void);
-void bf_ptr_mov_l(void);
-void bf_ptr_mov_r(void);
-void bf_read_stdin(void);
-void bf_print(FILE *f);
-void bf_print_stdout(void);
-void bf_print_stderr(void);
-void bf_print_debug(void);
-void bf_scan_l(void);
-void bf_scan_r(void);
-void bf_suicide(void);
+void bf_init(struct Options *opts, struct Tape *tape);
+void bf_cell_nullify(struct Tape *tape);
+void bf_cell_inc(struct Tape *tape, usize amount);
+void bf_cell_dec(struct Tape *tape, usize amount);
+void bf_ptr_mov_init(struct Tape *tape);
+void bf_ptr_mov_l(struct Tape *tape, usize amount);
+void bf_ptr_mov_r(struct Tape *tape, usize amount);
+void bf_read_stdin(struct Tape *tape);
+void bf_print(struct Tape *tape, FILE *f);
+void bf_print_stdout(struct Tape *tape);
+void bf_print_stderr(struct Tape *tape);
+void bf_print_debug(struct Tape *tape);
+void bf_scan_l(struct Tape *tape);
+void bf_scan_r(struct Tape *tape);
+void bf_suicide(struct Tape *tape);
 
 #endif

@@ -1,17 +1,23 @@
+#include <stdlib.h>
+
 #include "instructions.h"
+#include "lbf.h"
+#include "parser.h"
 
 void
-parse(void)
+parse(char *program_data, struct Instructions *program)
 {
 	usize line = 0;
-	usize char = 0;
+	usize column = 0;
 
 	for (usize i = 0; program_data[i]; ++i) {
-		program_data[i] == '\n' ? ++line, continue : ++char;
+		/* newline get's ignored later on,
+		 * no need to continue right now */
+		program_data[i] == '\n' ? ++line : ++column;
 
 		struct Instruction inst = {
 			COMMAND_UNKNOWN,
-			line, char,
+			line, column,
 			1,
 			NULL, NULL
 		};

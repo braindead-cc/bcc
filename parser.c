@@ -41,12 +41,6 @@ parse(void)
 		case ']':
 			inst.command = COMMAND_LOOP_END;
 			break;
-		case '(':
-			inst.command = COMMAND_COND_START;
-			break;
-		case ')':
-			inst.command = COMMAND_COND_END;
-			break;
 		case ',':
 			inst.command = COMMAND_READ_STDIN;
 			break;
@@ -58,27 +52,6 @@ parse(void)
 			break;
 		case '#':
 			inst.command = COMMAND_PRINT_DEBUG;
-			break;
-		case '%':
-			inst.command = COMMAND_GET_REG;
-			break;
-		case 'A':
-			inst.command = COMMAND_SET_REG_A;
-			break;
-		case 'B':
-			inst.command = COMMAND_SET_REG_B;
-			break;
-		case 'C':
-			inst.command = COMMAND_SET_REG_C;
-			break;
-		case 'D':
-			inst.command = COMMAND_SET_REG_D;
-			break;
-		case 'E':
-			inst.command = COMMAND_SET_REG_E;
-			break;
-		case 'F':
-			inst.command = COMMAND_SET_REG_F;
 			break;
 		case '{':
 			inst.command = COMMAND_SCAN_L;

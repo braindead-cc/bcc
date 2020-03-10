@@ -19,19 +19,10 @@ enum Command {
 	COMMAND_PTR_MOV_R,     /* '>' -- move ptr to the right */
 	COMMAND_LOOP_START,    /* '[' -- start bf loop */
 	COMMAND_LOOP_END,      /* ']' -- end bf loop */
-	COMMAND_COND_START,    /* '(' -- begin conditional (like loop) */
-	COMMAND_COND_END,      /* ')' -- end conditional */
 	COMMAND_READ_STDIN,    /* ',' -- replace cell with char from stdin */
 	COMMAND_PRINT_STDOUT,  /* '.' -- output current cell value to stdout */
 	COMMAND_PRINT_STDERR,  /* '&' -- output current cell value to stderr */
 	COMMAND_PRINT_DEBUG,   /* '#' -- output debugging information */
-	COMMAND_GET_REG,       /* '%' -- set cell to value of register */
-	COMMAND_SET_REG_A,     /* 'A' -- set regA to value of cell */
-	COMMAND_SET_REG_B,     /* 'B' -- set regB to value of cell */
-	COMMAND_SET_REG_C,     /* 'C' -- set regC to value of cell */
-	COMMAND_SET_REG_D,     /* 'D' -- set regD to value of cell */
-	COMMAND_SET_REG_E,     /* 'E' -- set regE to value of cell */
-	COMMAND_SET_REG_F,     /* 'F' -- set regF to value of cell */
 	COMMAND_SCAN_L,        /* '{' -- eq to '[<]' */
 	COMMAND_SCAN_R,        /* '}' -- eq to '[>]' */
 	COMMAND_SUICIDE,       /* '@' -- exit with exit code of cell value */

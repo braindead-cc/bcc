@@ -23,7 +23,7 @@ WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 INC     = -I. -Iccommon/ -Ilibutf/include/
 DEF     = -DVERSION=$(VERSION) -D_GNU_SOURCE
 
-CC      = clang
+CC      = gcc 
 LD      = lld
 CFLAGS  = -std=c99 $(WARNING) $(INC) $(DEF)
 LDFLAGS = -fuse-ld=$(LD)
@@ -37,12 +37,13 @@ all: debug
 debug: CFLAGS_OPT := -O0 -ggdb
 debug: $(BIN)
 
-release: CFLAGS_OPT := -O4 -s
+release: CFLAGS_OPT := -O3
+release: LDFLAGS_OPT := -s
 release: $(BIN)
 
 $(BIN): $(OBJ) $(LIBUTF)
-	@echo "  CC       $@"
-	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS)
+	@echo "  LD       $@"
+	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS) $(LDFLAGS_OPT)
 
 $(LIBUTF):
 	$(CMD)cd libutf && make

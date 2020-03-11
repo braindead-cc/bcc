@@ -10,12 +10,10 @@ struct Tape {
 	/* number of cells */
 	u64 tp_size;
 
-	/* use i32, wrap later if
-	 * user-defined cell size is lower */
-	i32 *cells;
+	u8 *cells;
 
 	/* cell pointer */
-	u64 pointer;
+	u8 pointer;
 };
 
 /* prototypes */

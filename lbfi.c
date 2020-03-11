@@ -31,19 +31,27 @@ lbfi_main(char *path, struct Options *opts)
 		program_data[i] = c;
 	program_data[i + 1] = '\0';
 
-	/* parse instructions */
-	struct Instruction *program = calloc(st.st_size,
-			sizeof(struct Instruction));
-	parse(program_data, program);
+	/* parse instructions -- program = head node */
+	struct Instruction *program = malloc(sizeof(struct Instruction));
+	program == NULL && die("lbfi: error: cannot allocate tape:");
+	parse(opts, program_data, program);
 
 
 	/* TODO: warnings, optimizations */
 	/* execute instructions */
-	struct Tape *tape = NULL;
-	bf_init(opts, tape);
+	struct Tape *tape = malloc(1 * sizeof(struct Tape));
+	if (tape == NULL)
+		die("lbfi: error: cannot allocate memory for tape:");
+	tape->tp_size = opts->fopt_initial_tape_size;
+	tape->cells = calloc(tape->tp_size, sizeof(u8));
+	if (tape->cells == NULL)
+		die("lbfi: error: cannot allocate memory for tape:");
+	tape->pointer = 0;
 
-	struct Instruction *current = &program[0];
-	for (; current->next != NULL; current = current->next) {
+	bf_init(opts, tape);
+	struct Instruction *current = program;
+	for (usize depth = 0, i = 0; current->next != NULL;
+			current = current->next, ++i) {
 		switch (current->command) {
 		case COMMAND_CELL_NULLIFY:
 			bf_cell_nullify(tape);
@@ -64,30 +72,29 @@ lbfi_main(char *path, struct Options *opts)
 			bf_ptr_mov_r(tape, current->repeat);
 			break;
 		case COMMAND_LOOP_START:
-			if (*(tape->pointer) == 0) {
+			if (tape->cells[tape->pointer] == 0) {
 				current = current->next;
-				usize depth = 0;
-				while (depth > 0 || current->command != COMMAND_LOOP_END) {
+				depth = 1;
+				while (depth > 0) {
+					current = current->next;
 					if (current->command == COMMAND_LOOP_START)
 						++depth;
 					else if (current->command == COMMAND_LOOP_END)
 						--depth;
-					current = current->next;
 				}
 			}
 			break;
 		case COMMAND_LOOP_END:
-			if (*(tape->pointer) != 0) {
+			if (tape->cells[tape->pointer] != 0) {
 				current = current->prev;
-				usize depth = 0;
-				while (depth > 0 || current->command != COMMAND_LOOP_START) {
-					if (current->command == COMMAND_LOOP_END)
-						++depth;
-					else if (current->command == COMMAND_LOOP_START)
-						--depth;
+				depth = 1;
+				while (depth > 0) {
 					current = current->prev;
+					if (current->command == COMMAND_LOOP_START)
+						--depth;
+					else if (current->command == COMMAND_LOOP_END)
+						++depth;
 				}
-				current = current->prev;
 			}
 			break;
 		case COMMAND_READ_STDIN:
@@ -109,15 +116,21 @@ lbfi_main(char *path, struct Options *opts)
 			bf_scan_r(tape);
 			break;
 		case COMMAND_SUICIDE:
-			bf_suicide(tape);
+			goto cleanup;
 			break;
 		default:
 			break;
 		}
 	}
 
+cleanup:
 	/* cleanup */
 	bf_suicide(tape);
+	if (opts) free(opts);
+	struct Instruction *s;
+	for (s = program; s->next != NULL; s = s->next)
+		if (s->prev) free(s->prev);
+	if (s) free(s);
 
 	return 0;
 }

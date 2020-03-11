@@ -27,7 +27,7 @@ main(int argc, char **argv)
 
 	/* set default options */
 	opts->verbose                       = FALSE;
-	opts->bparams                       = BOPT_C;
+	opts->backend                       = BOPT_C;
 	opts->fopt_enable_dbg_command       = FALSE;
 	opts->fopt_enable_nullify_command   = FALSE;
 	opts->fopt_enable_scan_command      = FALSE;
@@ -41,6 +41,7 @@ main(int argc, char **argv)
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
 	opts->fopt_cell_wrap                = TRUE;
+	opts->fopt_initial_tape_size        = 512;
 
 
 	/* parse arguments */

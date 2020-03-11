@@ -43,7 +43,7 @@ struct Options {
 	bool fopt_cell_wrap;   /* allow '-' to cell0 to 255 */
 
 	/* initial amount of memory allocated for tape */
-	bool fopt_initial_tape_size;
+	u64 fopt_initial_tape_size;
 };
 
 #endif

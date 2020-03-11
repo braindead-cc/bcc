@@ -25,6 +25,24 @@ main(int argc, char **argv)
 	char *path = NULL;           /* input file */
 	struct Options *opts = calloc(1, sizeof(struct Options));
 
+	/* set default options */
+	opts->verbose                       = FALSE;
+	opts->bparams                       = BOPT_C;
+	opts->fopt_enable_dbg_command       = FALSE;
+	opts->fopt_enable_nullify_command   = FALSE;
+	opts->fopt_enable_scan_command      = FALSE;
+	opts->fopt_enable_command_squashing = FALSE;
+	opts->wopt_error                    = FALSE;
+	opts->wopt_comments                 = FALSE;
+	opts->wopt_long_lines               = FALSE;
+	opts->wopt_dead_code                = FALSE;
+	opts->wopt_ignore_dbg               = FALSE;
+	opts->wopt_all                      = FALSE;
+	opts->fopt_cell_size                = 8;
+	opts->fopt_cell_signed              = FALSE;
+	opts->fopt_cell_wrap                = TRUE;
+
+
 	/* parse arguments */
 	isize opt = 0;
 	while ((opt = getopt(argc, argv, "vb:f:W:i:")) != -1) {

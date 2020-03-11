@@ -10,74 +10,74 @@ parse(char *program_data, struct Instruction *program)
 	usize line = 0;
 	usize column = 0;
 
-	for (usize i = 0; program_data[i]; ++i) {
-		/* newline get's ignored later on,
-		 * no need to continue right now */
-		program_data[i] == '\n' ? ++line : ++column;
+	struct Instruction *last = program;
 
-		struct Instruction inst = {
-			COMMAND_UNKNOWN,
-			line, column,
-			1,
-			NULL, NULL
-		};
+	for (usize i = 0; program_data[i]; ++i) {
+		if (program_data[i] == '\n') {
+			++line;
+			continue;
+		} else {
+			++column;
+		}
+
+		struct Instruction *inst = malloc(sizeof(struct Instruction));
+		inst->line    = line;
+		inst->column  = column,
+		inst->repeat  = 1;
+		inst->prev    = last;
+		last->next    = inst;
 
 		switch (program_data[i]) {
 		case '*':
-			inst.command = COMMAND_CELL_NULLIFY;
+			inst->command = COMMAND_CELL_NULLIFY;
 			break;
 		case '+':
-			inst.command = COMMAND_CELL_INC;
+			inst->command = COMMAND_CELL_INC;
 			break;
 		case '-':
-			inst.command = COMMAND_CELL_DEC;
+			inst->command = COMMAND_CELL_DEC;
 			break;
 		case '^':
-			inst.command = COMMAND_PTR_MOV_INIT;
+			inst->command = COMMAND_PTR_MOV_INIT;
 			break;
 		case '<':
-			inst.command = COMMAND_PTR_MOV_L;
+			inst->command = COMMAND_PTR_MOV_L;
 			break;
 		case '>':
-			inst.command = COMMAND_PTR_MOV_R;
+			inst->command = COMMAND_PTR_MOV_R;
 			break;
 		case '[':
-			inst.command = COMMAND_LOOP_START;
+			inst->command = COMMAND_LOOP_START;
 			break;
 		case ']':
-			inst.command = COMMAND_LOOP_END;
+			inst->command = COMMAND_LOOP_END;
 			break;
 		case ',':
-			inst.command = COMMAND_READ_STDIN;
+			inst->command = COMMAND_READ_STDIN;
 			break;
 		case '.':
-			inst.command = COMMAND_PRINT_STDOUT;
+			inst->command = COMMAND_PRINT_STDOUT;
 			break;
 		case '&':
-			inst.command = COMMAND_PRINT_STDERR;
+			inst->command = COMMAND_PRINT_STDERR;
 			break;
 		case '#':
-			inst.command = COMMAND_PRINT_DEBUG;
+			inst->command = COMMAND_PRINT_DEBUG;
 			break;
 		case '{':
-			inst.command = COMMAND_SCAN_L;
+			inst->command = COMMAND_SCAN_L;
 			break;
 		case '}':
-			inst.command = COMMAND_SCAN_R;
+			inst->command = COMMAND_SCAN_R;
 			break;
 		case '@':
-			inst.command = COMMAND_SUICIDE;
+			inst->command = COMMAND_SUICIDE;
 			break;
 		default:
 			continue;
 			break;
 		}
 
-		if (i != 0)
-			inst.prev = &program[i - 1];
-		if (program_data[i + 1] != '\0')
-			inst.next = &program[i + 1];
-
-		program[i] = inst;
+		last = inst;
 	}
 }

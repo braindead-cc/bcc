@@ -15,7 +15,7 @@ struct Tape {
 	i32 *cells;
 
 	/* cell pointer */
-	i32 *pointer;
+	u64 pointer;
 };
 
 /* prototypes */

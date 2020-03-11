@@ -10,6 +10,7 @@
 #include "instructions.h"
 #include "lbf.h"
 #include "utf.h"
+#include "util.h"
 
 static u32 cell_max = 0;
 static u32 cell_min = 0;
@@ -19,10 +20,16 @@ static void get_cell_min_max(struct Options *opts);
 void
 bf_init(struct Options *opts, struct Tape *tape)
 {
-	tape          = (struct Tape*) calloc(1, sizeof(struct Tape));
-	tape->cells   = calloc(opts->fopt_initial_tape_size, sizeof(i64));
+	tape          = malloc(1 * sizeof(struct Tape));
+	if (tape == NULL)
+		die("lbfi: error: cannot allocate memory for tape:");
+
+	tape->cells   = malloc(opts->fopt_initial_tape_size * sizeof(i64));
+	if (tape->cells == NULL)
+		die("lbfi: error: cannot allocate memory for tape:");
+
 	tape->tp_size = opts->fopt_initial_tape_size;
-	tape->pointer = &tape->cells[0];
+	tape->pointer = 0;
 
 	get_cell_min_max(opts);
 }
@@ -56,26 +63,26 @@ get_cell_min_max(struct Options *opts)
 void
 bf_cell_nullify(struct Tape *tape)
 {
-	*(tape->pointer) = 0;
+	tape->cells[tape->pointer] = 0;
 }
 
 void
 bf_cell_inc(struct Tape *tape, usize amount)
 {
 	/* TODO: wrapping */
-	*(tape->pointer) += amount;
+	tape->cells[tape->pointer] += amount;
 }
 
 void
 bf_cell_dec(struct Tape *tape, usize amount)
 {
-	*(tape->pointer) -= amount;
+	tape->cells[tape->pointer] -= amount;
 }
 
 void
 bf_ptr_mov_init(struct Tape *tape)
 {
-	tape->pointer = &tape->cells[0];
+	tape->pointer = 0;
 }
 
 void
@@ -96,17 +103,17 @@ void
 bf_read_stdin(struct Tape *tape)
 {
 	int c = fgetc(stdin);
-	*(tape->pointer) = c == EOF ? c : 0;
+	tape->cells[tape->pointer] = c == EOF ? c : 0;
 }
 
 void
 bf_print(struct Tape *tape, FILE *f)
 {
-	if (*(tape->pointer) < 256) {
-		fputc(*(tape->pointer), f);
+	if (tape->cells[tape->pointer] < 256) {
+		fputc(tape->cells[tape->pointer], f);
 	} else {
-		char buf[runelen((Rune) *tape->pointer)];
-		runetochar(&buf, (Rune*) tape->pointer);
+		char buf[runelen((Rune) tape->cells[tape->pointer])];
+		runetochar(&buf, (Rune*) &tape->cells[tape->pointer]);
 		fprintf(f, "%s", (char*) &buf);
 	}
 }
@@ -137,15 +144,15 @@ bf_print_debug(struct Tape *tape)
 void
 bf_scan_l(struct Tape *tape)
 {
-	tape->pointer -= (i32) ((void *)*(tape->pointer)
-			- memrchr(tape->cells, 0, tape->pointer + 1));
+	tape->pointer -= (i32) ((void *) &tape->cells[tape->pointer]
+			- memrchr(tape->cells, 0, tape->cells[tape->pointer + 1]));
 }
 
 void
 bf_scan_r(struct Tape *tape)
 {
-	tape->pointer += (i32) (memchr(tape->pointer, 0, tape->tp_size)
-			- (void *)(tape->pointer));
+	tape->pointer += (i32) (memchr(&tape->cells[tape->pointer], 0, tape->tp_size)
+			- (void *)(&tape->cells[tape->pointer]));
 }
 
 void

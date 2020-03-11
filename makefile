@@ -21,10 +21,11 @@ WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
 	  -Wno-unused-value -Wno-trigraphs
 INC     = -I. -Iccommon/ -Ilibutf/include/
+DEF     = -DVERSION=$(VERSION) -D_GNU_SOURCE
 
 CC      = clang
 LD      = lld
-CFLAGS  = -std=c99 -DVERSION=$(VERSION) -D_DEFAULT_SOURCE $(WARNING) $(INC)
+CFLAGS  = -std=c99 $(WARNING) $(INC) $(DEF)
 LDFLAGS = -fuse-ld=$(LD)
 
 all: debug

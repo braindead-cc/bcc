@@ -41,7 +41,7 @@ main(int argc, char **argv)
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
 	opts->fopt_cell_wrap                = TRUE;
-	opts->fopt_initial_tape_size        = 512;
+	opts->fopt_initial_tape_size        = 8;
 
 
 	/* parse arguments */

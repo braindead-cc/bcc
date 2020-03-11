@@ -50,15 +50,29 @@ bf_ptr_mov_init(struct Tape *tape)
 void
 bf_ptr_mov_l(struct Tape *tape, usize amount)
 {
-	/* TODO: handle segfault */
-	tape->pointer -= amount;
+	/* check for overflow */
+	u64 tmp = tape->pointer - amount;
+	if (tmp > tape->pointer) {
+		/* ignore */
+		/* TODO: add -Wtape-overflow */
+	} else {
+		tape->pointer -= amount;
+	}
 }
 
 void
 bf_ptr_mov_r(struct Tape *tape, usize amount)
 {
-	/* TODO: handle segfault */
-	tape->pointer += amount;
+	u64 tmp = tape->pointer + amount;
+	if (tmp >= tape->tp_size) {
+		printf("DEBUG: allocating %lld\n", tape->tp_size * 2);
+		tape->tp_size = tape->tp_size * 2;
+		tape->cells   = realloc(tape->cells, tape->tp_size);
+		if (tape->cells == NULL)
+			die("lbf: error: cannot allocate memory for tape:");
+	} else {
+		tape->pointer += amount;
+	}
 }
 
 void
@@ -120,9 +134,9 @@ bf_scan_r(struct Tape *tape)
 void
 bf_suicide(struct Tape *tape)
 {
-	free(tape->cells);
-	free(tape);
-	exit(0);
+	if (tape->cells)
+		free(tape->cells);
+	if (tape) free(tape);
 
 	/* TODO: free opts, program_data, etc */
 }

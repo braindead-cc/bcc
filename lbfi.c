@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "exec.h"
 #include "instructions.h"
@@ -14,22 +11,21 @@
 int
 lbfi_main(char *path, struct Options *opts)
 {
-	/* get size of file so we can allocate a buffer for it */
-	struct stat st;
-	if (lstat(path, &st) == -1)
-		die("lbfi: error: cannot stat %s:", path);
-	char *program_data = (char*) malloc(st.st_size + 1 * sizeof(char));
-
-	FILE *f;
-	if ((f = fopen(path, "r")) == NULL)
-		die("lbfi: cannot open %s:", path);
+	/* TODO: allocate on demand */
+	char *program_data = (char*) malloc(128000 * sizeof(char));
+	if (program_data == NULL)
+		die("lbfi: error: cannot read brainfsck code:");
 
 	/* copy file data onto buffer */
-	int c = 0;
 	usize i = 0;
-	for (; (c = fgetc(f)) != EOF; ++i)
+	for (int c = 0; (c = fgetc(stdin)) != EOF && i < 128000; ++i)
 		program_data[i] = c;
 	program_data[i + 1] = '\0';
+
+	struct Instruction *head = malloc(sizeof(struct Instruction));
+	if (head == NULL)
+		die("lbfi: error: cannot allocate memory:");
+	parse(opts, program_data, head);
 
 	/* TODO: optimizations */
 	/* execute instructions */
@@ -41,11 +37,12 @@ lbfi_main(char *path, struct Options *opts)
 	if (tape->cells == NULL)
 		die("lbfi: error: cannot allocate memory for tape:");
 	tape->pointer = 0;
-	printf("DEBUG: tape size: %lld\n", tape->tp_size);
+	if (opts->debug) debug("tape size = %lld", tape->tp_size);
 
 	bf_init(opts, tape);
-	for (usize depth = 0, i = 0; i < st.st_size; ++i) {
-		switch (program_data[i]) {
+	struct Instruction *cur = head;
+	for (usize depth = 0; cur->next != NULL; cur = cur->next) {
+		switch (cur->command) {
 		case '*':
 			bf_cell_nullify(tape);
 			break;
@@ -62,33 +59,33 @@ lbfi_main(char *path, struct Options *opts)
 			bf_ptr_mov_l(tape, 1);
 			break;
 		case '>':
-			bf_ptr_mov_r(tape, 1);
+			bf_ptr_mov_r(opts, tape, 1);
 			break;
 		case '[':
 			if (tape->cells[tape->pointer] == 0) {
-				++i;
+				cur = cur->next;
 				depth = 1;
 				while (depth > 0) {
-					++i;
-					if (program_data[i] == '[')
+					cur = cur->next;
+					if (cur->command == '[')
 						++depth;
-					else if (program_data[i] == ']')
+					else if (cur->command == ']')
 						--depth;
 				}
 			}
 			break;
 		case ']':
 			if (tape->cells[tape->pointer] != 0) {
-				--i;
+				cur = cur->prev;
 				depth = 1;
 				while (depth > 0) {
-					--i;
-					if (program_data[i] == '[')
+					cur = cur->prev;
+					if (cur->command == '[')
 						--depth;
-					else if (program_data[i] == ']')
+					else if (cur->command == ']')
 						++depth;
 				}
-				--i;
+				cur = cur->prev;
 			}
 			break;
 		case ',':
@@ -120,6 +117,8 @@ lbfi_main(char *path, struct Options *opts)
 cleanup:
 	/* cleanup */
 	bf_suicide(tape);
+	for (struct Instruction *x = head->next; x->next != NULL; x = x->next)
+		if (x->prev != NULL) free(x->prev);
 	if (opts) free(opts);
 
 	return 0;

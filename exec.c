@@ -61,11 +61,12 @@ bf_ptr_mov_l(struct Tape *tape, usize amount)
 }
 
 void
-bf_ptr_mov_r(struct Tape *tape, usize amount)
+bf_ptr_mov_r(struct Options *opts, struct Tape *tape, usize amount)
 {
 	u64 tmp = tape->pointer + amount;
 	if (tmp >= tape->tp_size) {
-		printf("DEBUG: allocating %lld\n", tape->tp_size * 2);
+		if (opts->debug)
+			debug("reallocating %lld for tape", tape->tp_size * 2);
 		tape->tp_size = tape->tp_size * 2;
 		tape->cells   = realloc(tape->cells, tape->tp_size);
 		if (tape->cells == NULL)

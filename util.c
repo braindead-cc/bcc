@@ -29,3 +29,18 @@ die(const char *fmt, ...)
 	 */
 	return 0;
 }
+
+usize
+debug(const char *fmt, ...)
+{
+	fprintf(stderr, "lbf: debug: ");
+
+	va_list ap;
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+
+	fputc('\n', stderr);
+
+	return 0;
+}

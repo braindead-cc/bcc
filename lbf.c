@@ -17,18 +17,20 @@
 int
 main(int argc, char **argv)
 {
-	if (argc < 2) return 0;
+	if (argc < 2) die("lbf: error: nothing to do, exiting.");
 
 	--argc;
 	++argv;
 
 	char *path = NULL;           /* input file */
-	struct Options *opts = calloc(1, sizeof(struct Options));
+	struct Options *opts = malloc(1 * sizeof(struct Options));
 
 	/* set default options */
+	opts->debug                         = FALSE;
 	opts->verbose                       = FALSE;
 	opts->backend                       = BOPT_C;
 	opts->fopt_enable_dbg_command       = FALSE;
+	opts->fopt_enable_lbf_std           = FALSE;
 	opts->fopt_enable_nullify_command   = FALSE;
 	opts->fopt_enable_scan_command      = FALSE;
 	opts->fopt_enable_command_squashing = FALSE;
@@ -37,17 +39,21 @@ main(int argc, char **argv)
 	opts->wopt_long_lines               = FALSE;
 	opts->wopt_dead_code                = FALSE;
 	opts->wopt_ignore_dbg               = FALSE;
+	opts->wopt_tape_overflow            = FALSE;
 	opts->wopt_all                      = FALSE;
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
-	opts->fopt_cell_wrap                = TRUE;
-	opts->fopt_initial_tape_size        = 8;
+	opts->fopt_debug_context            = 32;
+	opts->fopt_initial_tape_size        = 256;
 
 
 	/* parse arguments */
 	isize opt = 0;
-	while ((opt = getopt(argc, argv, "vb:f:W:i:")) != -1) {
+	while ((opt = getopt(argc, argv, "dvb:f:W:i:")) != -1) {
 		switch (opt) {
+		case 'd':
+			opts->debug = TRUE;
+			break;
 		case 'v':
 			opts->verbose = TRUE;
 			break;
@@ -84,18 +90,30 @@ main(int argc, char **argv)
 			}
 			break;
 		case 'f':
-			if (!strcmp(optarg, "enable-dbg"))
+			if (!strcmp(optarg, "enable-dbg")) {
 				opts->fopt_enable_dbg_command = TRUE;
-			else if (!strcmp(optarg, "enable-lbf-std"))
+			} else if (!strcmp(optarg, "enable-lbf-std")) {
 				opts->fopt_enable_lbf_std = TRUE;
-			else if (!strcmp(optarg, "optimize-multiple-commands"))
+			} else if (!strcmp(optarg, "optimize-multiple-commands")) {
 				opts->fopt_enable_command_squashing = TRUE;
-			else if (!strcmp(optarg, "optimize-scan-commands"))
+			} else if (!strcmp(optarg, "optimize-scan-commands")) {
 				opts->fopt_enable_scan_command = TRUE;
-			else if (!strcmp(optarg, "optimize-nullify-loops"))
+			} else if (!strcmp(optarg, "optimize-nullify-loops")) {
 				opts->fopt_enable_nullify_command = TRUE;
-			else
+			} else if (!strncmp(optarg, "cell-size=", 10)) {
+				while (*optarg != '=') ++optarg;
+				opts->fopt_cell_size = (u8) strtol(optarg, NULL, 10);
+			} else if (!strcmp(optarg, "cell-signed")) {
+				opts->fopt_cell_signed = TRUE;
+			} else if (!strncmp(optarg, "debug-context=", 14)) {
+				while (*optarg != '=') ++optarg;
+				opts->fopt_debug_context = (u64) strtol(optarg, NULL, 10);
+			} else if (!strncmp(optarg, "initial-tape-size=", 18)) {
+				while (*optarg != '=') ++optarg;
+				opts->fopt_initial_tape_size = (u64) strtol(optarg, NULL, 10);
+			} else {
 				die("lbf: error: '%s': invalid argument to -f.", optarg);
+			}
 			break;
 		case 'W':
 			if (!strcmp(optarg, "error"))
@@ -108,12 +126,13 @@ main(int argc, char **argv)
 				opts->wopt_dead_code = TRUE;
 			else if (!strcmp(optarg, "ignored-dbg"))
 				opts->wopt_ignore_dbg = TRUE;
+			else if (!strcmp(optarg, "tape-overflow"))
+				opts->wopt_tape_overflow = TRUE;
 			else if (!strcmp(optarg, "all"))
 				opts->wopt_all = TRUE;
 			else
 				die("lbf: error: '%s': invalid argument to -W.", optarg);
 			break;
-		/* TODO: make it possible to specify files without -i option */
 		case 'i':
 			path = optarg;
 			break;
@@ -123,6 +142,33 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (path == NULL) die("lbf: error: nothing to do, exiting.");
+	/* print options */
+	if (opts->debug) {
+		debug("debug = %i", opts->debug);
+		debug("verbose = %i", opts->verbose);
+		/* TODO: print backend */
+		debug("fopt_enable_dbg_command = %i",
+				opts->fopt_enable_dbg_command);
+		debug("fopt_enable_lbf_std = %i",
+				opts->fopt_enable_lbf_std);
+		debug("fopt_enable_nullify_command = %i",
+				opts->fopt_enable_nullify_command);
+		debug("fopt_enable_scan_command = %i",
+				opts->fopt_enable_scan_command);
+		debug("fopt_enable_command_squashing = %i",
+				opts->fopt_enable_command_squashing);
+		debug("wopt_error = %i", opts->wopt_error);
+		debug("wopt_comments = %i", opts->wopt_comments);
+		debug("wopt_long_lines = %i", opts->wopt_long_lines);
+		debug("wopt_dead_code = %i", opts->wopt_dead_code);
+		debug("wopt_ignore_dbg = %i", opts->wopt_ignore_dbg);
+		debug("wopt_tape_overflow = %i", opts->wopt_tape_overflow);
+		debug("wopt_all = %i", opts->wopt_all);
+		debug("fopt_cell_size = %i", opts->fopt_cell_size);
+		debug("fopt_cell_signed = %i", opts->fopt_cell_signed);
+		debug("fopt_debug_context = %lli", opts->fopt_debug_context);
+		debug("fopt_initial_tape_size = %lli", opts->fopt_initial_tape_size);
+	}
+
 	return lbfi_main(path, opts);
 }

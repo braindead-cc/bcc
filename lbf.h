@@ -17,9 +17,9 @@ enum bparams {
 };
 
 struct Options {
+	bool debug;
 	bool verbose;
 	enum bparams backend;
-	char *ofile; /* output file */
 
 	/* options enabled with -f (e.g. -fenable-dbg) */
 	bool fopt_enable_dbg_command;       /* enable # command */
@@ -31,16 +31,21 @@ struct Options {
 	bool fopt_enable_command_squashing; /* +++ => 3+ */
 
 	/* warnings */
-	bool wopt_error;       /* treat all warnings as error */
-	bool wopt_comments;    /* warn on encountering comments */
-	bool wopt_long_lines;  /* warn on lines longer than 80 */
-	bool wopt_dead_code;   /* warn on dead code */
-	bool wopt_ignore_dbg;  /* warn on ignored # command */
+	bool wopt_error;         /* treat all warnings as error */
+	bool wopt_comments;      /* warn on encountering comments */
+	bool wopt_long_lines;    /* warn on lines longer than 80 */
+	bool wopt_dead_code;     /* warn on dead code */
+	bool wopt_ignore_dbg;    /* warn on ignored # command */
+	bool wopt_tape_overflow; /* warn on moving to cell -1 */
 	bool wopt_all;
 
-	u8   fopt_cell_size;   /* cell size (8, 16, 32, or 64) */
-	bool fopt_cell_signed; /* enable signed cells */
-	bool fopt_cell_wrap;   /* allow '-' to cell0 to 255 */
+	/* other options */
+	u8   fopt_cell_size;     /* cell size (8, 16, 32, or 64) */
+	bool fopt_cell_signed;   /* enable signed cells */
+
+	/* number of cells to print before+after 
+	 * pointer on debug instruction */
+	u64 fopt_debug_context;
 
 	/* initial amount of memory allocated for tape */
 	u64 fopt_initial_tape_size;

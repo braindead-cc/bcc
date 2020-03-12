@@ -3,5 +3,6 @@
 #include "types.h"
 
 usize die(const char *fmt, ...);
+usize debug(const char *fmt, ...);
 
 #endif

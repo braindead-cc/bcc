@@ -1,7 +1,9 @@
 #ifndef LBFI_H
 #define LBFI_H
-#include <stdio.h>
+
+#include "instructions.h"
 #include "lbf.h"
-int lbfi_main(char *path, struct Options *opts);
+
+int lbfi_main(struct Options *opts, struct Instruction *head);
 
 #endif

@@ -5,29 +5,13 @@
 #include "instructions.h"
 #include "lbfi.h"
 #include "parser.h"
+#include "prepare.h"
 #include "types.h"
 #include "util.h"
 
 int
-lbfi_main(char *path, struct Options *opts)
+lbfi_main(struct Options *opts, struct Instruction *head)
 {
-	/* TODO: allocate on demand */
-	char *program_data = (char*) malloc(128000 * sizeof(char));
-	if (program_data == NULL)
-		die("lbfi: error: cannot read brainfsck code:");
-
-	/* copy file data onto buffer */
-	usize i = 0;
-	for (int c = 0; (c = fgetc(stdin)) != EOF && i < 128000; ++i)
-		program_data[i] = c;
-	program_data[i + 1] = '\0';
-
-	struct Instruction *head = malloc(sizeof(struct Instruction));
-	if (head == NULL)
-		die("lbfi: error: cannot allocate memory:");
-	parse(opts, program_data, head);
-
-	/* TODO: optimizations */
 	/* execute instructions */
 	struct Tape *tape = malloc(1 * sizeof(struct Tape));
 	if (tape == NULL)

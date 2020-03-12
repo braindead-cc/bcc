@@ -10,8 +10,10 @@
 #include <unistd.h>
 
 #include "bool.h"
+#include "instructions.h"
 #include "lbf.h"
 #include "lbfi.h"
+#include "prepare.h"
 #include "util.h"
 
 int
@@ -22,7 +24,6 @@ main(int argc, char **argv)
 	--argc;
 	++argv;
 
-	char *path = NULL;           /* input file */
 	struct Options *opts = malloc(1 * sizeof(struct Options));
 
 	/* set default options */
@@ -49,7 +50,7 @@ main(int argc, char **argv)
 
 	/* parse arguments */
 	isize opt = 0;
-	while ((opt = getopt(argc, argv, "dvb:f:W:i:")) != -1) {
+	while ((opt = getopt(argc, argv, "dvb:f:W:")) != -1) {
 		switch (opt) {
 		case 'd':
 			opts->debug = TRUE;
@@ -133,9 +134,6 @@ main(int argc, char **argv)
 			else
 				die("lbf: error: '%s': invalid argument to -W.", optarg);
 			break;
-		case 'i':
-			path = optarg;
-			break;
 		default:
 			die("lbf: error: invalid argument.");
 			break;
@@ -170,5 +168,9 @@ main(int argc, char **argv)
 		debug("fopt_initial_tape_size = %lli", opts->fopt_initial_tape_size);
 	}
 
-	return lbfi_main(path, opts);
+	struct Instruction *head = malloc(sizeof(struct Instruction));
+	if (head == NULL)
+		die("lbf: error: cannot allocate memory:");
+	prepare(opts, head);
+	lbfi_main(opts, head);
 }

@@ -8,7 +8,7 @@
 /* compiler backends */
 enum bparams {
 	BOPT_C,      /* C backend */
-	BOPT_SHELL,  /* POSIX sh backend */
+	BOPT_ARM,    /* ARM assembly backend */
 	BOPT_LLVM,   /* LLVM backend */
 	BOPT_RUST,   /* Rust backend */
 	BOPT_V,      /* V backend */

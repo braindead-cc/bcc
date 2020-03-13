@@ -64,9 +64,9 @@ main(int argc, char **argv)
 			case 'c':
 				opts->backend = BOPT_C;
 				break;
-			case 'S':
-			case 's':
-				opts->backend = BOPT_SHELL;
+			case 'A':
+			case 'a':
+				opts->backend = BOPT_ARM;
 				break;
 			case 'L':
 			case 'l':

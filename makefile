@@ -37,7 +37,7 @@ all: debug
 debug: CFLAGS_OPT := -O0 -ggdb
 debug: $(BIN)
 
-release: CFLAGS_OPT := -O3
+release: CFLAGS_OPT := -O3 -march=native
 release: LDFLAGS_OPT := -s
 release: $(BIN)
 

@@ -12,9 +12,6 @@
 #include "utf.h"
 #include "util.h"
 
-static u32 cell_max = 0;
-static u32 cell_min = 0;
-
 void
 bf_init(struct Options *opts, struct Tape *tape)
 {
@@ -86,13 +83,7 @@ bf_read_stdin(struct Tape *tape)
 void
 bf_print(struct Tape *tape, FILE *f)
 {
-	if (tape->cells[tape->pointer] < 256) {
-		fputc(tape->cells[tape->pointer], f);
-	} else {
-		char buf[runelen((Rune) tape->cells[tape->pointer])];
-		runetochar(&buf, (Rune*) &tape->cells[tape->pointer]);
-		fprintf(f, "%s", (char*) &buf);
-	}
+	fputc(tape->cells[tape->pointer], f);
 }
 
 void
@@ -118,10 +109,12 @@ bf_print_debug(struct Tape *tape)
 	}
 }
 
+#pragma GCC diagnostic ignored "-Wpointer-arith"
+#pragma GCC diagnostic push
 void
 bf_scan_l(struct Tape *tape)
 {
-	tape->pointer -= (i32) ((void *) &tape->cells[tape->pointer]
+	tape->pointer -= (i32) ((void*) &tape->cells[tape->pointer]
 			- memrchr(tape->cells, 0, tape->cells[tape->pointer + 1]));
 }
 
@@ -131,6 +124,7 @@ bf_scan_r(struct Tape *tape)
 	tape->pointer += (i32) (memchr(&tape->cells[tape->pointer], 0, tape->tp_size)
 			- (void *)(&tape->cells[tape->pointer]));
 }
+#pragma GCC diagnostic pop
 
 void
 bf_suicide(struct Tape *tape)

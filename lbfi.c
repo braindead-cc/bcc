@@ -25,7 +25,9 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 	if (opts->debug) debug("tape size = %lld", tape->tp_size);
 
 	struct Instruction *cur = head;
-	for (usize depth = 0; cur->next != NULL; cur = cur->next) {
+	for (usize i = 0, depth = 0; cur->next != NULL; cur = cur->next, ++i) {
+		if (opts->debug)
+			debug("on command %d", i);
 		switch (cur->command) {
 		case '*':
 			tape->cells[tape->pointer] = 0;
@@ -71,9 +73,11 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case '[':
 			if (tape->cells[tape->pointer] == 0) {
 				cur = cur->next;
+				++i;
 				depth = 1;
 				while (depth > 0) {
 					cur = cur->next;
+					++i;
 					if (cur->command == '[')
 						++depth;
 					else if (cur->command == ']')
@@ -84,15 +88,18 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case ']':
 			if (tape->cells[tape->pointer] != 0) {
 				cur = cur->prev;
+				--i;
 				depth = 1;
 				while (depth > 0) {
 					cur = cur->prev;
+					--i;
 					if (cur->command == '[')
 						--depth;
 					else if (cur->command == ']')
 						++depth;
 				}
 				cur = cur->prev;
+				--i;
 			}
 			break;
 		case ',':;

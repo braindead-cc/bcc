@@ -19,33 +19,40 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 
 	for (usize i = 0; i < len; ++i) {
 		if (opts->verbose)
-			fprintf(stderr, "\rparsing command %d / %d... ", i, len);
+			fprintf(stderr, "\rparsing char %d / %d... ", i, len);
 		program_data[i] == '\n' ? ++line : ++column;
 
-		usize command;
+		usize command = 0;
 
 		switch (program_data[i]) {
-		case '*':
 		case '+':
 		case '-':
 		case '[':
 		case ']':
-		case '^':
 		case '<':
 		case '>':
 		case ',':
 		case '.':
-		case '&':
+			command = program_data[i];
+			break;
 		case '#':
+			if (opts->fopt_enable_dbg_command)
+				command = program_data[i];
+			break;
+		case '*':
+		case '^':
+		case '&':
 		case '{':
 		case '}':
 		case '@':
-			command = program_data[i];
+			if (opts->fopt_enable_lbf_std)
+				command = program_data[i];
 			break;
 		default:
-			continue;
 			break;
 		}
+
+		if (command == 0) continue;
 
 		struct Instruction *inst = malloc(sizeof(struct Instruction));
 		inst->command = command;
@@ -57,6 +64,8 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 
 		last = inst;
 	}
+
+	last->next = NULL;
 
 	if (opts->verbose) fprintf(stderr, "done \n");
 }

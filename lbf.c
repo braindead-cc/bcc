@@ -12,6 +12,7 @@
 #include "bool.h"
 #include "instructions.h"
 #include "lbf.h"
+#include "lbfc.h"
 #include "lbfi.h"
 #include "prepare.h"
 #include "util.h"
@@ -172,5 +173,8 @@ main(int argc, char **argv)
 	if (head == NULL)
 		die("lbf: error: cannot allocate memory:");
 	prepare(opts, head);
-	lbfi_main(opts, head);
+	if (!strcmp(argv[0], "lbfi"))
+		lbfi_main(opts, head);
+	else if (!strcmp(argv[0], "lbfc"))
+		lbfc_main(opts, head);
 }

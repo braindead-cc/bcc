@@ -13,7 +13,8 @@ PREFIX  = /usr/local
 VERSION = \"0.1.0\"
 
 BIN     = lbf
-SRC     = exec.c prepare.c lbf.c lbfi.c parser.c util.c
+SRC     = util.c exec.c emitc.c parser.c prepare.c \
+	  lbfi.c lbfc.c lbf.c
 OBJ     = $(SRC:.c=.o)
 LIBUTF  = libutf/lib/libutf.a
 

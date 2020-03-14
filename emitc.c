@@ -45,7 +45,7 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("m=(i*)malloc(%d*sizeof(i));", 100000);
 	printf("if(!m){puts(\"err: cannot allocate mem.\");exit(1);}");
 
-	for (struct Instruction *c = head; c->next != NULL; c = c->next) {
+	for (struct Instruction *c = head; c != NULL; c = c->next) {
 		switch (c->command) {
 		case '*':
 			printf("m[p]=0;");

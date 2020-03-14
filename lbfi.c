@@ -25,7 +25,7 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 	if (opts->debug) debug("tape size = %lld", tape->tp_size);
 
 	struct Instruction *cur = head;
-	for (usize i = 0, depth = 0; cur->next != NULL; cur = cur->next, ++i) {
+	for (usize i = 0, depth = 0; cur != NULL; cur = cur->next, ++i) {
 		if (opts->debug)
 			debug("on command %d", i);
 		switch (cur->command) {

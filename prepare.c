@@ -9,6 +9,7 @@
 
 #include "instructions.h"
 #include "lbf.h"
+#include "opt-squash.h"
 #include "parser.h"
 #include "prepare.h"
 #include "util.h"
@@ -29,8 +30,8 @@ prepare(struct Options *opts, struct Instruction *head)
 
 	parse(opts, program_data, head);
 
-	/* TODO: optimize code */
-	/* TODO: lint code */
+	if (opts->fopt_enable_command_squashing)
+		optimize_squash(head);
 
 	free(program_data);
 	return 0;

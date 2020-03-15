@@ -5,6 +5,7 @@
 #include "instructions.h"
 #include "lbf.h"
 #include "parser.h"
+#include "status.h"
 #include "util.h"
 
 void
@@ -15,11 +16,12 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 	usize line = 0;
 	usize column = 0;
 
-	struct Instruction *last = program;
+	if (opts->verbose) status_init("parsing program");
 
+	struct Instruction *last = program;
 	for (usize i = 0; i < len; ++i) {
 		if (opts->verbose)
-			fprintf(stderr, "\rparsing char %d / %d... ", i, len);
+			status_update("parsing program", (i / len) * 100);
 		program_data[i] == '\n' ? ++line : ++column;
 
 		usize command = 0;

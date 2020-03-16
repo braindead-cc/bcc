@@ -29,7 +29,9 @@ prepare(struct Options *opts, struct Instruction *head)
 		status_init("reading program");
 	usize i = 0;
 	for (int c = 0; (c = fgetc(stdin)) != EOF; ++i) {
-		if (opts->verbose)
+		/* printing info too often will
+		 * slow down reading significantly */
+		if (opts->verbose && !(c % 128))
 			status_update("reading program", c, STATUS_UNKNOWN);
 		program_data[i] = c;
 	}

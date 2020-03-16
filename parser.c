@@ -21,7 +21,7 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 	struct Instruction *last = program;
 	for (usize i = 0; i < len; ++i) {
 		if (opts->verbose)
-			status_update("parsing program", (i / len) * 100);
+			status_update("parsing program", i, (i * 100) / len);
 		program_data[i] == '\n' ? ++line : ++column;
 
 		usize command = 0;
@@ -69,5 +69,5 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 
 	last->next = NULL;
 
-	if (opts->verbose) fprintf(stderr, "done \n");
+	if (opts->verbose) status_complete("parsing program");
 }

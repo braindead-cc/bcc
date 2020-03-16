@@ -12,6 +12,7 @@
 #include "opt-squash.h"
 #include "parser.h"
 #include "prepare.h"
+#include "status.h"
 #include "util.h"
 
 usize
@@ -23,10 +24,15 @@ prepare(struct Options *opts, struct Instruction *head)
 		die("lbf: error: cannot read brainfsck code:");
 
 	/* cpy file data onto buffer */
+	status_init("reading program");
 	usize i = 0;
-	for (int c = 0; (c = fgetc(stdin)) != EOF; ++i)
+	for (int c = 0; (c = fgetc(stdin)) != EOF; ++i) {
+		if (opts->verbose)
+			status_update("reading program", c, STATUS_UNKNOWN);
 		program_data[i] = c;
+	}
 	program_data[i + 1] = '\0';
+	status_complete("reading program");
 
 	parse(opts, program_data, head);
 

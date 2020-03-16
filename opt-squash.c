@@ -8,11 +8,16 @@
 
 #include "instructions.h"
 #include "opt-squash.h"
+#include "status.h"
 
 void
 optimize_squash(struct Instruction *head)
 {
-	for (struct Instruction *c = head; c != NULL; c = c->next) {
+	usize i = 0;
+	status_init("optimizing multiple commands");
+	for (struct Instruction *c = head; c != NULL; c = c->next, ++i) {
+		status_update("optimizing multiple commands",
+				i, STATUS_UNKNOWN);
 		if (c->next != NULL && c->command == c->next->command) {
 			struct Instruction *tmp = c;
 			c = c->next;
@@ -29,4 +34,5 @@ optimize_squash(struct Instruction *head)
 			tmp->repeat += repeated;
 		}
 	}
+	status_complete("optimize multiple commands");
 }

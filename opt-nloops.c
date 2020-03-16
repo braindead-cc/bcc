@@ -23,7 +23,8 @@ optimize_nloops(struct Options *opts, struct Instruction *head)
 			status_update("optimizing nullification loops",
 					i, STATUS_UNKNOWN);
 		if (c->command == '['
-				&& c->next->command == '-'
+				&& (c->next->command == '-'
+					|| c->next->command == '+')
 				&& c->next->next->command == ']'
 		) {
 			c->command = '*';

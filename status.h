@@ -10,7 +10,7 @@
 #define STATUS_UNKNOWN 101
 
 void status_init(char *text);
-void status_update(char *text, usize percentage);
+void status_update(char *text, usize ctr, usize percentage);
 void status_complete(char *text);
 
 #endif

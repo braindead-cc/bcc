@@ -32,7 +32,7 @@ ttywidth(void)
 	return (u16) 80;
 #else
 	struct winsize w;
-	ioctl(0, TIOCGWINSZ, &w);
+	ioctl(2, TIOCGWINSZ, &w);
 
 	return w.ws_col;
 #endif
@@ -45,7 +45,7 @@ ttyheight(void)
 	return (u16) 24;
 #else
 	struct winsize w;
-	ioctl(0, TIOCGWINSZ, &w);
+	ioctl(2, TIOCGWINSZ, &w);
 
 	return w.ws_row;
 #endif

@@ -9,6 +9,7 @@
 
 #include "instructions.h"
 #include "lbf.h"
+#include "opt-nloops.h"
 #include "opt-squash.h"
 #include "parser.h"
 #include "prepare.h"
@@ -24,7 +25,8 @@ prepare(struct Options *opts, struct Instruction *head)
 		die("lbf: error: cannot read brainfsck code:");
 
 	/* cpy file data onto buffer */
-	status_init("reading program");
+	if (opts->verbose)
+		status_init("reading program");
 	usize i = 0;
 	for (int c = 0; (c = fgetc(stdin)) != EOF; ++i) {
 		if (opts->verbose)
@@ -32,12 +34,16 @@ prepare(struct Options *opts, struct Instruction *head)
 		program_data[i] = c;
 	}
 	program_data[i + 1] = '\0';
-	status_complete("reading program");
+	if (opts->verbose)
+		status_complete("reading program");
 
 	parse(opts, program_data, head);
 
 	if (opts->fopt_enable_command_squashing)
-		optimize_squash(head);
+		optimize_squash(opts, head);
+
+	if (opts->fopt_enable_nullify_command)
+		optimize_nloops(opts, head);
 
 	free(program_data);
 	return 0;

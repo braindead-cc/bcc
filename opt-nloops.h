@@ -4,6 +4,6 @@
 #include "instructions.h"
 #include "lbf.h"
 
-void optimize_squash(struct Options *opts, struct Instruction *head);
+void optimize_nloops(struct Options *opts, struct Instruction *head);
 
 #endif

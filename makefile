@@ -10,7 +10,8 @@ CMD     = @
 DESTDIR =
 PREFIX  = /usr/local
 
-VERSION = \"0.1.0\"
+DATE    = $(shell date '+%Y-%m-%d %H%M')
+VERSION = 0.1.0
 
 BIN     = lbf
 SRC     = util.c terminfo.c status.c emitc.c parser.c opt-squash.c \
@@ -21,8 +22,10 @@ LIBUTF  = libutf/lib/libutf.a
 WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
 	  -Wno-unused-value -Wno-trigraphs
+
 INC     = -I. -Iccommon/ -Ilibutf/include/
-DEF     = -DVERSION=$(VERSION) -D_GNU_SOURCE #-DSPINNER_FANCY
+DEF     = -DVERSION=\"$(VERSION)\" -DBUILDDATE="\"$(DATE)\"" \
+	  -D_GNU_SOURCE -DSPINNER_FANCY
 
 CC      = gcc 
 LD      = lld

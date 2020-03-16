@@ -5,6 +5,7 @@
  * See the LICENSE.md file for more information.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -21,9 +22,6 @@ int
 main(int argc, char **argv)
 {
 	if (argc < 2) die("lbf: error: nothing to do, exiting.");
-
-	--argc;
-	++argv;
 
 	struct Options *opts = malloc(1 * sizeof(struct Options));
 
@@ -51,8 +49,17 @@ main(int argc, char **argv)
 
 	/* parse arguments */
 	isize opt = 0;
-	while ((opt = getopt(argc, argv, "dvb:f:W:")) != -1) {
+	while ((opt = getopt(argc, argv, "Vhdvb:f:W:")) != -1) {
 		switch (opt) {
+		case 'V':
+			printf("lbf v%s (build %s)\n", VERSION, BUILDDATE);
+			return 0;
+			break;
+		case 'h':
+			printf("usage: lbf [MODE] [ARGS] < source.bf\n");
+			printf("modes: lbfi, lbfc\n");
+			return 0;
+			break;
 		case 'd':
 			opts->debug = TRUE;
 			break;
@@ -173,8 +180,8 @@ main(int argc, char **argv)
 	if (head == NULL)
 		die("lbf: error: cannot allocate memory:");
 	prepare(opts, head);
-	if (!strcmp(argv[0], "lbfi"))
+	if (!strcmp(argv[1], "lbfi"))
 		lbfi_main(opts, head);
-	else if (!strcmp(argv[0], "lbfc"))
+	else if (!strcmp(argv[1], "lbfc"))
 		lbfc_main(opts, head);
 }

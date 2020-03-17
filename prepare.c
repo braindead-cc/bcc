@@ -49,6 +49,19 @@ prepare(struct Options *opts, struct Instruction *head)
 	if (opts->fopt_enable_scan_command)
 		optimize_sloops(opts, head);
 
+	if (opts->debug) {
+		fprintf(stderr, "lbf: debug: instructions after optimizing: ");
+		for (struct Instruction *i = head->next; i != NULL;
+				i = i->next) {
+			if (i->repeat > 1)
+				fprintf(stderr, "%d%c", i->repeat,
+						(char) i->command);
+			else
+				fprintf(stderr, "%c", i->command);
+		}
+		fputc('\n', stderr);
+	}
+
 	free(program_data);
 	return 0;
 }

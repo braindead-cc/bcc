@@ -27,7 +27,9 @@ optimize_sloops(struct Options *opts, struct Instruction *head)
 					|| c->next->command == '>')
 				&& c->next->next->command == ']'
 		) {
-			c->command = c->command == '<' ? '{' : '}' ;
+			if (c->next->command == '<') c->command = '{';
+			else if (c->next->command == '>') c->command = '}';
+
 			if (c->next->next->next != NULL) {
 				struct Instruction *tmp = c->next->next->next;
 				free(c->next->next);

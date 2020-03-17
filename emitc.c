@@ -36,6 +36,7 @@ emitc(struct Options *opts, struct Instruction *head)
 	}
 
 	/* print boilerplate (deliberately obfuscated) */
+	printf("#define _GNU_SOURCE\n");
 	printf("#include <stdio.h>\n");
 	printf("#include <stdlib.h>\n");
 	printf("#include <string.h>\n");

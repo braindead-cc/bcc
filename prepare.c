@@ -11,6 +11,7 @@
 #include "lbf.h"
 #include "opt-nloops.h"
 #include "opt-squash.h"
+#include "opt-sloops.h"
 #include "parser.h"
 #include "prepare.h"
 #include "status.h"
@@ -43,9 +44,10 @@ prepare(struct Options *opts, struct Instruction *head)
 
 	if (opts->fopt_enable_command_squashing)
 		optimize_squash(opts, head);
-
 	if (opts->fopt_enable_nullify_command)
 		optimize_nloops(opts, head);
+	if (opts->fopt_enable_scan_command)
+		optimize_sloops(opts, head);
 
 	free(program_data);
 	return 0;

@@ -48,6 +48,7 @@ main(int argc, char **argv)
 
 
 	/* parse arguments */
+	++argv, --argc;
 	isize opt = 0;
 	while ((opt = getopt(argc, argv, "Vhdvb:f:W:")) != -1) {
 		switch (opt) {
@@ -105,7 +106,7 @@ main(int argc, char **argv)
 				opts->fopt_enable_lbf_std = TRUE;
 			} else if (!strcmp(optarg, "optimize-multiple-commands")) {
 				opts->fopt_enable_command_squashing = TRUE;
-			} else if (!strcmp(optarg, "optimize-scan-commands")) {
+			} else if (!strcmp(optarg, "optimize-scan-loops")) {
 				opts->fopt_enable_scan_command = TRUE;
 			} else if (!strcmp(optarg, "optimize-nullify-loops")) {
 				opts->fopt_enable_nullify_command = TRUE;
@@ -180,8 +181,9 @@ main(int argc, char **argv)
 	if (head == NULL)
 		die("lbf: error: cannot allocate memory:");
 	prepare(opts, head);
-	if (!strcmp(argv[1], "lbfi"))
+
+	if (!strcmp(argv[0], "lbfi"))
 		lbfi_main(opts, head);
-	else if (!strcmp(argv[1], "lbfc"))
+	else if (!strcmp(argv[0], "lbfc"))
 		lbfc_main(opts, head);
 }

@@ -1,5 +1,5 @@
-#ifndef OPT_SQUASH_H
-#define OPT_SQUASH_H
+#ifndef OPT_NLOOPS_H
+#define OPT_NLOOPS_H
 
 #include "instructions.h"
 #include "lbf.h"

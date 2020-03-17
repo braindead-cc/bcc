@@ -41,7 +41,7 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("#include <string.h>\n");
 	printf("typedef %s i;", (char*) &memtype);
 	printf("i *m,t,p=0;int c=0;unsigned long long s;");
-	printf("main(){");
+	printf("int main(){");
 	printf("m=(i*)malloc(%d*sizeof(i));", 100000);
 	printf("if(!m){puts(\"err: cannot allocate mem.\");exit(1);}");
 
@@ -96,6 +96,5 @@ emitc(struct Options *opts, struct Instruction *head)
 		}
 	}
 
-	/* explicitely exit to free memory */
-	printf("free(m);exit(0);\n}\n");
+	printf("free(m);exit(0);}\n");
 }

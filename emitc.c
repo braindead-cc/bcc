@@ -81,10 +81,10 @@ emitc(struct Options *opts, struct Instruction *head)
 			printf("fputc(m[p],stderr);");
 			break;
 		case '{':
-			printf("p-=(i)((void*)&m[p]-memrchr(m,0,m[p]+1));}");
+			printf("p-=(i)((void*)&m[p]-memrchr(m,0,m[p]+1));");
 			break;
 		case '}':
-			printf("p+=(i)(memchr(&m[p],0,s)-(void*)(&m[p]));}");
+			printf("p+=(i)(memchr(&m[p],0,s)-(void*)(&m[p]));");
 			break;
 		case '@':
 			printf("free(m);exit(0);");

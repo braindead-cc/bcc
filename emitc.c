@@ -39,56 +39,58 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("#define _GNU_SOURCE\n");
 	printf("#include <stdio.h>\n");
 	printf("#include <stdlib.h>\n");
-	printf("#include <string.h>\n");
-	printf("typedef %s i;", (char*) &memtype);
-	printf("i *m,t,p=0;int c=0;unsigned long long s;");
-	printf("int main(){");
-	printf("m=(i*)malloc(%d*sizeof(i));", 100000);
-	printf("if(!m){puts(\"err: cannot allocate mem.\");exit(1);}");
+	printf("#include <string.h>\n\n");
+	printf("typedef %s i;\n\n", (char*) &memtype);
+	printf("i *m, t, p = 0;\nint c = 0;\nunsigned long long s;\n");
+	printf("int\nmain(void)\n{\n");
+	printf("m = (i*) malloc(%d * sizeof(i));\n", 100000);
+	printf("if (!m) {\nputs(\"err: cannot allocate mem.\");\nexit(1);\n}\n");
 
 	for (struct Instruction *c = head; c != NULL; c = c->next) {
 		switch (c->command) {
 		case '*':
-			printf("m[p]=0;");
+			printf("m[p] = 0;\n");
 			break;
 		case '+':
-			printf("m[p]+=%d;",c->repeat);
+			printf("m[p] += %i;\n",c->repeat);
 			break;
 		case '-':
-			printf("m[p]-=%d;",c->repeat);
+			printf("m[p] -= %i;\n",c->repeat);
 			break;
 		case '[':
-			printf("while (m[p]) {");
+			printf("while (m[p]) {\n");
 			break;
 		case ']':
-			printf("}");
+			printf("}\n");
 			break;
 		case '^':
-			printf("p=0;");
+			printf("p = 0;\n");
 			break;
 		case '<':
-			printf("p-=%d;",c->repeat);
+			/* TODO: ptr wrapping */
+			printf("p -= %i;\n",c->repeat);
 			break;
 		case '>':
-			printf("p+=%d;",c->repeat);
+			/* TODO: dynamic allocation */
+			printf("p += %i;\n",c->repeat);
 			break;
 		case ',':
-			printf("c=fgetc(stdin);m[p]=c==EOF?c:0;");
+			printf("c=fgetc(stdin);m[p]=c==EOF?c:0;\n");
 			break;
 		case '.':
-			printf("fputc(m[p],stdout);");
+			printf("fputc(m[p],stdout);\n");
 			break;
 		case '&':
-			printf("fputc(m[p],stderr);");
+			printf("fputc(m[p],stderr);\n");
 			break;
 		case '{':
-			printf("p-=(i)((void*)&m[p]-memrchr(m,0,m[p]+1));");
+			printf("p-=(i)((void*)&m[p]-memrchr(m,0,m[p]+1));\n");
 			break;
 		case '}':
-			printf("p+=(i)(memchr(&m[p],0,s)-(void*)(&m[p]));");
+			printf("p+=(i)(memchr(&m[p],0,s)-(void*)(&m[p]));\n");
 			break;
 		case '@':
-			printf("free(m);exit(0);");
+			printf("free(m);exit(0);\n");
 			break;
 		case '#':
 			/* deliberately not implemented */
@@ -97,5 +99,5 @@ emitc(struct Options *opts, struct Instruction *head)
 		}
 	}
 
-	printf("free(m);exit(0);}\n");
+	printf("free(m);\nexit(0);\n}\n");
 }

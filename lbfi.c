@@ -24,39 +24,34 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 	tape->pointer = 0;
 	if (opts->debug) debug("tape size = %lld", tape->tp_size);
 
-	struct Instruction *cur = head;
+	struct Instruction *cur = head->next;
 	for (usize i = 0, depth = 0; cur != NULL; cur = cur->next, ++i) {
-		if (opts->debug)
-			debug("on command %d", i);
 		switch (cur->command) {
 		case '*':
 			tape->cells[tape->pointer] = 0;
 			break;
 		case '+':
-			/* TODO: custom cell size, signed cells */
+			/* TODO: custom cell size */
 			tape->cells[tape->pointer] += cur->repeat;
 			break;
 		case '-':
+			/* TODO: custom cell size */
 			tape->cells[tape->pointer] -= cur->repeat;
 			break;
 		case '^':
 			tape->pointer = 0;
 			break;
 		case '<':
-			{
-			u8 tmp = tape->pointer - cur->repeat;
-			if (tmp > tape->pointer) {
-				/* ignore */
-				/* TODO: implement -Wtape-overflow */
-			} else {
+			/* check for overflow */
+			if ((tape->pointer - cur->repeat) > tape->pointer)
+				; /* ignore */
+			else
 				tape->pointer -= cur->repeat;
-			}
-			}
 			break;
 		case '>':
-			{
-			u8 tmp = tape->pointer + cur->repeat;
-			if (tmp >= tape->tp_size) {
+			tape->pointer += cur->repeat;
+			
+			if (tape->pointer >= tape->tp_size) {
 				tape->tp_size *= 2;
 				if (opts->debug)
 					debug("reallocating %lld for tape",
@@ -65,15 +60,13 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 						tape->tp_size);
 				if (tape->cells == NULL)
 					die("lbf: error: cannot allocate memory for tape:");
-			} else {
-				tape->pointer += cur->repeat;
-			}
+				for (usize z = tape->tp_size / 2;
+						z < tape->tp_size;++z,
+						tape->cells[z] = 0);
 			}
 			break;
 		case '[':
 			if (tape->cells[tape->pointer] == 0) {
-				cur = cur->next;
-				++i;
 				depth = 1;
 				while (depth > 0) {
 					cur = cur->next;
@@ -87,8 +80,6 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 			break;
 		case ']':
 			if (tape->cells[tape->pointer] != 0) {
-				cur = cur->prev;
-				--i;
 				depth = 1;
 				while (depth > 0) {
 					cur = cur->prev;
@@ -98,13 +89,12 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 					else if (cur->command == ']')
 						++depth;
 				}
-				cur = cur->prev;
-				--i;
 			}
 			break;
-		case ',':;
+		case ',':
+			; // empty statement
 			int c = fgetc(stdin);
-			tape->cells[tape->pointer] = c == EOF ? c : 0;
+			tape->cells[tape->pointer] = c == EOF ? 0 : c;
 			break;
 		case '.':
 			fputc(tape->cells[tape->pointer], stdout);

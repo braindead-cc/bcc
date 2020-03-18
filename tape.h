@@ -8,7 +8,7 @@ struct Tape {
 	u8 *cells;
 
 	/* cell pointer */
-	u8 pointer;
+	u64 pointer;
 };
 
 #endif

@@ -22,28 +22,21 @@ proc hr { } {
 # output newline
 puts ""
 
-# interpeter tests
-set i_tests [split [glob test_i_*] " "]
+# outputs
+set results [split [glob *-result.txt] " "]
 
 puts "\033\[33m->\033\[0m performing tests on interpeter..."
 hr
 
-foreach test $i_tests {
-	# each test contains a test function,
-	# which we then run.
-	source $test
-	
-	# test name
-	set t_name [string map {test_i_ ""} $test]
-	set t_name [string map {.tcl    ""} $t_name]
-
-	# test procedure name
-	set p_name [string map {.tcl    ""} $test]
+foreach r $results {
+	set name [string map {-result.txt ""} $r]
 
 	set status ""
 
 	for {set o 0} {$o <= $maxoptlevel} {incr o} {
-		if {[$p_name $o]} {
+		set output [exec ../lbf lbfi < ../samples/$name.bf -O$o]
+
+		if {$output == [exec cat $r]} {
 			incr passed
 			set status "\033\[32m✔\033\[0m"
 		} else {
@@ -51,7 +44,7 @@ foreach test $i_tests {
 			set status "\033\[31m✖\033\[0m"
 		}
 
-		puts "$status │ $t_name (optimization: $o)"
+		puts "$status │ $name (optimization: $o)"
 	}
 }
 

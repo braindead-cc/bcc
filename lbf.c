@@ -126,7 +126,20 @@ main(int argc, char **argv)
 			}
 			break;
 		case 'O':
-			/* TODO: implement */
+			switch (optarg[0]) {
+			case '2':
+				opts->fopt_enable_nullify_command = TRUE;
+				opts->fopt_enable_scan_command = TRUE;
+				/* fallthrough */
+			case '1':
+				opts->fopt_enable_command_squashing = TRUE;
+				/* fallthrough */
+			case '0':
+				break;
+			default:
+				die("lbf: error: '%c': invalid optimization level.",
+						optarg[0]);
+			}
 			break;
 		case 'W':
 			if (!strcmp(optarg, "error"))

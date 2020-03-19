@@ -50,7 +50,7 @@ main(int argc, char **argv)
 	/* parse arguments */
 	++argv, --argc;
 	isize opt = 0;
-	while ((opt = getopt(argc, argv, "Vhdvb:f:W:")) != -1) {
+	while ((opt = getopt(argc, argv, "Vhdvb:f:O:W:")) != -1) {
 		switch (opt) {
 		case 'V':
 			printf("lbf v%s (build %s)\n", VERSION, BUILDDATE);
@@ -124,6 +124,9 @@ main(int argc, char **argv)
 			} else {
 				die("lbf: error: '%s': invalid argument to -f.", optarg);
 			}
+			break;
+		case 'O':
+			/* TODO: implement */
 			break;
 		case 'W':
 			if (!strcmp(optarg, "error"))

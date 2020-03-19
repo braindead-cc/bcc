@@ -32,7 +32,6 @@ struct Options {
 
 	/* warnings */
 	bool wopt_error;         /* treat all warnings as error */
-	bool wopt_comments;      /* warn on encountering comments */
 	bool wopt_long_lines;    /* warn on lines longer than 80 */
 	bool wopt_dead_code;     /* warn on dead code */
 	bool wopt_ignore_dbg;    /* warn on ignored # command */
@@ -49,6 +48,12 @@ struct Options {
 
 	/* initial amount of memory allocated for tape */
 	u64 fopt_initial_tape_size;
+
+	/* maximum amount of memory chars (0 for dynamic) */
+	u64 fopt_maximum_tape_size;
+
+	/* comment char(s) */
+	char *fopt_comment_str;
 };
 
 #endif

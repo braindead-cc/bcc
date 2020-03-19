@@ -35,7 +35,6 @@ main(int argc, char **argv)
 	opts->fopt_enable_scan_command      = FALSE;
 	opts->fopt_enable_command_squashing = FALSE;
 	opts->wopt_error                    = FALSE;
-	opts->wopt_comments                 = FALSE;
 	opts->wopt_long_lines               = FALSE;
 	opts->wopt_dead_code                = FALSE;
 	opts->wopt_ignore_dbg               = FALSE;
@@ -44,7 +43,9 @@ main(int argc, char **argv)
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
 	opts->fopt_debug_context            = 32;
+	opts->fopt_maximum_tape_size        = 0; /* dynamic */
 	opts->fopt_initial_tape_size        = 256;
+	opts->fopt_comment_str              = ";";
 
 
 	/* parse arguments */
@@ -144,8 +145,6 @@ main(int argc, char **argv)
 		case 'W':
 			if (!strcmp(optarg, "error"))
 				opts->wopt_error = TRUE;
-			else if (!strcmp(optarg, "comments"))
-				opts->wopt_comments = TRUE;
 			else if (!strcmp(optarg, "long-lines"))
 				opts->wopt_long_lines = TRUE;
 			else if (!strcmp(optarg, "dead-code"))
@@ -163,34 +162,6 @@ main(int argc, char **argv)
 			die("lbf: error: invalid argument.");
 			break;
 		}
-	}
-
-	/* print options */
-	if (opts->debug) {
-		debug("debug = %i", opts->debug);
-		debug("verbose = %i", opts->verbose);
-		/* TODO: print backend */
-		debug("fopt_enable_dbg_command = %i",
-				opts->fopt_enable_dbg_command);
-		debug("fopt_enable_lbf_std = %i",
-				opts->fopt_enable_lbf_std);
-		debug("fopt_enable_nullify_command = %i",
-				opts->fopt_enable_nullify_command);
-		debug("fopt_enable_scan_command = %i",
-				opts->fopt_enable_scan_command);
-		debug("fopt_enable_command_squashing = %i",
-				opts->fopt_enable_command_squashing);
-		debug("wopt_error = %i", opts->wopt_error);
-		debug("wopt_comments = %i", opts->wopt_comments);
-		debug("wopt_long_lines = %i", opts->wopt_long_lines);
-		debug("wopt_dead_code = %i", opts->wopt_dead_code);
-		debug("wopt_ignore_dbg = %i", opts->wopt_ignore_dbg);
-		debug("wopt_tape_overflow = %i", opts->wopt_tape_overflow);
-		debug("wopt_all = %i", opts->wopt_all);
-		debug("fopt_cell_size = %i", opts->fopt_cell_size);
-		debug("fopt_cell_signed = %i", opts->fopt_cell_signed);
-		debug("fopt_debug_context = %lli", opts->fopt_debug_context);
-		debug("fopt_initial_tape_size = %lli", opts->fopt_initial_tape_size);
 	}
 
 	struct Instruction *head = malloc(sizeof(struct Instruction));

@@ -37,6 +37,13 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 			++column;
 		}
 
+		if (program_data[i] == opts->fopt_comment_char) {
+			/* don't move i to newline, or that line
+			 * won't get counted */
+			while (program_data[i + 1] != '\n') ++i;
+			continue;
+		}
+
 		usize command = 0;
 
 		switch (program_data[i]) {

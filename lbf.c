@@ -41,7 +41,7 @@ main(int argc, char **argv)
 	opts->fopt_cell_signed              = FALSE;
 	opts->fopt_debug_context            = 32;
 	opts->fopt_maximum_tape_size        = 0; /* dynamic */
-	opts->fopt_initial_tape_size        = 256;
+	opts->fopt_initial_tape_size        = 16;
 	opts->fopt_comment_str              = ";";
 
 

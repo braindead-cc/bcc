@@ -1,3 +1,5 @@
+/* TODO: cleanup this crazy mess */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,12 +54,23 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 			command = program_data[i];
 			break;
 		case '#':
-			if (opts->fopt_enable_dbg_command)
+			if (opts->fopt_enable_dbg_command) {
+				/* ignore shebang */
+				if (program_data[i + 1] == '!') {
+					if (opts->wopt_ignore_dbg)
+						warn(opts, line,
+							column, W_IGNORE_DBG);
+					break;
+				}
+
 				command = program_data[i];
+			}
 			break;
 		case '*':
-			if (last->command == ']' || last->command == '*')
-				warn(opts, line, column, W_DEAD_CODE);
+			if (last->command == ']' || last->command == '*') {
+				if (opts->fopt_enable_lbf_std)
+					warn(opts, line, column, W_DEAD_CODE);
+			}
 			/* fallthrough */
 		case '^':
 		case '&':
@@ -71,6 +84,7 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 			break;
 		}
 
+		/* skip non-commands */
 		if (command == 0) continue;
 
 		struct Instruction *inst = malloc(sizeof(struct Instruction));

@@ -14,17 +14,17 @@ warn(struct Options *opts, usize line, usize column, usize warning)
 
 	switch (warning) {
 	case W_LONG_LINES:
-		if (!opts->wopt_long_lines && !opts->wopt_all) return;
+		if (!opts->wopt_long_lines) return;
 		msg = "this line is longer than 80 columns.";
 		wflag = "-Wlong-lines";
 		break;
 	case W_DEAD_CODE:
-		if (!opts->wopt_dead_code && !opts->wopt_all) return;
+		if (!opts->wopt_dead_code) return;
 		msg = "this statement is dead.";
 		wflag = "-Wdead-code";
 		break;
 	case W_IGNORE_DBG:
-		if (!opts->wopt_ignore_dbg && !opts->wopt_all) return;
+		if (!opts->wopt_ignore_dbg) return;
 		msg = "this debug statement is ignored.";
 		hint = "debug statements are ignored if a '!' follows it.";
 		wflag = "-Wignored-dbg";

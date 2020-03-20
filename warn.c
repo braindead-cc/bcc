@@ -20,7 +20,7 @@ warn(struct Options *opts, usize line, usize column, usize warning)
 		break;
 	case W_DEAD_CODE:
 		if (!opts->wopt_dead_code && !opts->wopt_all) return;
-		msg = "this loop is dead.";
+		msg = "this statement is dead.";
 		wflag = "-Wdead-code";
 		break;
 	case W_IGNORE_DBG:

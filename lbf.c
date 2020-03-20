@@ -34,7 +34,6 @@ main(int argc, char **argv)
 	opts->fopt_enable_nullify_command   = FALSE;
 	opts->fopt_enable_scan_command      = FALSE;
 	opts->fopt_enable_command_squashing = FALSE;
-	opts->wopt_error                    = FALSE;
 	opts->wopt_long_lines               = FALSE;
 	opts->wopt_dead_code                = FALSE;
 	opts->wopt_ignore_dbg               = FALSE;
@@ -142,9 +141,7 @@ main(int argc, char **argv)
 			}
 			break;
 		case 'W':
-			if (!strcmp(optarg, "error"))
-				opts->wopt_error = TRUE;
-			else if (!strcmp(optarg, "long-lines"))
+			if (!strcmp(optarg, "long-lines"))
 				opts->wopt_long_lines = TRUE;
 			else if (!strcmp(optarg, "dead-code"))
 				opts->wopt_dead_code = TRUE;

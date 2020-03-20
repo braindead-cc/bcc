@@ -7,6 +7,7 @@
 #include "parser.h"
 #include "status.h"
 #include "util.h"
+#include "warn.h"
 
 void
 parse(struct Options *opts, char *program_data, struct Instruction *program)
@@ -22,7 +23,17 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 	for (usize i = 0; i < len; ++i) {
 		if (opts->verbose)
 			status_update("parsing program", i, (i * 100) / len);
-		program_data[i] == '\n' ? ++line : ++column;
+
+		if (program_data[i] == '\n') {
+			++line;
+			/* -Wlong-lines */
+			if (column > 80)
+				warn(opts, line, column, W_LONG_LINES);
+			column = 0;
+			continue;
+		} else {
+			++column;
+		}
 
 		usize command = 0;
 
@@ -30,6 +41,9 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 		case '+':
 		case '-':
 		case '[':
+			if (last->command == ']' || last->command == '*')
+				warn(opts, line, column, W_DEAD_CODE);
+			/* fallthrough */
 		case ']':
 		case '<':
 		case '>':
@@ -42,6 +56,9 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 				command = program_data[i];
 			break;
 		case '*':
+			if (last->command == ']' || last->command == '*')
+				warn(opts, line, column, W_DEAD_CODE);
+			/* fallthrough */
 		case '^':
 		case '&':
 		case '{':

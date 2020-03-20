@@ -31,7 +31,6 @@ struct Options {
 	bool fopt_enable_command_squashing; /* +++ => 3+ */
 
 	/* warnings */
-	bool wopt_error;         /* treat all warnings as error */
 	bool wopt_long_lines;    /* warn on lines longer than 80 */
 	bool wopt_dead_code;     /* warn on dead code */
 	bool wopt_ignore_dbg;    /* warn on ignored # command */

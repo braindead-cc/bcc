@@ -113,12 +113,13 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 #pragma GCC diagnostic ignored "-Wpointer-arith"
 #pragma GCC diagnostic push
 		case '{':
-			tape->pointer -= (u8) ((void*) &tape->cells[tape->pointer]
-				- memrchr(tape->cells, 0, tape->cells[tape->pointer + 1]));
+			tape->pointer -= (u64) ((void*) (tape->cells + tape->pointer)
+				- memrchr(tape->cells, 0, tape->pointer + 1));
 			break;
 		case '}':
-			tape->pointer += (u8) (memchr(&tape->cells[tape->pointer], 0, tape->tp_size)
-				- (void*) (&tape->cells[tape->pointer]));
+			tape->pointer += (u64) (memchr(tape->cells + tape->pointer,
+					0, tape->tp_size)
+				- (void*) (tape->cells + tape->pointer));
 			break;
 #pragma GCC diagnostic pop
 		case '@':

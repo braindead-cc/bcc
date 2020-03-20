@@ -5,7 +5,7 @@ struct Tape {
 	/* number of cells */
 	u64 tp_size;
 
-	u8 *cells;
+	MEMTYPE *cells;
 
 	/* cell pointer */
 	u64 pointer;

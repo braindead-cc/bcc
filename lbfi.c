@@ -18,7 +18,7 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 	if (tape == NULL)
 		die("lbfi: error: cannot allocate memory for tape:");
 	tape->tp_size = opts->fopt_initial_tape_size;
-	tape->cells = calloc(tape->tp_size, sizeof(u8));
+	tape->cells = calloc(tape->tp_size, sizeof(MEMTYPE));
 	if (tape->cells == NULL)
 		die("lbfi: error: cannot allocate memory for tape:");
 	tape->pointer = 0;
@@ -97,7 +97,7 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 			tape->cells[tape->pointer] = c == EOF ? 0 : c;
 			break;
 		case '.':
-			fputc(tape->cells[tape->pointer], stdout);
+			fputc(tape->cells[tape->pointer] % 255, stdout);
 			break;
 		case '&':
 			fputc(tape->cells[tape->pointer], stderr);

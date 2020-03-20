@@ -17,17 +17,16 @@ BIN     = lbf
 SRC     = util.c terminfo.c status.c emitc.c warn.c parser.c opt-squash.c \
 	  opt-nloops.c opt-sloops.c prepare.c lbfi.c lbfc.c lbf.c
 OBJ     = $(SRC:.c=.o)
-LIBUTF  = libutf/lib/libutf.a
 
 WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
 	  -Wno-unused-value -Wno-trigraphs
 
 INC     = -I. -Iccommon/ -Ilibutf/include/
-DEF     = -DVERSION=\"$(VERSION)\" -DBUILDDATE="\"$(DATE)\"" \
-	  -D_GNU_SOURCE -DSPINNER_FANCY
+DEF     = -DVERSION=\"$(VERSION)\" -DBUILDDATE="\"$(DATE)\"" -D_GNU_SOURCE \
+	  -DSPINNER_FANCY -DMEMTYPE=u8
 
-CC      = gcc 
+CC      = gcc
 LD      = lld
 CFLAGS  = -std=c99 $(WARNING) $(INC) $(DEF)
 LDFLAGS = -fuse-ld=$(LD)
@@ -45,12 +44,9 @@ release: CFLAGS_OPT := -O3 -march=native
 release: LDFLAGS_OPT := -s
 release: $(BIN)
 
-$(BIN): $(OBJ) $(LIBUTF)
+$(BIN): $(OBJ)
 	@echo "  LD       $@"
 	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS) $(LDFLAGS_OPT)
-
-$(LIBUTF):
-	$(CMD)cd libutf && make
 
 $(BIN).1: $(BIN).scd
 	@echo "  SCDOC    $^"

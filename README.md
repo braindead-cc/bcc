@@ -39,10 +39,9 @@ Brainfsck.
 
 - *portable*: this toolchain is written in C, and as we all know, no platform
   is complete unless it has a fully-functional C compiler.
-- *fast to build*: The entire toolchain builds in less than a minute on
-  sub-optimal hardware. <sub>3</sub>
+- *fast to build*: The entire toolchain builds in less than a second. <sub>3</sub>
 - *small*: the toolchain is about 1,500 lines of code total (including the
-  Makefile and test script). The resulting binary is less than 45k.
+  Makefile and test script). The resulting binary is just 23k in size.
 
 <!-- TODO: add more marketing blurbs here -->
 
@@ -54,5 +53,5 @@ using. (I would recommend either `ttyp0` or `cozette`.)
 2: *except* the `libc`. If you want to remove that dependency as well, you
 can compile the generated C code with `-static`.
 
-3: on a Raspberry Pi Zero, running Void Linux `musl` with 512MiB memory.
-Compiled with the Clang compiler with flags to optimize for space (`-Os`).
+3: compiled with `gcc` with flags to optimize for space (`-Os -s`). The command used
+was `make WARNINGS= LD=bfd release`. See the `makefile` for more info.

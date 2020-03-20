@@ -41,7 +41,7 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("#include <stdlib.h>\n");
 	printf("#include <string.h>\n\n");
 	printf("typedef %s i;\n\n", (char*) &memtype);
-	printf("i *m, t, p = 0;\nint c = 0;\nunsigned long long s;\n");
+	printf("i *m, t;\nint c = 0;\nunsigned long long s, p = 0;\n");
 	printf("int\nmain(void)\n{\n");
 	printf("m = (i*) malloc(%d * sizeof(i));\n", 100000);
 	printf("if (!m) {\nputs(\"err: cannot allocate mem.\");\nexit(1);\n}\n");

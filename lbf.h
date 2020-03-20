@@ -35,7 +35,6 @@ struct Options {
 	bool wopt_long_lines;    /* warn on lines longer than 80 */
 	bool wopt_dead_code;     /* warn on dead code */
 	bool wopt_ignore_dbg;    /* warn on ignored # command */
-	bool wopt_tape_overflow; /* warn on moving to cell -1 */
 	bool wopt_all;
 
 	/* other options */

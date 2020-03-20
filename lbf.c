@@ -39,10 +39,10 @@ main(int argc, char **argv)
 	opts->wopt_ignore_dbg               = FALSE;
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
-	opts->fopt_debug_context            = 32;
 	opts->fopt_maximum_tape_size        = 0; /* dynamic */
 	opts->fopt_initial_tape_size        = 16;
-	opts->fopt_comment_str              = ";";
+	opts->fopt_comment_char             = ';';
+	opts->fopt_eof_char                 = 0x00;
 
 
 	/* parse arguments */

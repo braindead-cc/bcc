@@ -39,18 +39,17 @@ struct Options {
 	u8   fopt_cell_size;     /* cell size (8, 16, 32, or 64) */
 	bool fopt_cell_signed;   /* enable signed cells */
 
-	/* number of cells to print before+after 
-	 * pointer on debug instruction */
-	u64 fopt_debug_context;
-
 	/* initial amount of memory allocated for tape */
 	u64 fopt_initial_tape_size;
 
 	/* maximum amount of memory chars (0 for dynamic) */
 	u64 fopt_maximum_tape_size;
 
-	/* comment char(s) */
-	char *fopt_comment_str;
+	/* comment char */
+	char fopt_comment_char;
+
+	/* EOF char (-1 for no change) */
+	i8 fopt_eof_char;
 };
 
 #endif

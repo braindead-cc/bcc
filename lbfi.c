@@ -105,9 +105,10 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case '#':
 			/* TODO: allow -fdebug-context */
 			for (usize x = 0; x < tape->tp_size; ++x) {
-				/* TODO: beautify output */
-				fprintf(stdout, "DEBUG: %i = %i\n", x,
-						tape->cells[x]);
+				fprintf(stderr, "[%i]\t\t%i\t\t0x%X\t\t0%o"
+					"\t\t'%c'\n",
+					x, tape->cells[x], tape->cells[x],
+					tape->cells[x], tape->cells[x]);
 			}
 			break;
 #pragma GCC diagnostic ignored "-Wpointer-arith"

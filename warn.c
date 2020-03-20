@@ -8,9 +8,8 @@
 void
 warn(struct Options *opts, usize line, usize column, usize warning)
 {
-	char *msg   = NULL;
-	char *wflag = NULL;
-	char *hint  = NULL;
+	char *msg, *wflag, *hint;
+	msg = wflag = hint = "";
 
 	switch (warning) {
 	case W_LONG_LINES:

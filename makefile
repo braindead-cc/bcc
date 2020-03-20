@@ -14,7 +14,7 @@ DATE    = $(shell date '+%Y-%m-%d %H%M')
 VERSION = 0.1.0
 
 BIN     = lbf
-SRC     = util.c terminfo.c status.c emitc.c parser.c opt-squash.c \
+SRC     = util.c terminfo.c status.c emitc.c warn.c parser.c opt-squash.c \
 	  opt-nloops.c opt-sloops.c prepare.c lbfi.c lbfc.c lbf.c
 OBJ     = $(SRC:.c=.o)
 LIBUTF  = libutf/lib/libutf.a

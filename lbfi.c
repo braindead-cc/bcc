@@ -134,7 +134,7 @@ cleanup:
 	if (tape->cells) free(tape->cells);
 	if (tape)        free(tape);
 	if (opts)        free(opts);
-	for (struct Instruction *x = head; x->next != NULL; x = x->next)
+	for (struct Instruction *x = head->next; x != NULL; x = x->next)
 		if (x->prev != NULL) free(x->prev);
 
 	return 0;

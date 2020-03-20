@@ -37,7 +37,6 @@ main(int argc, char **argv)
 	opts->wopt_long_lines               = FALSE;
 	opts->wopt_dead_code                = FALSE;
 	opts->wopt_ignore_dbg               = FALSE;
-	opts->wopt_all                      = FALSE;
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
 	opts->fopt_debug_context            = 32;
@@ -147,8 +146,6 @@ main(int argc, char **argv)
 				opts->wopt_dead_code = TRUE;
 			else if (!strcmp(optarg, "ignored-dbg"))
 				opts->wopt_ignore_dbg = TRUE;
-			else if (!strcmp(optarg, "all"))
-				opts->wopt_all = TRUE;
 			else
 				die("lbf: error: '%s': invalid argument to -W.", optarg);
 			break;

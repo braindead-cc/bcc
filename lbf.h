@@ -7,13 +7,19 @@
 
 /* compiler backends */
 enum bparams {
-	BOPT_C,      /* C backend */
-	BOPT_ARM,    /* ARM assembly backend */
-	BOPT_LLVM,   /* LLVM backend */
-	BOPT_RUST,   /* Rust backend */
-	BOPT_V,      /* V backend */
-	BOPT_GO,     /* Go backend */
-	BOPT_QBE,    /* QBE backend */
+	BOPT_C,        /* C backend */
+	BOPT_ARM,      /* ARM assembly backend */
+	BOPT_LLVM,     /* LLVM backend */
+	BOPT_RUST,     /* Rust backend */
+	BOPT_V,        /* V backend */
+	BOPT_GO,       /* Go backend */
+	BOPT_QBE,      /* QBE backend */
+};
+
+enum eof_values {
+	EOF_MINUS_1,   /* -1 */
+	EOF_ZERO,      /*  0 */
+	EOF_NO_CHANGE, /* no change made to cell */
 };
 
 struct Options {
@@ -48,7 +54,7 @@ struct Options {
 	char fopt_comment_char;
 
 	/* EOF char (-1 for no change) */
-	i8 fopt_eof_char;
+	enum eof_values fopt_eof_char;
 };
 
 #endif

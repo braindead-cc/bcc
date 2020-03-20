@@ -31,11 +31,9 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 			tape->cells[tape->pointer] = 0;
 			break;
 		case '+':
-			/* TODO: custom cell size */
 			tape->cells[tape->pointer] += cur->repeat;
 			break;
 		case '-':
-			/* TODO: custom cell size */
 			tape->cells[tape->pointer] -= cur->repeat;
 			break;
 		case '^':

@@ -52,6 +52,11 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 			tape->pointer += cur->repeat;
 			
 			if (tape->pointer >= tape->tp_size) {
+				if (opts->fopt_disable_dynamic_alloc) {
+					tape->pointer -= cur->repeat;
+					continue;
+				}
+
 				tape->tp_size *= 2;
 				if (opts->debug)
 					debug("reallocating %lld for tape",
@@ -59,7 +64,8 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 				tape->cells = realloc(tape->cells,
 						tape->tp_size);
 				if (tape->cells == NULL)
-					die("lbf: error: cannot allocate memory for tape:");
+					die("lbf: error: cannot allocate"
+							"memory for tape:");
 				for (usize z = tape->tp_size / 2;
 						z < tape->tp_size;++z,
 						tape->cells[z] = 0);

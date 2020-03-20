@@ -39,7 +39,6 @@ main(int argc, char **argv)
 	opts->wopt_ignore_dbg               = FALSE;
 	opts->fopt_cell_size                = 8;
 	opts->fopt_cell_signed              = FALSE;
-	opts->fopt_maximum_tape_size        = 0; /* dynamic */
 	opts->fopt_initial_tape_size        = 16;
 	opts->fopt_comment_char             = ';';
 	opts->fopt_eof_char                 = 0x00;
@@ -113,12 +112,11 @@ main(int argc, char **argv)
 				opts->fopt_cell_size = (u8) strtol(optarg, NULL, 10);
 			} else if (!strcmp(optarg, "cell-signed")) {
 				opts->fopt_cell_signed = TRUE;
-			} else if (!strncmp(optarg, "debug-context=", 14)) {
-				while (*optarg != '=') ++optarg;
-				opts->fopt_debug_context = (u64) strtol(optarg, NULL, 10);
 			} else if (!strncmp(optarg, "initial-tape-size=", 18)) {
 				while (*optarg != '=') ++optarg;
 				opts->fopt_initial_tape_size = (u64) strtol(optarg, NULL, 10);
+			} else if (!strcmp(optarg, "disable-dynamic-alloc")) {
+				opts->fopt_disable_dynamic_alloc = TRUE;
 			} else {
 				die("lbf: error: '%s': invalid argument to -f.", optarg);
 			}

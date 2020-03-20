@@ -42,8 +42,7 @@ struct Options {
 	/* initial amount of memory allocated for tape */
 	u64 fopt_initial_tape_size;
 
-	/* maximum amount of memory chars (0 for dynamic) */
-	u64 fopt_maximum_tape_size;
+	bool fopt_disable_dynamic_alloc;
 
 	/* comment char */
 	char fopt_comment_char;

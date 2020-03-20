@@ -98,7 +98,16 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case ',':
 			; // empty statement
 			int c = fgetc(stdin);
-			tape->cells[tape->pointer] = c == EOF ? 0 : c;
+			if (c == EOF) {
+				if (opts->fopt_eof_char == EOF_NO_CHANGE)
+					;
+				else if (opts->fopt_eof_char == EOF_MINUS_1)
+					tape->cells[tape->pointer] = (MEMTYPE) -1;
+				else if (opts->fopt_eof_char == EOF_ZERO)
+					tape->cells[tape->pointer] = 0;
+			} else {
+				tape->cells[tape->pointer] = (MEMTYPE) c;
+			}
 			break;
 		case '.':
 			fputc(tape->cells[tape->pointer] % 255, stdout);

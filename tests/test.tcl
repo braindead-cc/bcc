@@ -55,6 +55,20 @@ proc test_tape_length { } {
 		"#" "dynamic tape allocation"
 }
 
+proc test_comments { } {
+	# test commenting
+
+	# test default comments
+	assert_eq [exec ../lbf lbfi "test-comments.b"] \
+		"C" "comments (default)"
+
+	# others
+	assert_eq [exec ../lbf lbfi -fcomment-char=\# "test-comments.b"] \
+		"@" "comments (-fcomment-char='#')"
+	assert_eq [exec ../lbf lbfi -fcomment-char=\% "test-comments.b"] \
+		"E" "comments (-fcomment-char='%')"
+}
+
 # output newline
 puts ""
 

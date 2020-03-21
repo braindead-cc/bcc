@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "instructions.h"
 #include "lbf.h"
@@ -28,8 +29,16 @@ prepare(struct Options *opts, struct Instruction *head)
 	/* cpy file data onto buffer */
 	if (opts->verbose)
 		status_init("reading program");
+	FILE *f;
+	if (!strcmp(opts->path, "-")) {
+		f = stdin;
+	} else {
+		if ((f = fopen(opts->path, "r")) == NULL)
+			die("lbf: error: '%s': cannot open:", opts->path);
+	}
+
 	usize i = 0;
-	for (int c = 0; (c = fgetc(stdin)) != EOF; ++i) {
+	for (int c = 0; (c = fgetc(f)) != EOF; ++i) {
 		/* printing info too often will
 		 * slow down reading significantly */
 		if (opts->verbose && !(c % 128))
@@ -37,6 +46,7 @@ prepare(struct Options *opts, struct Instruction *head)
 		program_data[i] = c;
 	}
 	program_data[i + 1] = '\0';
+	if (f != stdin) fclose(f);
 	if (opts->verbose)
 		status_complete("reading program");
 

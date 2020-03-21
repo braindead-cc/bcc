@@ -26,6 +26,7 @@ main(int argc, char **argv)
 	struct Options *opts = malloc(1 * sizeof(struct Options));
 
 	/* set default options */
+	opts->path                          = "-";
 	opts->debug                         = FALSE;
 	opts->verbose                       = FALSE;
 	opts->backend                       = BOPT_C;
@@ -174,6 +175,8 @@ main(int argc, char **argv)
 			break;
 		}
 	}
+
+	if (argv[optind] != NULL) opts->path = argv[optind];
 
 	struct Instruction *head = malloc(sizeof(struct Instruction));
 	if (head == NULL)

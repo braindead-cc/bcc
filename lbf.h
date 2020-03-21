@@ -23,6 +23,8 @@ enum eof_values {
 };
 
 struct Options {
+	char *path; /* input file */
+
 	bool debug;
 	bool verbose;
 	enum bparams backend;

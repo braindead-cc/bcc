@@ -19,33 +19,47 @@ proc hr { } {
 	puts ""
 }
 
+proc assert_eq {val1 val2 msg} {
+	global passed
+	global failed
+
+	if {$val1 == $val2} {
+		incr passed
+		puts "\033\[32m✔\033\[0m | $msg "
+	} else {
+		incr failed
+		puts "\033\[31m✖\033\[0m | $msg "
+	}
+}
+
+proc test_eof_chars { } {
+	# check eof characters and linefeeds
+	# see: http://www.hevanet.com/cristofd/brainfuck/tests.b
+
+	# check that default EOF character is 0
+	assert_eq [exec echo | ../lbf lbfi "test-eof.b"] "LB\nLB" \
+		"EOF (default) == 0"
+
+	# with no change
+	assert_eq [exec echo | ../lbf lbfi -feof-value=none "test-eof.b"] \
+		"LK\nLK" "EOF (-feof-value=none) == none"
+
+	# with -1
+	assert_eq [exec echo | ../lbf lbfi -feof-value=-1 "test-eof.b"] \
+		"LA\nLA" "EOF (-feof-value=-1) == -1"
+}
+
 # output newline
 puts ""
 
-# outputs
-set results [split [glob *-result.txt] " "]
+# test functions
+set tests [list [split [info commands test*] " "]]
 
 puts "\033\[33m->\033\[0m performing tests on interpeter..."
 hr
 
-foreach r $results {
-	set name [string map {-result.txt ""} $r]
-
-	set status ""
-
-	for {set o 0} {$o <= $maxoptlevel} {incr o} {
-		set output [exec ../lbf lbfi < ../samples/$name.bf -O$o]
-
-		if {$output == [exec cat $r]} {
-			incr passed
-			set status "\033\[32m✔\033\[0m"
-		} else {
-			incr failed
-			set status "\033\[31m✖\033\[0m"
-		}
-
-		puts "$status │ $name (optimization: $o)"
-	}
+foreach test $tests {
+	$test
 }
 
 hr

@@ -65,6 +65,9 @@ uninstall:
 	@echo "  RM       $(DESTDIR)/$(PREFIX)/bin/$(BIN)"
 	$(CMD)rm -f $(DESTDIR)/$(PREFIX)/bin/$(BIN)
 	@echo "  RM       $(DESTDIR)/$(PREFIX)/bin/$(BIN).1"
-	$(CMD)rm -f $(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).1
+	$(CMD)rm -f $(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).
 
-.PHONY: all debug release clean install uninstall
+tests:
+	$(CMD)cd tests && tclsh ./test.tcl
+
+.PHONY: all debug release clean install uninstall tests

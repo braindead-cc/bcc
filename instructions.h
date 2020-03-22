@@ -3,7 +3,7 @@
 #include "types.h"
 
 struct Instruction {
-	usize command;
+	char command;
 
 	/* context */
 	usize line;

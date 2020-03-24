@@ -1,4 +1,10 @@
+# compiled files
 lbf
 **/*.o
-lbf.1
+
+# generated files
+docs/lbf.1
+docs/brainfuck.7
+
+# vim's swap files
 **/*.*.sw[op]

@@ -40,7 +40,7 @@ all: debug
 debug: CFLAGS_OPT := -O0 -ggdb
 debug: $(BIN)
 
-release: CFLAGS_OPT := -O3 -march=native
+release: CFLAGS_OPT := -Os -march=native
 release: LDFLAGS_OPT := -s
 release: $(BIN)
 
@@ -48,26 +48,36 @@ $(BIN): $(OBJ)
 	@echo "  LD       $@"
 	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS) $(LDFLAGS_OPT)
 
-$(BIN).1: $(BIN).scd
+docs/$(BIN).1: docs/$(BIN).scd
+	@echo "  SCDOC    $^"
+	$(CMD)scdoc < $^ > $@
+
+docs/brainfuck.7: docs/brainfuck.scd
 	@echo "  SCDOC    $^"
 	$(CMD)scdoc < $^ > $@
 
 clean:
 	$(CMD)rm -f $(BIN) $(OBJ)
 
-install: $(BIN) $(BIN).1
+install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
 	@echo "  INSTALL  $(BIN)"
 	$(CMD)install -Dm755 $(BIN) $(DESTDIR)/$(PREFIX)/bin/$(BIN)
+	@echo "  STRIP    $(BIN)"
+	$(CMD)strip --strip-all $(DESTDIR)/$(PREFIX)/bin/$(BIN)
+	@echo "  LN       $(BIN)i"
+	$(CMD)ln -fs $(DESTDIR)/$(PREFIX)/bin/$(BIN) \
+		$(DESTDIR)/$(PREFIX)/bin/$(BIN)i
+	@echo "  LN       $(BIN)c"
+	$(CMD)ln -fs $(DESTDIR)/$(PREFIX)/bin/$(BIN) \
+		$(DESTDIR)/$(PREFIX)/bin/$(BIN)c
 	@echo "  INSTALL  $(BIN).1"
-	$(CMD)install -Dm644 $(BIN).1 $(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).1
-
-uninstall:
-	@echo "  RM       $(DESTDIR)/$(PREFIX)/bin/$(BIN)"
-	$(CMD)rm -f $(DESTDIR)/$(PREFIX)/bin/$(BIN)
-	@echo "  RM       $(DESTDIR)/$(PREFIX)/bin/$(BIN).1"
-	$(CMD)rm -f $(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).
+	$(CMD)install -Dm644 docs/$(BIN).1 \
+		$(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).1
+	@echo "  INSTALL  brainfuck.7"
+	$(CMD)install -Dm644 docs/brainfuck.7 \
+		$(DESTDIR)/$(PREFIX)/share/man/man7/brainfuck.7
 
 tests:
 	$(CMD)cd tests && tclsh ./test.tcl
 
-.PHONY: all debug release clean install uninstall tests
+.PHONY: all debug release clean install tests

@@ -40,7 +40,8 @@ The list of recognized commands is as follows:
 |  ,
 :  read a character from stdin and store it in the current memory cell.
 
-Nested loops (i.e., the [ and ] commands) are allowed, as long as each [/]
+
+Nested loops (i.e., the \[ and \] commands) are allowed, as long as each \[/\]
 has a matching bracket. Non-matching brackets are a syntax error, and may
 be either ignored or cause the interpreter/compiler to crash (depending on
 the implementation).
@@ -100,11 +101,3 @@ _https://codegolf.stackexchange.com/a/163590/59487_:
     - *Readme*: www.clifford.at/bfcpu/hanoi.html
 - Erik Bosman's *mandelbrot* set viewer.
     - *Source*: esoteric.sange.fi/brainfuck/utils/mandelbrot.tar.gz
-
-# HISTORY
-
-TODO: history
-
-# KNOWN ISSUES
-
-TODO: implementation issues

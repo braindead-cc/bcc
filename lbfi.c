@@ -71,29 +71,15 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 			break;
 		case '[':
 			if (tape->cells[tape->pointer] == 0) {
-				depth = 1;
-				while (depth > 0) {
-					cur = cur->next;
-					++i;
-					if (cur->command == '[')
-						++depth;
-					else if (cur->command == ']')
-						--depth;
-				}
+				cur = cur->loop;
 			}
+
 			break;
 		case ']':
 			if (tape->cells[tape->pointer] != 0) {
-				depth = 1;
-				while (depth > 0) {
-					cur = cur->prev;
-					--i;
-					if (cur->command == '[')
-						--depth;
-					else if (cur->command == ']')
-						++depth;
-				}
+				cur = cur->loop;
 			}
+
 			break;
 		case ',':
 			; // empty statement

@@ -11,6 +11,12 @@
 #include "util.h"
 #include "warn.h"
 
+/* unmatched loop stack */
+struct Unmatched {
+	struct Instruction *inst;
+	struct Unmatched *next, *prev;
+};
+
 void
 parse(struct Options *opts, char *program_data, struct Instruction *program)
 {
@@ -21,7 +27,9 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 
 	if (opts->verbose) status_init("parsing program");
 
-	struct Instruction *last = program;
+	struct Instruction *last      = program;
+	struct Unmatched   *unmatched = malloc(sizeof(struct Unmatched));
+
 	for (usize i = 0; i < len; ++i) {
 		if (opts->verbose)
 			status_update("parsing program", i, (i * 100) / len);
@@ -101,6 +109,22 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 		inst->repeat  = 1;
 		inst->prev    = last;
 		last->next    = inst;
+
+		/* match loops */
+		if (program_data[i] == '[') {
+			struct Unmatched *n = malloc(sizeof(struct Unmatched));
+			n->inst = inst;
+			n->prev = unmatched;
+			n->next = NULL;
+			unmatched->next = n;
+			unmatched = n;
+		} else if (program_data[i] == ']') {
+			unmatched->inst->loop = inst;
+			inst->loop = unmatched->inst;
+			unmatched = unmatched->prev;
+		} else {
+			inst->loop = NULL;
+		}
 
 		last = inst;
 	}

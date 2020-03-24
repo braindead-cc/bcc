@@ -16,6 +16,9 @@ struct Instruction {
 	 * so that it becomes super easy to remove
 	 * Instructions in case we can optimize it away */
 	struct Instruction *prev, *next;
+
+	/* matching loop command */
+	struct Instruction *loop;
 };
 
 #endif

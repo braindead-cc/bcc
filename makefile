@@ -69,7 +69,7 @@ dist-bin: $(BIN) docs/brainfuck.7 docs/$(BIN).1
 	xz $(BIN)-$(VERSION)-$(shell arch)-bin.tar
 	rm -rf $(BIN)-$(VERSION)-$(shell arch)-bin/
 
-dist-src: clean $(SRC) $(HDR)
+dist-src: $(SRC) $(HDR)
 	mkdir -p $(BIN)-$(VERSION)-src
 	cp -R $(SRC) $(HDR) README.md LICENSE.md \
 		makefile config.mk docs/ samples/ ccommon/ etc/ \

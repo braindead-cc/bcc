@@ -5,6 +5,7 @@ packages:
         - scdoc
         - tcl
         - gcc
+        - binutils
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:

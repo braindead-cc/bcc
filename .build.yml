@@ -11,13 +11,13 @@ sources:
 tasks:
         - build: |
                 cd lbf
-                make clean debug
+                make LD=bfd clean debug
         - test: |
                 cd lbf
                 make tests
         - dists: |
                 cd lbf
-                make artifacts
+                make LD=bfd artifacts
 artifacts:
         - lbf/lbf-bin.tar.xz
         - lbf/lbf-src.tar.xz

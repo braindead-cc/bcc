@@ -1,3 +1,5 @@
+<!-- begin joke -->
+
 # The LPTSTR Brainfsck Toolchain
 
 Brainfsck is an extremely simple, safe, and fast language for developing
@@ -28,12 +30,19 @@ Brainfsck.
 - bounds checking.
 
 ### Performance
-- as fast as C (the interpreter is written in C).
+- as fast as C (the compiler/interpreter is written in C).
 - compiles to native binaries with no dependencies. <sub>2</sub>
+
+<!-- TODO: add more marketing blurbs here -->
+
+<!-- end joke -->
 
 ### Fast compilation
 
-<!-- TODO: add benches -->
+- compiling [`samples/lostkng.b`](samples/lostkng.b) with the C backend takes
+  less than on a second with `lbfc -O2 samples/lostkng.b > lostkng.c`.
+
+<!-- TODO: add more benches -->
 
 ### Small, portable, and easy to build compiler
 
@@ -43,7 +52,20 @@ Brainfsck.
 - *small*: the toolchain is about 1,500 lines of code total (including the
   Makefile and test script). The resulting binary is just 23k in size.
 
-<!-- TODO: add more marketing blurbs here -->
+### Flexibility
+
+- because the original spec for Brainfsck was fairly incomplete, most brainfsck
+  implementations tend to follow their own conventions for things like EOF,
+  line endings, cell size, tape size, etc. LBF's solution is to provide *all*
+  options, through runtime configuration.
+
+## Installation
+
+See [INSTALL.md](INSTALL.md).
+
+## Usage
+
+See `lbf(1)` and `brainfuck(7)`.
 
 ---
 
@@ -53,5 +75,6 @@ using. (I would recommend either `ttyp0` or `cozette`.)
 2: *except* the `libc`. If you want to remove that dependency as well, you
 can compile the generated C code with `-static`.
 
-3: compiled with `gcc` with flags to optimize for space (`-Os -s`). The command used
-was `make WARNINGS= LD=bfd release`. See the `makefile` for more info.
+3: compiled with `gcc` with flags to optimize for space (`-Os -s`) on x86_64.
+The command used was `make WARNINGS= LD=bfd release`. See the `makefile` for
+more info.

@@ -31,7 +31,7 @@ ifeq ($(ENABLE_FANCY_SPINNER), true)
 	DEF += -DSPINNER_FANCY
 endif
 
-all: debug
+all: debug docs/brainfuck.7 docs/$(BIN).1
 
 .c.o:
 	@echo "  CC       $<"
@@ -58,7 +58,7 @@ docs/brainfuck.7: docs/brainfuck.scd
 	$(CMD)scdoc < $^ > $@
 
 clean:
-	rm -f $(BIN) $(OBJ) *.tar *.tar.xz
+	rm -f $(BIN) $(OBJ) *.tar *.tar.xz docs/*.1 docs/*.7
 
 dist-src: clean $(SRC) $(HDR)
 	mkdir -p $(BIN)-$(VERSION)-src
@@ -90,4 +90,4 @@ install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
 tests:
 	$(CMD)cd tests && tclsh ./test.tcl
 
-.PHONY: all debug release clean install tests
+.PHONY: all debug release clean dist-src install tests

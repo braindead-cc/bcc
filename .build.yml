@@ -1,0 +1,25 @@
+arch: x86_64
+image: alpine/latest
+packages:
+        - make
+        - scdoc
+        - tcl
+        - gcc
+sources:
+        - https://git.sr.ht/~kiedtl/lbf
+tasks:
+        - deps: |
+                cd lbf
+                git clone https://github.com/lptstr/ccommon ccommon
+        - build: |
+                cd lbf
+                make clean debug
+        - test: |
+                cd lbf
+                make tests
+        - dists: |
+                cd lbf
+                make artifacts
+artifacts:
+        - lbf/lbf-bin.tar.xz
+        - lbf/lbf-src.tar.xz

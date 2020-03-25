@@ -6,7 +6,7 @@ packages:
         - tcl
         - gcc
 sources:
-        - https://git.sr.ht/~kiedtl/lbf
+        - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
         - deps: |
                 cd lbf

@@ -6,14 +6,11 @@
 # See the LICENSE.md file for more information
 #
 
-CMD     = @
-DESTDIR =
-PREFIX  = /usr/local
+include config.mk
 
 DATE    = $(shell date '+%Y-%m-%d %H%M')
 VERSION = 0.1.0
 
-BIN     = lbf
 SRC     = util.c terminfo.c status.c emitc.c warn.c parser.c opt-squash.c \
 	  opt-nloops.c opt-sloops.c prepare.c lbfi.c lbfc.c lbf.c
 OBJ     = $(SRC:.c=.o)
@@ -22,14 +19,16 @@ WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
 	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
 	  -Wno-unused-value -Wno-trigraphs
 
-INC     = -I. -Iccommon/ -Ilibutf/include/
+INC     = -I. -Iccommon/
 DEF     = -DVERSION=\"$(VERSION)\" -DBUILDDATE="\"$(DATE)\"" -D_GNU_SOURCE \
-	  -DSPINNER_FANCY -DMEMTYPE=u8
+	  -DMEMTYPE=$(MEMTYPE)
 
-CC      = gcc
-LD      = lld
 CFLAGS  = -std=c99 $(WARNING) $(INC) $(DEF)
 LDFLAGS = -fuse-ld=$(LD)
+
+ifeq ($(ENABLE_FANCY_SPINNER), true)
+	DEF += -DSPINNER_FANCY
+endif
 
 all: debug
 
@@ -37,11 +36,12 @@ all: debug
 	@echo "  CC       $<"
 	$(CMD)$(CC) $(CFLAGS) $(CFLAGS_OPT) -c $< -o $(<:.c=.o)
 
-debug: CFLAGS_OPT := -O0 -ggdb
+debug: CFLAGS_OPT  = $(DEBUG_CFLAGS)
+debug: LDFLAGS_OPT = $(DEBUG_LDFLAGS)
 debug: $(BIN)
 
-release: CFLAGS_OPT := -Os -march=native
-release: LDFLAGS_OPT := -s
+release: CFLAGS_OPT  = $(RELEASE_CFLAGS)
+release: LDFLAGS_OPT = $(RELEASE_LDFLAGS)
 release: $(BIN)
 
 $(BIN): $(OBJ)

@@ -6,6 +6,7 @@ packages:
         - tcl
         - gcc
         - binutils
+        - xz
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:

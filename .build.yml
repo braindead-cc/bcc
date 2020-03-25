@@ -8,9 +8,6 @@ packages:
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
-        - deps: |
-                cd lbf
-                git clone https://github.com/lptstr/ccommon ccommon
         - build: |
                 cd lbf
                 make clean debug

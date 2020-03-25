@@ -13,6 +13,7 @@ VERSION = 0.1.0
 
 SRC     = util.c terminfo.c status.c emitc.c warn.c parser.c opt-squash.c \
 	  opt-nloops.c opt-sloops.c prepare.c lbfi.c lbfc.c lbf.c
+HDR     = $(SRC:.c=.h)
 OBJ     = $(SRC:.c=.o)
 
 WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
@@ -57,7 +58,15 @@ docs/brainfuck.7: docs/brainfuck.scd
 	$(CMD)scdoc < $^ > $@
 
 clean:
-	$(CMD)rm -f $(BIN) $(OBJ)
+	rm -f $(BIN) $(OBJ)
+
+dist-src: clean $(SRC) $(HDR)
+	mkdir -p $(BIN)-$(VERSION)-src
+	cp -R $(SRC) $(HDR) README.md LICENSE.md docs/ \
+		$(BIN)-$(VERSION)-src/
+	tar -cf $(BIN)-$(VERSION)-src.tar $(BIN)-$(VERSION)-src/
+	xz $(BIN)-$(VERSION)-src.tar
+	rm -rf $(BIN)-$(VERSION)-src/
 
 install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
 	@echo "  INSTALL  $(BIN)"

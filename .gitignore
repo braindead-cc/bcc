@@ -8,3 +8,6 @@ docs/brainfuck.7
 
 # vim's swap files
 **/*.*.sw[op]
+
+# release files
+*.tar.xz

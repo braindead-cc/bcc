@@ -21,8 +21,8 @@
 usize
 prepare(struct Options *opts, struct Instruction *head)
 {
-	/* TODO: allocate on demand */
-	char *program_data = malloc(128000 * sizeof(char));
+	usize sz = 512;
+	char *program_data = malloc(sz * sizeof(char));
 	if (program_data == NULL)
 		die("lbf: error: cannot read brainfsck code:");
 
@@ -43,8 +43,15 @@ prepare(struct Options *opts, struct Instruction *head)
 		 * slow down reading significantly */
 		if (opts->verbose && !(c % 128))
 			status_update("reading program", c, STATUS_UNKNOWN);
+
+		/* check if buffer is big enough
+		 * for data (including null terminator!!) */
+		if ((i + 1) >= sz)
+			program_data = realloc(program_data, (sz *= 2));
+
 		program_data[i] = c;
 	}
+
 	program_data[i + 1] = '\0';
 	if (f != stdin) fclose(f);
 	if (opts->verbose)

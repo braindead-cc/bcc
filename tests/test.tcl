@@ -12,11 +12,12 @@ set passed 0
 set failed 0
 
 proc hr { } {
-	set ttywidth [lindex [split [exec stty size] " "] 1]
-	for {set i 0} {$i < $ttywidth} {incr i} {
-		puts -nonewline "─"
-	}
-	puts ""
+	#set ttywidth [lindex [split [exec stty size] " "] 1]
+	#for {set i 0} {$i < $ttywidth} {incr i} {
+	#	puts -nonewline "─"
+	#}
+	#puts ""
+	puts "----------------------------------------------------------------"
 }
 
 proc assert_eq {val1 val2 msg} {

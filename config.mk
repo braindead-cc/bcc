@@ -70,5 +70,5 @@ LD = gold
 # default ldflags for debug: (null)
 DEBUG_CFLAGS    = -O0 -ggdb
 DEBUG_LDFLAGS   =
-RELEASE_CFLAGS  = -0s -march=native
+RELEASE_CFLAGS  = -Os -march=native
 RELEASE_LDFLAGS = -s

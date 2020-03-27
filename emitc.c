@@ -12,24 +12,25 @@ emitc(struct Options *opts, struct Instruction *head)
 {
 	char memtype[20];
 	if (opts->fopt_cell_signed) 
-		strcpy(&memtype, "signed ");
+		strcpy(&memtype, "u");
 	else
-		strcpy(&memtype, "unsigned ");
+		strcpy(&memtype, "");
 
 	switch (opts->fopt_cell_size) {
 	case 8:
-		strcat(&memtype, "char");
+		strcat(&memtype, "int8_t");
 		break;
 	case 16:
-		strcat(&memtype, "short");
+		strcat(&memtype, "int16_t");
 		break;
 	case 32:
-		strcat(&memtype, "int");
+		strcat(&memtype, "int32_t");
 		break;
 	case 64:
-		strcat(&memtype, "long long");
+		strcat(&memtype, "int64_t");
 		break;
 	default:
+		/* TODO: mov to arg parsing area */
 		die("lbfc: error: '%d': invalid cell size.",
 				opts->fopt_cell_size);
 		break;
@@ -39,30 +40,32 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("#define _GNU_SOURCE\n"
 		"#include <stdio.h>\n"        /* for IO */
 		"#include <stdlib.h>\n"       /* for malloc(), exit() */
-		"#include <string.h>\n\n"     /* for memchr(), memrchr() */
+		"#include <string.h>\n"       /* for memchr(), memrchr() */
+		"#include <stdint.h>\n\n"     /* for types */
 		"typedef %s i;\n\n"
 		"i *m;\n"                  /* memory */
 		"int c = 0;\n"                /* buffer for fgetc() */
 		"unsigned long long sz, p;\n" /* tape size, pointer */
 		"\nvoid ml(int repeat) {\n"
-		"if ((p-repeat)>p);else p-=repeat;}\n",
+		"\tif ((p-repeat)>p);\nelse p-=repeat;\n}\n",
 		(char*) &memtype);
 
 	/* mov right ('>' command) */
-	printf("void mr(int repeat) {p+=repeat;"
-		"if(p>=sz){");
+	printf("void mr(int repeat) {\n"
+		"p+=repeat;\n"
+		"if(p>=sz) {\n");
 	if (opts->fopt_disable_dynamic_alloc) {
-		printf("p-=repeat;");
+		printf("p-=repeat;\n");
 	} else {
-		printf("m=realloc(m,sz*=2);"
-			"if (m==NULL){"
-			"perror(\"err: can't realloc mem\");"
-			"exit(1);"
-			"}"
-			"for(unsigned long long z=sz/2;"
-			"z<sz;++z,m[z]=0);");
+		printf("m=realloc(m,sz*=2);\n"
+			"if (m==NULL){\n"
+			"perror(\"err: can't realloc mem\");\n"
+			"exit(1);\n"
+			"}\n"
+			"for(unsigned long long z=sz/2;\n"
+			"z<sz;++z,m[z]=0);\n");
 	}
-	printf("}}");
+	printf("}\n}\n");
 
 	/* read char */
 	printf("void rd(void) {"
@@ -87,8 +90,9 @@ emitc(struct Options *opts, struct Instruction *head)
 	printf("\nint\n"
 		"main(void)\n"
 		"{\n"
-		"sz = p = 0;\n"
-		"m = (i*) calloc(%lli, sizeof(i));\n"
+		"sz = %lli;\n"
+		"p = 0;\n"
+		"m = (i*) calloc(sz, sizeof(i));\n"
 		"if (!m) {\n"
 		"	perror(\"err: can't allocate mem: \");\n"
 		"	exit(1);\n"

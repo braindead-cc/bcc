@@ -6,7 +6,7 @@ packages:
         - tcl87
         - gcc
         - binutils
-        - xz
+        - pixz
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:

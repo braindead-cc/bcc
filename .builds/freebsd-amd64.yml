@@ -6,7 +6,7 @@ tasks:
         - dependencies: |
                 sudo pkg update -f
                 yes | sudo pkg install meson scdoc tcl87
-                yes | sudo pkg install gcc pixz
+                yes | sudo pkg install tcl-wrapper pixz
         - prepare: |
                 cd lbf
                 meson build

@@ -13,6 +13,7 @@ memtype = 'u8'
 builddate = run_command('date', '+%Y-%m-%d %H%M').stdout().strip()
 
 cc = meson.get_compiler('c')
+ncurses = dependency('ncurses')
 
 add_global_arguments(cc.get_supported_arguments([
 	'-Wold-style-definition',
@@ -48,19 +49,25 @@ add_global_arguments([
 
 inc = include_directories(['include', 'include/ccommon'])
 lbf_sources = ['src/emitc.c',       'src/emitc.h',
-                'src/lbf.c',        'src/lbf.h',
-                'src/lbfc.c',       'src/lbfc.h',
-                'src/lbfi.c',       'src/lbfi.h',
-                'src/opt-nloops.c', 'src/opt-nloops.h',
-                'src/opt-sloops.c', 'src/opt-sloops.h',
-                'src/opt-squash.c', 'src/opt-squash.h',
-                'src/parser.c',     'src/parser.h',
-                'src/prepare.c',    'src/prepare.h',
-                'src/status.c',     'src/status.h',
-                'src/terminfo.c',   'src/terminfo.h',
-                'src/util.c',       'src/util.h',
-                'src/warn.c',       'src/warn.h']
+		'src/lbf.c',        'src/lbf.h',
+		'src/lbfc.c',       'src/lbfc.h',
+		'src/lbfd.c',       'src/lbfd.h',
+		'src/lbfi.c',       'src/lbfi.h',
+		'src/opt-nloops.c', 'src/opt-nloops.h',
+		'src/opt-sloops.c', 'src/opt-sloops.h',
+		'src/opt-squash.c', 'src/opt-squash.h',
+		'src/parser.c',     'src/parser.h',
+		'src/prepare.c',    'src/prepare.h',
+		'src/status.c',     'src/status.h',
+		'src/terminfo.c',   'src/terminfo.h',
+		'src/util.c',       'src/util.h',
+		'src/warn.c',       'src/warn.h']
 
-lbf = executable('lbf', lbf_sources, include_directories: inc, install: true)
+lbf = executable(
+	'lbf', lbf_sources,
+	include_directories: inc,
+	install: true,
+	dependencies: ncurses
+)
 
 meson.add_install_script('scripts/post-install')

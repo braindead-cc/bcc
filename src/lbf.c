@@ -15,6 +15,7 @@
 #include "lbf.h"
 #include "lbfc.h"
 #include "lbfi.h"
+#include "lbfd.h"
 #include "prepare.h"
 #include "util.h"
 
@@ -187,4 +188,6 @@ main(int argc, char **argv)
 		lbfi_main(opts, head);
 	else if (!strcmp(argv[0], "lbfc"))
 		lbfc_main(opts, head);
+	else if (!strcmp(argv[0], "lbfd"))
+		lbfd_main(opts, head);
 }

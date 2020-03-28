@@ -16,12 +16,3 @@ tasks:
         - test: |
                 cd lbf/tests
                 ./test.tcl
-        - artifacts: |
-                cd lbf
-                scripts/dist-src
-                scripts/dist-bin
-                mv lbf-*-bin.tar.xz lbf-bin.tar.xz
-                mv lbf-*-src.tar.xz lbf-src.tar.xz
-artifacts:
-        - lbf/lbf-bin.tar.xz
-        - lbf/lbf-src.tar.xz

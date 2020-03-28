@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# dist-src - create a tarball with project source
+# usage: dist-src [VERSION]
+#
+# (c) Kiëd Llaentenn <kiedtl@protonmail.com>
+# See the LICENSE for copyright information.
+# MUST be run in project root
+
+tarname="lbf-${1:-unknown}-src"
+
+mkdir -p "$tarname"
+cp -R docs/ etc/ include/ samples/ scripts/ src/ tests/ \
+    INSTALL.md LICENSE.md meson.build README.md ROADMAP.md \
+    "$tarname"
+tar -cf "${tarname}.tar" "${tarname}"
+xz "${tarname}.tar"
+rm -rf "$tarname"

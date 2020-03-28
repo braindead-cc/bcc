@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# genman - generate man pages
+#
+# (c) Kiëd Llaentenn <kiedtl@protonmail.com>
+# See the LICENSE for copyright information.
+
+# check for scdoc
+command -v scdoc 2>/dev/null >&2 || exit 1
+
+scdoc < docs/lbf.scd > docs/lbf.1
+scdoc < docs/brainfuck.scd > docs/brainfuck.7

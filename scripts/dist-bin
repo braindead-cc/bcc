@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# dist-src - create a tarball with project source
+# usage: dist-src [VERSION]
+#
+# (c) Kiëd Llaentenn <kiedtl@protonmail.com>
+# See the LICENSE for copyright information.
+# MUST be run in project root
+
+tarname="lbf-${1:-unknown}-$(arch)-bin"
+
+# check for dependencies
+[ -f "build/lbf"  ]       || ninja -C build
+[ -f "docs/lbf.1" ]       || scripts/genman
+[ -f "docs/brainfuck.7" ] || scripts/genman
+
+mkdir -p "$tarname"
+cp -R docs/brainfuck.7 docs/lbf.1 etc/ samples/ \
+    INSTALL.md LICENSE.md README.md ROADMAP.md "$tarname"
+tar -cf "${tarname}.tar" "${tarname}"
+xz "${tarname}.tar"
+rm -rf "$tarname"

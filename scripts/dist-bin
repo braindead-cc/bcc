@@ -7,7 +7,7 @@
 # See the LICENSE for copyright information.
 # MUST be run in project root
 
-tarname="lbf-${1:-unknown}-$(arch)-bin"
+tarname="lbf-${1:-unknown}-$(uname -m)-bin"
 
 # check for dependencies
 [ -f "build/lbf"  ]       || ninja -C build

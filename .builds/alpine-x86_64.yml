@@ -1,7 +1,7 @@
 arch: x86_64
 image: alpine/latest
 packages:
-        - make
+        - eson
         - scdoc
         - tcl
         - gcc
@@ -10,15 +10,21 @@ packages:
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
+        - prepare: |
+                cd lbf
+                meson build
         - build: |
                 cd lbf
-                make LD=bfd clean debug
+                ninja -C build
         - test: |
+                cd lbf/tests
+                ./test.tcl
+        - artifacts: |
                 cd lbf
-                make tests
-        - dists: |
-                cd lbf
-                make LD=bfd artifacts
+                scripts/dist-src
+                scripts/dist-bin
+                mv lbf-*-bin.tar.xz lbf-bin.tar.xz
+                mv lbf-*-src.tar.xz lbf-src.tar.xz
 artifacts:
         - lbf/lbf-bin.tar.xz
         - lbf/lbf-src.tar.xz

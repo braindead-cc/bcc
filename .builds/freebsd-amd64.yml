@@ -1,15 +1,12 @@
 arch: amd64
 image: freebsd/latest
-packages:
-        - meson
-        - scdoc
-        - tcl87
-        - gcc
-        - binutils
-        - pixz
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
+        - dependencies: |
+                sudo pkg update -f
+                sudo pkg install meson scdoc tcl87
+                sudo pkg install gcc pixz
         - prepare: |
                 cd lbf
                 meson build

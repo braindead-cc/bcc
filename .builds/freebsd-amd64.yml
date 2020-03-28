@@ -5,8 +5,8 @@ sources:
 tasks:
         - dependencies: |
                 sudo pkg update -f
-                sudo pkg install meson scdoc tcl87 -y
-                sudo pkg install gcc pixz -y
+                yes | sudo pkg install meson scdoc tcl87
+                yes | sudo pkg install gcc pixz
         - prepare: |
                 cd lbf
                 meson build

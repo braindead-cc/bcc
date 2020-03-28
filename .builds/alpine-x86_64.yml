@@ -1,0 +1,24 @@
+arch: x86_64
+image: alpine/latest
+packages:
+        - make
+        - scdoc
+        - tcl
+        - gcc
+        - binutils
+        - xz
+sources:
+        - https://git.sr.ht/~kiedtl/lbf.git
+tasks:
+        - build: |
+                cd lbf
+                make LD=bfd clean debug
+        - test: |
+                cd lbf
+                make tests
+        - dists: |
+                cd lbf
+                make LD=bfd artifacts
+artifacts:
+        - lbf/lbf-bin.tar.xz
+        - lbf/lbf-src.tar.xz

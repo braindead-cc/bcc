@@ -15,4 +15,9 @@
 	- [ ] Go backend
 	- [ ] QBE backend
 - [ ] working debugger
-- [ ] working profiler
+- [ ] working profiler mode
+- [ ] documentation
+	- [x] brainfsck reference
+	- [ ] LBF usage
+		- [ ] markdown
+		- [ ] manpage

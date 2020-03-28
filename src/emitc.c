@@ -10,24 +10,24 @@
 void
 emitc(struct Options *opts, struct Instruction *head)
 {
-	char memtype[20];
+	char memtype[9];
 	if (opts->fopt_cell_signed) 
-		strcpy(&memtype, "u");
+		strcpy((char*) &memtype, "u");
 	else
-		strcpy(&memtype, "");
+		strcpy((char*) &memtype, "");
 
 	switch (opts->fopt_cell_size) {
 	case 8:
-		strcat(&memtype, "int8_t");
+		strcat((char*) &memtype, "int8_t");
 		break;
 	case 16:
-		strcat(&memtype, "int16_t");
+		strcat((char*) &memtype, "int16_t");
 		break;
 	case 32:
-		strcat(&memtype, "int32_t");
+		strcat((char*) &memtype, "int32_t");
 		break;
 	case 64:
-		strcat(&memtype, "int64_t");
+		strcat((char*) &memtype, "int64_t");
 		break;
 	default:
 		/* TODO: mov to arg parsing area */

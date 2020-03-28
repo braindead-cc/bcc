@@ -52,7 +52,7 @@ status_update(char *text, usize ctr, usize percentage)
 		fputs("[  ?%]", stderr);
 	} else {
 		char tmp[4];
-		sprintf(&tmp, "%d", percentage);
+		sprintf((char*) &tmp, "%d", percentage);
 		fprintf(stderr, "[%3s%%]", (char*) &tmp);
 	}
 }

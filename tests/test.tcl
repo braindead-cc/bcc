@@ -36,6 +36,10 @@ proc test_i_read_io { } {
 	assert_eq [exec echo | $lbf lbfi "test-io.b"] "LB\nLB" \
 		"EOF (default) == 0"
 
+	# with 0
+	assert_eq [exec echo | $lbf lbfi -feof-value=0 "test-io.b"] \
+		"LB\nLB" "EOF (-feof-value=0) == 0"
+
 	# with no change
 	assert_eq [exec echo | $lbf lbfi -feof-value=none "test-io.b"] \
 		"LK\nLK" "EOF (-feof-value=none) == none"
@@ -43,6 +47,28 @@ proc test_i_read_io { } {
 	# with -1
 	assert_eq [exec echo | $lbf lbfi -feof-value=-1 "test-io.b"] \
 		"LA\nLA" "EOF (-feof-value=-1) == -1"
+}
+
+proc test_c_read_io { } {
+	global lbf
+
+	# default
+	exec $lbf lbfc test-io.b | cc -xc -
+	assert_eq [exec echo | ./a.out] "LB\nLB" "EOF (default) == 0"
+
+	# with 0
+	exec $lbf lbfc -feof-value=0 test-io.b | cc -xc -
+	assert_eq [exec echo | ./a.out] "LB\nLB" "EOF (-feof-value=0) == 0"
+
+	# with -1
+	exec $lbf lbfc -feof-value=-1 test-io.b | cc -xc -
+	assert_eq [exec echo | ./a.out] "LA\nLA" "EOF (-feof-value=-1) == -1"
+
+	# with no change
+	exec $lbf lbfc -feof-value=none test-io.b | cc -xc -
+	assert_eq [exec echo | ./a.out] "LK\nLK" \
+		"EOF (-feof-value=none) == none"
+
 }
 
 proc test_i_tape_length { } {

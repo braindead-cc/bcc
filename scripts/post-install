@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# genln - create symlinks on install
+# (c) Kiëd Llaentenn <kiedtl@protonmail.com>
+# See the LICENSE for copyright information.
+
+cat <<EOF
+#!/bin/sh
+
+lbf \$@
+EOF > "$DESTDIR/$MESON_INSTALL_PREFIX/bin/lbfc"
+
+cat <<EOF
+#!/bin/sh
+
+lbf \$@
+EOF > "$DESTDIR/$MESON_INSTALL_PREFIX/bin/lbfi"

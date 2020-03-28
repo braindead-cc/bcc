@@ -62,3 +62,5 @@ lbf_sources = ['src/emitc.c',       'src/emitc.h',
                 'src/warn.c',       'src/warn.h']
 
 lbf = executable('lbf', lbf_sources, include_directories: inc, install: true)
+
+meson.add_install_script('scripts/post-install')

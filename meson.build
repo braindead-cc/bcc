@@ -32,6 +32,10 @@ add_global_arguments(cc.get_supported_arguments([
 	# trigraphs are fun!
 	# "if !err ??!??! throw(err);" :^)
 	'-Wno-trigraphs',
+
+	# sheesh
+	# see src/util.c
+	'-Wno-format-nonliteral',
 ]), language: 'c')
 
 add_global_arguments([

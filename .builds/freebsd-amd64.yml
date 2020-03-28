@@ -3,7 +3,7 @@ image: freebsd/latest
 packages:
         - meson
         - scdoc
-        - tcl
+        - tcl87
         - gcc
         - binutils
         - xz

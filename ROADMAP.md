@@ -7,13 +7,11 @@
 	- [ ] optimize copy loops
 	- [ ] optimize multiplication loops
 - [x] working interpreter
-- [ ] working compiler
+- [x] working compiler
 - [ ] implemented all compiler backends
-	- [ ] C backend
-	- [ ] ARM32 assembly backend
+	- [x] C backend
 	- [ ] LLVM backend
 	- [ ] Rust backend
-	- [ ] V backend
 	- [ ] Go backend
 	- [ ] QBE backend
 - [ ] working debugger

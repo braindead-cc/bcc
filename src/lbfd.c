@@ -11,6 +11,7 @@
 #include "util.h"
 
 static void update_code_w(struct Instruction *cur, WINDOW *w);
+static void update_mem_w(struct Tape *tape, WINDOW *w);
 
 void
 lbfd_main(struct Options *opts, struct Instruction *head)
@@ -43,11 +44,16 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 
 	/* delay */
 	struct timespec delay = {
-		0, 200000000,
+		0, 100000000,
 	};
 
 	/* windows */
-	WINDOW *code_w = newwin(5, COLS, 0, 0); /* code area */
+	WINDOW *code_w = newwin(5, COLS, 0, 0);              /* code area */
+	WINDOW *mem_w  = newwin(LINES - 6 - 12, COLS, 7, 0); /* memory */
+
+	/* set borders */
+	wborder(code_w, '|', '|', '-', '-', '+', '+', '+', '+');
+	wborder(mem_w,  '|', '|', '-', '-', '+', '+', '+', '+');
 
 	int ch;
 	for (
@@ -76,6 +82,8 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 
 		update_code_w(cur, code_w);
 		wrefresh(code_w);
+		update_mem_w(tape, mem_w);
+		wrefresh(mem_w);
 
 		/* execute brainfsck */
 		switch (cur->command) {
@@ -167,6 +175,7 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 
 cleanup:
 	/* reset term */
+	nodelay(stdscr, FALSE);
 	getch();
 	delwin(code_w);
 	endwin();
@@ -182,8 +191,6 @@ cleanup:
 static void
 update_code_w(struct Instruction *cur, WINDOW *w)
 {
-	box(w, '|', '-');
-
 	/* write label */
 	char label[7] = " code ";
 	for (usize i = 0; i < (sizeof(label) - 1); ++i)
@@ -214,10 +221,36 @@ update_code_w(struct Instruction *cur, WINDOW *w)
 	}
 
 	/* draw code onto screen */
-	for (usize i = 0; i < code_width; ++i)
-		mvwaddch(w, 2, 1 + i, (const chtype) code[i]);
+	for (usize i = 1; i < code_width; ++i)
+		mvwaddch(w, 2, i, (const chtype) code[i]);
 
 	/* draw cursor
 	 * TODO: separate this and border drawing into init_code_w */
 	mvwaddch(w, 3, (code_width/2) + 1, (const chtype) '^');
+}
+
+static void
+update_mem_w(struct Tape *tape, WINDOW *w)
+{
+	char buf[COLS - 2];
+	buf[0] = '\0';
+
+	/* populate buffer */
+	for (usize i = 0; i < ((COLS - 2) / 6); ++i) {
+		if (i > tape->tp_size) {
+			strcat((char*) &buf, " NUL |");
+			continue;
+		}
+
+		char tmp[7];
+		tmp[0] = '\0';
+
+		sprintf((char*) &tmp, " %3d |", tape->cells[i]);
+		strcat((char*) &buf, (char*) &tmp);
+	}
+
+	/* draw mem */
+	for (usize i = 0; i < (COLS - 2); ++i) {
+		mvwaddch(w, 3, 2 + i, (const chtype) buf[i]);
+	}
 }

@@ -3,10 +3,13 @@ image: freebsd/latest
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
+        # workaround for meson failing to install
+        # due to sr.ht builds not executing `pkg update -f`
+        # first
         - dependencies: |
                 sudo pkg update -f
                 yes | sudo pkg install meson scdoc tcl87
-                yes | sudo pkg install tcl-wrapper pixz
+                yes | sudo pkg install tcl-wrapper pixz ncurses
         - prepare: |
                 cd lbf
                 meson build

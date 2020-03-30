@@ -6,8 +6,7 @@
 
 You will need:
 
-- either Ninja or Samurai
-- Meson
+- either Ninja/Samurai with Meson, or GNU Make
 - a POSIX-compliant shell (e.g. bash or dash)
 - a C99 compiler (tested with Clang, GCC, and TCC)
 - [`scdoc`](https://git.sr.ht/~sircmpwn/scdoc)
@@ -30,8 +29,14 @@ TODO: add
 
 ## Building/Installing
 
+With Meson:
 ```
-$ meson --buildtype=release build
-$ ninja -C build
-# ninja -C build install
+$ meson --buildtype=release build --unity on
+# ninja -C build install # or samu -C build install
+```
+
+With GNU Make:
+```
+$ vi config.mk # do your configuring here
+# gmake install
 ```

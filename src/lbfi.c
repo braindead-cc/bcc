@@ -36,9 +36,6 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case '-':
 			tape->cells[tape->pointer] -= cur->repeat;
 			break;
-		case '^':
-			tape->pointer = 0;
-			break;
 		case '<':
 			/* check for overflow */
 			if ((tape->pointer - cur->repeat) > tape->pointer)
@@ -98,9 +95,6 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 		case '.':
 			fputc(tape->cells[tape->pointer] % 255, stdout);
 			break;
-		case '&':
-			fputc(tape->cells[tape->pointer], stderr);
-			break;
 		case '#':
 			/* TODO: allow -fdebug-context */
 			for (usize x = 0; x < tape->tp_size; ++x) {
@@ -122,15 +116,11 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 				- (void*) (tape->cells + tape->pointer));
 			break;
 #pragma GCC diagnostic pop
-		case '@':
-			goto cleanup;
-			break;
 		default:
 			break;
 		}
 	}
 
-cleanup:
 	/* cleanup */
 	if (tape->cells) free(tape->cells);
 	if (tape)        free(tape);

@@ -31,7 +31,6 @@ struct Options {
 
 	/* options enabled with -f (e.g. -fenable-dbg) */
 	bool fopt_enable_dbg_command;       /* enable # command */
-	bool fopt_enable_lbf_std;           /* enable lbf extensions */
 
 	/* optimizations (also used with -f) */
 	bool fopt_enable_nullify_command;   /* [-] => * */

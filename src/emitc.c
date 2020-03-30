@@ -116,9 +116,6 @@ emitc(struct Options *opts, struct Instruction *head)
 		case ']':
 			printf("}");
 			break;
-		case '^':
-			printf("p=0;");
-			break;
 		case '<':
 			printf("ml(%i);", c->repeat);
 			break;
@@ -131,17 +128,11 @@ emitc(struct Options *opts, struct Instruction *head)
 		case '.':
 			printf("wr(stdout);");
 			break;
-		case '&':
-			printf("wr(stderr);");
-			break;
 		case '{':
 			printf("p-=(i)((void*)&m[p]-memrchr(m,0,m[p]+1));");
 			break;
 		case '}':
 			printf("p+=(i)(memchr(&m[p],0,s)-(void*)(&m[p]));");
-			break;
-		case '@':
-			printf("free(m);exit(0);");
 			break;
 		case '#':
 			/* deliberately not implemented */

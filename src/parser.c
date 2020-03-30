@@ -58,7 +58,7 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 		case '+':
 		case '-':
 		case '[':
-			if (last->command == ']' || last->command == '*')
+			if (last->command == ']')
 				warn(opts, line, column, W_DEAD_CODE);
 			/* fallthrough */
 		case ']':
@@ -80,20 +80,6 @@ parse(struct Options *opts, char *program_data, struct Instruction *program)
 
 				command = program_data[i];
 			}
-			break;
-		case '*':
-			if (last->command == ']' || last->command == '*') {
-				if (opts->fopt_enable_lbf_std)
-					warn(opts, line, column, W_DEAD_CODE);
-			}
-			/* fallthrough */
-		case '^':
-		case '&':
-		case '{':
-		case '}':
-		case '@':
-			if (opts->fopt_enable_lbf_std)
-				command = program_data[i];
 			break;
 		default:
 			break;

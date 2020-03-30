@@ -32,7 +32,6 @@ main(int argc, char **argv)
 	opts->verbose                       = FALSE;
 	opts->backend                       = BOPT_C;
 	opts->fopt_enable_dbg_command       = FALSE;
-	opts->fopt_enable_lbf_std           = FALSE;
 	opts->fopt_enable_nullify_command   = FALSE;
 	opts->fopt_enable_scan_command      = FALSE;
 	opts->fopt_enable_command_squashing = FALSE;
@@ -101,8 +100,6 @@ main(int argc, char **argv)
 		case 'f':
 			if (!strcmp(optarg, "enable-dbg")) {
 				opts->fopt_enable_dbg_command = TRUE;
-			} else if (!strcmp(optarg, "enable-lbf-std")) {
-				opts->fopt_enable_lbf_std = TRUE;
 			} else if (!strcmp(optarg, "optimize-multiple-commands")) {
 				opts->fopt_enable_command_squashing = TRUE;
 			} else if (!strcmp(optarg, "optimize-scan-loops")) {

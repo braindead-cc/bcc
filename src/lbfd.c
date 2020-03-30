@@ -98,9 +98,6 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 		case '-':
 			tape->cells[tape->pointer] -= cur->repeat;
 			break;
-		case '^':
-			tape->pointer = 0;
-			break;
 		case '<':
 			/* check for overflow */
 			if ((tape->pointer - cur->repeat) > tape->pointer)
@@ -145,7 +142,6 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 			break;
 		case '.':
 		case ',':
-		case '&':
 			/* TODO: implement */
 			break;
 		case '#':
@@ -163,9 +159,6 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 				- (void*) (tape->cells + tape->pointer));
 			break;
 #pragma GCC diagnostic pop
-		case '@':
-			goto cleanup;
-			break;
 		default:
 			break;
 
@@ -175,7 +168,6 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 		nanosleep(&delay, NULL);
 	}
 
-cleanup:
 	/* reset term */
 	nodelay(stdscr, FALSE);
 	getch();

@@ -31,7 +31,7 @@ add_global_arguments(cc.get_supported_arguments([
 	'-Wmissing-include-dirs',
 
 	# trigraphs are fun!
-	# "if !err ??!??! throw(err);" :^)
+	# "if IsErr(err) ??!??! panic(err);" :^)
 	'-Wno-trigraphs',
 
 	# sheesh
@@ -49,6 +49,7 @@ add_global_arguments([
 
 inc = include_directories(['include', 'include/ccommon'])
 lbf_sources = ['src/emitc.c',       'src/emitc.h',
+		'src/emit_qbe.c',   'src/emit_qbe.h',
 		'src/lbf.c',        'src/lbf.h',
 		'src/lbfc.c',       'src/lbfc.h',
 		'src/lbfd.c',       'src/lbfd.h',

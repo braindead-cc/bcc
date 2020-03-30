@@ -17,6 +17,7 @@
 - [ ] working debugger
 	- [x] code pane
 	- [ ] memory pane
+		- [ ] scrolling
 	- [ ] I/O panes
 	- [ ] statistics pane
 - [ ] documentation

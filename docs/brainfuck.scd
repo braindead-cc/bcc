@@ -51,29 +51,6 @@ the implementation).
 Several extra commands for brainfuck exist, most notably the \# command, which
 prints out the values of all memory cells for debugging purposes.
 
-LBF also adds several non-standard extensions, the use of which is strongly
-discouraged, as it makes the brainfuck program incompatible with other
-implementations. For the LBF interpreter/compiler to recognize them, they must
-be invoked with the `-fenable-lbf-std` option.
-
-[- *LBF COMMAND*
-:< *DESCRIPTION*
-|   \*
-:  set the current memory cell to zero. (equivalent to [-] in normal brainfuck
-   code.
-|  ^
-:  set the pointer to the first cell in the tape.
-|  &
-:  output the current memory cell as a character to stderr.
-|  {
-:  move the pointer to the first memory cell of the value zero left of the
-   current pointer location.
-|  }
-:  move the pointer to the first memory cell of the value zero right of the
-   current pointer location.
-|  @
-:  exit the program with the value of the current memory cell as the exit code.
-
 # EXAMPLES
 
 The following program simply prints out it's input:

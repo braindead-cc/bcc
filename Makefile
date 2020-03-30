@@ -11,21 +11,22 @@ include config.mk
 DATE    = $(shell date '+%Y-%m-%d %H%M')
 VERSION = 0.1.0
 
-SRC     = util.c terminfo.c status.c emitc.c warn.c parser.c opt-squash.c \
-	  opt-nloops.c opt-sloops.c prepare.c lbfi.c lbfc.c lbf.c
-HDR     = $(SRC:.c=.h) instructions.h tape.h
-OBJ     = $(SRC:.c=.o)
+OBJDIR  = build
 
-WARNING = -Wall -Wextra -pedantic -Wmissing-prototypes -Wold-style-definition \
-	  -Wno-incompatible-pointer-types -Wno-unused-parameter \
-	  -Wno-unused-value -Wno-trigraphs
+SRC     = $(wildcard src/*.c)
+OBJ     = $(subst src/,$(OBJDIR)/,$(SRC:.c=.o))
 
-INC     = -I. -Iccommon/
+WARNING = -Wall -Wextra -Wpedantic -Wold-style-definition -Winit-self \
+	  -Wfloat-equal -Wstrict-prototypes -Wredundant-decls -Wendif-labels \
+	  -Wimplicit-fallthrough=2 -Woverflow -Wformat=2 \
+	  -Wmissing-include-dirs -Wno-trigraphs -Wno-format-nonliteral
+
+INC     = -Iinclude/ -Iinclude/ccommon/
 DEF     = -DVERSION=\"$(VERSION)\" -DBUILDDATE="\"$(DATE)\"" -D_GNU_SOURCE \
 	  -DMEMTYPE=$(MEMTYPE)
 
 CFLAGS  = -std=c99 $(WARNING) $(INC) $(DEF)
-LDFLAGS = -fuse-ld=$(LD)
+LDFLAGS = -fuse-ld=$(LD) -lncursesw
 
 ifeq ($(ENABLE_FANCY_SPINNER), true)
 	DEF += -DSPINNER_FANCY
@@ -33,20 +34,21 @@ endif
 
 all: debug docs/brainfuck.7 docs/$(BIN).1
 
-.c.o:
+$(OBJDIR)/%.o:: src/%.c
 	@echo "  CC       $<"
-	$(CMD)$(CC) $(CFLAGS) $(CFLAGS_OPT) -c $< -o $(<:.c=.o)
+	$(CMD)$(CC) $(CFLAGS) $(CFLAGS_OPT) -c $< \
+		-o $(subst src/,$(OBJDIR)/,$(<:.c=.o))
 
 debug: CFLAGS_OPT  = $(DEBUG_CFLAGS)
 debug: LDFLAGS_OPT = $(DEBUG_LDFLAGS)
-debug: $(BIN)
+debug: $(OBJDIR)/$(BIN)
 
 release: CFLAGS_OPT  = $(RELEASE_CFLAGS)
 release: LDFLAGS_OPT = $(RELEASE_LDFLAGS)
-release: $(BIN)
+release: $(OBJDIR)/$(BIN)
 
-$(BIN): $(OBJ)
-	@echo "  LD       $@"
+$(OBJDIR)/$(BIN): $(OBJ)
+	@echo "  CCLD     $@"
 	$(CMD)$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_OPT) $(LDFLAGS) $(LDFLAGS_OPT)
 
 docs/$(BIN).1: docs/$(BIN).scd
@@ -58,11 +60,11 @@ docs/brainfuck.7: docs/brainfuck.scd
 	$(CMD)scdoc < $^ > $@
 
 clean:
-	rm -f $(BIN) $(OBJ) *.tar *.tar.xz docs/*.1 docs/*.7
+	rm -f $(OBJDIR) *.tar *.tar.xz docs/*.1 docs/*.7
 
 dist-bin: $(BIN) docs/brainfuck.7 docs/$(BIN).1
 	mkdir -p $(BIN)-$(VERSION)-$(shell arch)-bin
-	cp -R $(BIN) README.md LICENSE.md docs/ samples/ \
+	cp -R $(OBJDIR) $(BIN) README.md LICENSE.md docs/ samples/ \
 		$(BIN)-$(VERSION)-$(shell arch)-bin/
 	tar -cf $(BIN)-$(VERSION)-$(shell arch)-bin.tar \
 		$(BIN)-$(VERSION)-$(shell arch)-bin/
@@ -71,7 +73,7 @@ dist-bin: $(BIN) docs/brainfuck.7 docs/$(BIN).1
 
 dist-src: $(SRC) $(HDR)
 	mkdir -p $(BIN)-$(VERSION)-src
-	cp -R $(SRC) $(HDR) README.md LICENSE.md \
+	cp -R src/ include/ README.md LICENSE.md \
 		makefile config.mk docs/ samples/ ccommon/ etc/ \
 		$(BIN)-$(VERSION)-src/
 	tar -cf $(BIN)-$(VERSION)-src.tar $(BIN)-$(VERSION)-src/
@@ -88,12 +90,6 @@ install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
 	$(CMD)install -Dm755 $(BIN) $(DESTDIR)/$(PREFIX)/bin/$(BIN)
 	@echo "  STRIP    $(BIN)"
 	$(CMD)strip --strip-all $(DESTDIR)/$(PREFIX)/bin/$(BIN)
-	@echo "  LN       $(BIN)i"
-	$(CMD)ln -fs $(DESTDIR)/$(PREFIX)/bin/$(BIN) \
-		$(DESTDIR)/$(PREFIX)/bin/$(BIN)i
-	@echo "  LN       $(BIN)c"
-	$(CMD)ln -fs $(DESTDIR)/$(PREFIX)/bin/$(BIN) \
-		$(DESTDIR)/$(PREFIX)/bin/$(BIN)c
 	@echo "  INSTALL  $(BIN).1"
 	$(CMD)install -Dm644 docs/$(BIN).1 \
 		$(DESTDIR)/$(PREFIX)/share/man/man1/$(BIN).1

@@ -1,1 +1,23 @@
 lbf(1) "General Commands Manual"
+
+# NAME
+
+# SYNOPSIS
+
+# DESCRIPTION
+
+# COMPILER
+
+# INTERPRETER
+
+# DEBUGGER
+
+# EXAMPLES
+
+# REPORTING BUGS
+
+# COPYRIGHT
+
+# WWW
+
+# SEE ALSO

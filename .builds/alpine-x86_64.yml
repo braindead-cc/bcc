@@ -1,7 +1,6 @@
 arch: x86_64
 image: alpine/latest
 packages:
-        - meson
         - scdoc
         - tcl
         - gcc
@@ -11,21 +10,15 @@ packages:
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
-        - prepare: |
-                cd lbf
-                meson build
         - build: |
                 cd lbf
-                ninja -C build
+                make unity
         - test: |
-                cd lbf/tests
-                ./test.tcl
+                cd lbf
+                make tests
         - artifacts: |
                 cd lbf
-                scripts/dist-src
-                scripts/dist-bin
-                mv lbf-*-bin.tar.xz lbf-bin.tar.xz
-                mv lbf-*-src.tar.xz lbf-src.tar.xz
+                make artifacts
 artifacts:
         - lbf/lbf-bin.tar.xz
         - lbf/lbf-src.tar.xz

@@ -10,12 +10,9 @@ tasks:
                 sudo pkg update -f
                 yes | sudo pkg install meson scdoc tcl87
                 yes | sudo pkg install tcl-wrapper pixz ncurses
-        - prepare: |
-                cd lbf
-                meson build
         - build: |
                 cd lbf
-                ninja -C build
+                make unity
         - test: |
-                cd lbf/tests
-                ./test.tcl
+                cd lbf
+                make tests

@@ -34,7 +34,11 @@ endif
 
 all: debug docs/brainfuck.7 docs/$(BIN).1
 
-$(OBJDIR)/%.o:: src/%.c
+$(OBJDIR):
+	@echo "  MKDIR    $@"
+	$(CMD)mkdir -p $@
+
+$(OBJDIR)/%.o:: src/%.c $(OBJDIR)
 	@echo "  CC       $<"
 	$(CMD)$(CC) $(CFLAGS) $(CFLAGS_OPT) -c $< \
 		-o $(subst src/,$(OBJDIR)/,$(<:.c=.o))
@@ -46,6 +50,18 @@ debug: $(OBJDIR)/$(BIN)
 release: CFLAGS_OPT  = $(RELEASE_CFLAGS)
 release: LDFLAGS_OPT = $(RELEASE_LDFLAGS)
 release: $(OBJDIR)/$(BIN)
+
+unity: CFLAGS_OPT  = $(RELEASE_CFLAGS)
+unity: LDFLAGS_OPT = $(RELEASE_LDFLAGS)
+unity: $(SRC)
+	$(CMD)rm -f build/unity.c
+	$(CMD)for src in $(SRC); \
+	do \
+		echo "#include \"../$$src\"" >> build/unity.c; \
+	done
+	@echo "  CC       build/unity.c"
+	$(CMD)$(CC) -o $(OBJDIR)/$(BIN) $(CFLAGS) $(CFLAGS_OPT) \
+		$(LDFLAGS) $(LDFLAGS_OPT) build/unity.c
 
 $(OBJDIR)/$(BIN): $(OBJ)
 	@echo "  CCLD     $@"
@@ -60,7 +76,7 @@ docs/brainfuck.7: docs/brainfuck.scd
 	$(CMD)scdoc < $^ > $@
 
 clean:
-	rm -f $(OBJDIR) *.tar *.tar.xz docs/*.1 docs/*.7
+	rm -rf $(OBJDIR) *.tar *.tar.xz docs/*.1 docs/*.7
 
 dist-bin: $(BIN) docs/brainfuck.7 docs/$(BIN).1
 	mkdir -p $(BIN)-$(VERSION)-$(shell arch)-bin

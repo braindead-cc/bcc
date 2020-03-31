@@ -38,7 +38,7 @@ $(OBJDIR):
 	@echo "  MKDIR    $@"
 	$(CMD)mkdir -p $@
 
-$(OBJDIR)/%.o:: src/%.c $(OBJDIR)
+$(OBJDIR)/%.o: src/%.c $(OBJDIR)
 	@echo "  CC       $<"
 	$(CMD)$(CC) $(CFLAGS) $(CFLAGS_OPT) -c $< \
 		-o $(subst src/,$(OBJDIR)/,$(<:.c=.o))
@@ -78,7 +78,7 @@ docs/brainfuck.7: docs/brainfuck.scd
 clean:
 	rm -rf $(OBJDIR) *.tar *.tar.xz docs/*.1 docs/*.7
 
-dist-bin: $(BIN) docs/brainfuck.7 docs/$(BIN).1
+dist-bin: $(OBJDIR)/$(BIN) docs/brainfuck.7 docs/$(BIN).1
 	mkdir -p $(BIN)-$(VERSION)-$(shell arch)-bin
 	cp -R $(OBJDIR) $(BIN) README.md LICENSE.md docs/ samples/ \
 		$(BIN)-$(VERSION)-$(shell arch)-bin/
@@ -101,7 +101,7 @@ artifacts: dist-bin dist-src
 	mv $(BIN)-$(VERSION)-$(shell arch)-bin.tar.xz lbf-bin.tar.xz
 	mv $(BIN)-$(VERSION)-src.tar.xz lbf-src.tar.xz
 
-install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
+install: $(OBJDIR)/$(BIN) docs/$(BIN).1 docs/brainfuck.7
 	@echo "  INSTALL  $(BIN)"
 	$(CMD)install -Dm755 $(BIN) $(DESTDIR)/$(PREFIX)/bin/$(BIN)
 	@echo "  STRIP    $(BIN)"
@@ -116,4 +116,4 @@ install: $(BIN) docs/$(BIN).1 docs/brainfuck.7
 tests:
 	$(CMD)cd tests && tclsh ./test.tcl
 
-.PHONY: all debug release clean dist-bin dist-src artifacts install tests
+.PHONY: all debug release unity clean dist-bin dist-src artifacts install tests

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] argument parser
+	- [ ] overhaul argument parser
 - [ ] optimizations
 	- [x] command squashing
 	- [x] optimize nullifying loops

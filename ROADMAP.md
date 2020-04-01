@@ -10,6 +10,7 @@
 	- [ ] optimize multiplication loops
 - [x] working interpreter
 - [x] working compiler
+	- [ ] print headers
 - [ ] implemented all compiler backends
 	- [x] C backend
 	- [ ] LLVM backend
@@ -27,3 +28,4 @@
 	- [ ] LBF usage
 		- [ ] markdown
 		- [ ] manpage
+		

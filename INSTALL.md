@@ -30,12 +30,14 @@ TODO: add
 ## Building/Installing
 
 With Meson:
+
 ```
 $ meson --buildtype=release build --unity on
 # ninja -C build install # or samu -C build install
 ```
 
 With GNU Make:
+
 ```
 $ vi config.mk # do your configuring here
 # gmake install

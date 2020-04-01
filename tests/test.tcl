@@ -4,6 +4,8 @@
 # (c) Kiëd Llaentenn
 # See the LICENSE.md file for more information.
 
+# TODO: perform compiler tests on all backends
+
 # maximum optimization level
 set maxoptlevel 2
 

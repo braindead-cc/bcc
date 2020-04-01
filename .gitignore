@@ -12,3 +12,6 @@ docs/brainfuck.7
 
 # release files
 *.tar.xz
+
+# temporary files
+tmp.*

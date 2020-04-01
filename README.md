@@ -70,7 +70,7 @@ See `lbf(1)` and `brainfuck(7)`.
 ## FAQ
 
 1. **Q**: is this a joke?
-  - **A**: if you mean the weeks I spent working on this, no. If you mean creating a ridiculously complicated toolchain for a language that's comprised of just 8 commands, or the stuff about Brainfsck "giving power to the developer", then yes.
+    - **A**: if you mean the weeks I spent working on this, no. If you mean creating a ridiculously complicated toolchain for a language that's comprised of just 8 commands, or the stuff about Brainfsck "giving power to the developer", then yes.
 
 ---
 

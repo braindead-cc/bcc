@@ -51,7 +51,7 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 
 	/* windows */
 	WINDOW *code_w = newwin(5, COLS, 0, 0);              /* code area */
-	WINDOW *mem_w  = newwin(LINES - 6 - 12, COLS, 6, 0); /* memory */
+	WINDOW *mem_w  = newwin(5, COLS, 6, 0); /* memory */
 
 	/* set borders */
 	setborder(mem_w);
@@ -224,43 +224,70 @@ update_code_w(struct Instruction *cur, WINDOW *w)
 		code[i] = j->command;
 	}
 
+	code[code_width] = '\0'; /* nul terminator */
+
 	/* draw code onto screen */
-	for (usize i = 1; i < code_width; ++i)
-		mvwaddch(w, 2, i, (const chtype) code[i]);
+	mvwprintw(w, 2, 1, "%s", code);
+	//for (usize i = 1; i < code_width; ++i)
+		//mvwaddch(w, 2, i, (const chtype) code[i]);
 
 	/* draw cursor
 	 * TODO: separate this into init_code_w */
 	mvwaddch(w, 3, (code_width/2), (const chtype) '^');
-	attron(A_BOLD|A_REVERSE);
-	mvwaddch(w, 2, (code_width/2), (const chtype) cur->command);
-	attroff(A_BOLD|A_REVERSE);
 }
 
 static void
 update_mem_w(struct Tape *tape, WINDOW *w)
 {
-	/* write label */
-	mvwprintw(w, 0, 3, " memory ");
+	mvwprintw(w, 0, 3, " memory "); /* label */
 
-	/* write memory cells */
-	for (
-		usize y = 0, c = 0;
-		y < (((LINES - 6) - 12) - 4);
-		++y, ++c
-	) {
-		for (usize x = 0; x < ((COLS - 2) - 6); x += 6, ++c) {
-			if (c > tape->tp_size) {
-				mvwprintw(w, 2 + y, 2 + x, " NUL |");
-				continue;
-			}
+	usize sz = COLS - 2;
+	char buf[sz];
 
-			char tmp[7];
-			tmp[0] = '\0';
+	/* set initial value of buf */
+	for (usize i = 0; i < sz; buf[i] = ' ', ++i);
 
-			sprintf((char*) &tmp, " %3d |", tape->cells[c]);
-			if (tape->pointer == c) attron(A_REVERSE|COLOR_PAIR(COLOR_WHITE|COLOR_YELLOW));
-			mvwprintw(w, 2 + y, 2 + x, (char*) &tmp);
-			if (tape->pointer == c) attroff(A_REVERSE|COLOR_PAIR(COLOR_WHITE|COLOR_YELLOW));
-		}
+	usize ptr = tape->pointer;
+
+	/* fill buffer left of ptr */
+	for (usize i = sz/2; i < 4; --ptr, i -= 4) {
+		if (ptr == 0) break;
+
+		char tmp[5];
+		tmp[0] = '\0';
+		sprintf((char*) &tmp, "%03i ", tape->cells[ptr]);
+		buf[i]   = tmp[3];
+		buf[i-1] = tmp[2];
+		buf[i-2] = tmp[1];
+		buf[i-3] = tmp[0];
 	}
+
+	/* fill buffer right of ptr */
+	ptr = tape->pointer;
+	for (usize i = sz/2; i < sz; ++ptr, i += 4) {
+		if (ptr > tape->tp_size) {
+			buf[i]   = 'N';
+			buf[i+1] = 'U';
+			buf[i+2] = 'L';
+			buf[i+3] = ' ';
+			continue;
+		}
+
+		char tmp[5];
+		tmp[0] = '\0';
+		sprintf((char*) &tmp, "%03i ", tape->cells[ptr]);
+		buf[i]   = tmp[0];
+		buf[i+1] = tmp[1];
+		buf[i+2] = tmp[2];
+		buf[i+3] = tmp[3];
+	}
+
+	buf[sz] = '\0'; /* nul terminator */
+
+	/* draw code onto screen */
+	mvwprintw(w, 2, 1, "%s", buf);
+
+	/* draw cursor
+	 * TODO: separate this into init_mem_w */
+	mvwaddch(w, 3, (sz/2), (const chtype) '^');
 }

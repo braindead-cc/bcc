@@ -49,6 +49,7 @@ add_global_arguments([
 
 inc = include_directories(['include', 'include/ccommon'])
 lbf_sources = ['src/emitc.c',       'src/emitc.h',
+		'src/emit_rust.c',  'src/emit_rust.h',
 		'src/lbf.c',        'src/lbf.h',
 		'src/lbfc.c',       'src/lbfc.h',
 		'src/lbfd.c',       'src/lbfd.h',

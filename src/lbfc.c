@@ -11,9 +11,11 @@ lbfc_main(struct Options *opts, struct Instruction *head)
 	case BOPT_C:
 		emitc(opts, head);
 		break;
+	case BOPT_RUST:
+		emit_rust(opts, head);
+		break;
 	case BOPT_ARM:
 	case BOPT_LLVM:
-	case BOPT_RUST:
 	case BOPT_V:
 	case BOPT_GO:
 	case BOPT_QBE:

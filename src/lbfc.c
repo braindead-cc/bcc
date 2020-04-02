@@ -1,4 +1,5 @@
 #include "emitc.h"
+#include "emit_rust.h"
 #include "instructions.h"
 #include "options.h"
 #include "lbfc.h"

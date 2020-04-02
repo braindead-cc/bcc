@@ -1,5 +1,5 @@
-#ifndef EMIT_C
-#define EMIT_C
+#ifndef EMIT_RUST
+#define EMIT_RUST
 
 #include "instructions.h"
 #include "options.h"

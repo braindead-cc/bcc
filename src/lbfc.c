@@ -1,6 +1,6 @@
 #include "emitc.h"
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "lbfc.h"
 #include "util.h"
 

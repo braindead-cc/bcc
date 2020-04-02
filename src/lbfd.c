@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "lbfd.h"
 #include "tape.h"
 #include "util.h"

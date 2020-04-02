@@ -3,7 +3,7 @@
 
 #include "emit_rust.h"
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "types.h"
 #include "util.h"
 

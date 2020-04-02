@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "parser.h"
 #include "status.h"
 #include "util.h"

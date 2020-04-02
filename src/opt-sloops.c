@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "opt-sloops.h"
 #include "status.h"
 

@@ -2,7 +2,7 @@
 #define EMIT_C
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "types.h"
 
 void emitc(struct Options *opts, struct Instruction *head);

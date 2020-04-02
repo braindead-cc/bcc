@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "opt-squash.h"
 #include "status.h"
 

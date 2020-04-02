@@ -2,7 +2,7 @@
 #define LBFI_H
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 
 int lbfi_main(struct Options *opts, struct Instruction *head);
 

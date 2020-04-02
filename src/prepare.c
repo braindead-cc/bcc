@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "opt-nloops.h"
 #include "opt-squash.h"
 #include "opt-sloops.h"

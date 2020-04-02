@@ -2,7 +2,7 @@
 #define OPT_SLOOPS_H
 
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 
 void optimize_sloops(struct Options *opts, struct Instruction *head);
 

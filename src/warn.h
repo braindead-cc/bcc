@@ -5,7 +5,7 @@
 #ifndef WARNINGS_H
 #define WARNINGS_H
 
-#include "lbf.h"
+#include "options.h"
 #include "types.h"
 
 enum {

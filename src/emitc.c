@@ -3,7 +3,7 @@
 
 #include "emitc.h"
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "types.h"
 #include "util.h"
 

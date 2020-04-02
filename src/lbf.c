@@ -12,7 +12,7 @@
 
 #include "bool.h"
 #include "instructions.h"
-#include "lbf.h"
+#include "options.h"
 #include "lbfc.h"
 #include "lbfi.h"
 #include "lbfd.h"

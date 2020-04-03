@@ -18,13 +18,10 @@
 	- [ ] QBE backend
 - [ ] working debugger
 	- [x] code pane
-	- [ ] memory pane
+	- [x] memory pane
 		- [ ] scrolling
 	- [ ] I/O panes
 	- [ ] statistics pane
 - [ ] documentation
 	- [x] brainfsck reference
-	- [ ] LBF usage
-		- [ ] markdown
-		- [ ] manpage
-		
+	- [x] BCC usage

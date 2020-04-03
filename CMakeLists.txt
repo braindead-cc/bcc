@@ -75,4 +75,32 @@ set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -march=native")
 set (CMAKE_EXE_LINKER_FLAGS_RELEASE
 	"${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto -s")
 
+# --- manpage ---
+
+find_program(SCDOC NAMES scdoc)
+set (MAN_NAMES bcc.1 brainfuck.7)
+set (MAN_FILES)
+foreach(MAN IN LISTS MAN_NAMES)
+	set (MDEST ${CMAKE_BINARY_DIR}/${MAN})
+	set (MSRC  ${CMAKE_SOURCE_DIR}/docs/${MAN}.scd)
+	add_custom_command (
+		OUTPUT  ${MDEST}
+		COMMAND ${SCDOC} < ${MSRC} > ${MDEST}
+		DEPENDS ${MSRC}
+		COMMENT "Building manpage ${MDEST}"
+		VERBATIM
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+	)
+	list (APPEND MAN_FILES ${MDEST})
+endforeach()
+add_custom_target (man ALL DEPENDS ${MAN_FILES})
+
 install (TARGETS ${BCC_TARGET} DESTINATION bin)
+install (
+	FILES "${CMAKE_BINARY_DIR}/brainfuck.7"
+	DESTINATION "${CMAKE_INSTALL_PREFIX}/share/man/man7"
+)
+install (
+	FILES "${CMAKE_BINARY_DIR}/bcc.1"
+	DESTINATION "${CMAKE_INSTALL_PREFIX}/share/man/man1"
+)

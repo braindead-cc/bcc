@@ -24,7 +24,7 @@ prepare(struct Options *opts, struct Instruction *head)
 	usize sz = 512;
 	char *program_data = malloc(sz * sizeof(char));
 	if (program_data == NULL)
-		die("lbf: error: cannot read brainfsck code:");
+		die("bcc: error: cannot read brainfsck code:");
 
 	/* cpy file data onto buffer */
 	if (opts->verbose)
@@ -34,7 +34,7 @@ prepare(struct Options *opts, struct Instruction *head)
 		f = stdin;
 	} else {
 		if ((f = fopen(opts->path, "r")) == NULL)
-			die("lbf: error: '%s': cannot open:", opts->path);
+			die("bcc: error: '%s': cannot open:", opts->path);
 	}
 
 	usize i = 0;

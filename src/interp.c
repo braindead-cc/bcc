@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "instructions.h"
-#include "lbfi.h"
+#include "interp.h"
 #include "parser.h"
 #include "prepare.h"
 #include "tape.h"
@@ -11,16 +11,16 @@
 #include "util.h"
 
 int
-lbfi_main(struct Options *opts, struct Instruction *head)
+interp_main(struct Options *opts, struct Instruction *head)
 {
 	/* execute instructions */
 	struct Tape *tape = malloc(1 * sizeof(struct Tape));
 	if (tape == NULL)
-		die("lbfi: error: cannot allocate memory for tape:");
+		die("bcc: i: error: cannot allocate memory for tape:");
 	tape->tp_size = opts->fopt_initial_tape_size;
 	tape->cells = calloc(tape->tp_size, sizeof(MEMTYPE));
 	if (tape->cells == NULL)
-		die("lbfi: error: cannot allocate memory for tape:");
+		die("bcc: i: error: cannot allocate memory for tape:");
 	tape->pointer = 0;
 	if (opts->debug) debug("tape size = %lld", tape->tp_size);
 
@@ -59,7 +59,7 @@ lbfi_main(struct Options *opts, struct Instruction *head)
 				tape->cells = realloc(tape->cells,
 						tape->tp_size);
 				if (tape->cells == NULL)
-					die("lbf: error: cannot allocate"
+					die("bcc: i: error: cannot allocate"
 							"memory for tape:");
 				for (usize z = tape->tp_size / 2;
 						z < tape->tp_size;++z,

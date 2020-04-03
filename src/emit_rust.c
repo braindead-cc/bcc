@@ -31,7 +31,7 @@ emit_rust(struct Options *opts, struct Instruction *head)
 		break;
 	default:
 		/* TODO: mov to arg parsing area */
-		die("lbfc: error: '%d': invalid cell size.",
+		die("bcc: c: error: '%d': invalid cell size.",
 				opts->fopt_cell_size);
 		break;
 	}

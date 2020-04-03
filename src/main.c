@@ -1,5 +1,5 @@
 /*
- * Main entrypoint for LBF.
+ * Main entrypoint for BCC.
  *
  * (c) Kiëd Llaentenn and contributors
  * See the LICENSE.md file for more information.
@@ -13,16 +13,16 @@
 #include "bool.h"
 #include "instructions.h"
 #include "options.h"
-#include "lbfc.h"
-#include "lbfi.h"
-#include "lbfd.h"
+#include "comp.h"
+#include "interp.h"
+#include "debugger.h"
 #include "prepare.h"
 #include "util.h"
 
 int
 main(int argc, char **argv)
 {
-	if (argc < 2) die("lbf: error: nothing to do, exiting.");
+	if (argc < 2) die("bcc: error: nothing to do, exiting.");
 
 	struct Options *opts = malloc(1 * sizeof(struct Options));
 
@@ -51,12 +51,12 @@ main(int argc, char **argv)
 	while ((opt = getopt(argc, argv, "Vhdvb:f:O:W:")) != -1) {
 		switch (opt) {
 		case 'V':
-			printf("lbf v%s (build %s)\n", VERSION, BUILDDATE);
+			printf("bcc v%s (build %s)\n", VERSION, BUILDDATE);
 			return 0;
 			break;
 		case 'h':
-			printf("usage: lbf [MODE] [ARGS] < source.bf\n");
-			printf("modes: lbfi, lbfc\n");
+			printf("usage: bcc [MODE] [ARGS] source.bf\n");
+			printf("modes: i, c, d\n");
 			return 0;
 			break;
 		case 'd':
@@ -133,12 +133,12 @@ main(int argc, char **argv)
 				} else if (!strcmp(optarg, "none")) {
 					opts->fopt_eof_char = EOF_NO_CHANGE;
 				} else {
-					die("lbf: error: '%s': invalid"
+					die("bcc: error: '%s': invalid"
 						"argument for -feof-value",
 						optarg);
 				}
 			} else {
-				die("lbf: error: '%s': invalid argument to -f.",
+				die("bcc: error: '%s': invalid argument to -f.",
 					optarg);
 			}
 			break;
@@ -154,7 +154,7 @@ main(int argc, char **argv)
 			case '0':
 				break;
 			default:
-				die("lbf: error: '%c': invalid optimization level.",
+				die("bcc: error: '%c': invalid optimization level.",
 						optarg[0]);
 			}
 			break;
@@ -166,10 +166,10 @@ main(int argc, char **argv)
 			else if (!strcmp(optarg, "ignored-dbg"))
 				opts->wopt_ignore_dbg = TRUE;
 			else
-				die("lbf: error: '%s': invalid argument to -W.", optarg);
+				die("bcc: error: '%s': invalid argument to -W.", optarg);
 			break;
 		default:
-			die("lbf: error: invalid argument.");
+			die("bcc: error: invalid argument.");
 			break;
 		}
 	}
@@ -178,13 +178,13 @@ main(int argc, char **argv)
 
 	struct Instruction *head = malloc(sizeof(struct Instruction));
 	if (head == NULL)
-		die("lbf: error: cannot allocate memory:");
+		die("bcc: error: cannot allocate memory:");
 	prepare(opts, head);
 
-	if (!strcmp(argv[0], "lbfi"))
-		lbfi_main(opts, head);
-	else if (!strcmp(argv[0], "lbfc"))
-		lbfc_main(opts, head);
-	else if (!strcmp(argv[0], "lbfd"))
-		lbfd_main(opts, head);
+	if (!strcmp(argv[0], "i"))
+		interp_main(opts, head);
+	else if (!strcmp(argv[0], "c"))
+		comp_main(opts, head);
+	else if (!strcmp(argv[0], "d"))
+		debugger_main(opts, head);
 }

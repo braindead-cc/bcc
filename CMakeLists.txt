@@ -5,10 +5,10 @@ set (BCC_VERSION "0.2.0")
 set (BCC_SOURCES
 	src/emitc.c
 	src/emit_rust.c
-	src/lbf.c
-	src/lbfc.c
-	src/lbfd.c
-	src/lbfi.c
+	src/main.c
+	src/comp.c
+	src/debugger.c
+	src/interp.c
 	src/opt-nloops.c
 	src/opt-sloops.c
 	src/opt-squash.c

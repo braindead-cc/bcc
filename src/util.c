@@ -33,7 +33,7 @@ die(const char *fmt, ...)
 usize
 debug(const char *fmt, ...)
 {
-	fprintf(stderr, "lbf: debug: ");
+	fprintf(stderr, "bcc: debug: ");
 
 	va_list ap;
 	va_start(ap, fmt);

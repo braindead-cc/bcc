@@ -6,7 +6,7 @@
 
 #include "instructions.h"
 #include "options.h"
-#include "lbfd.h"
+#include "debugger.h"
 #include "tape.h"
 #include "util.h"
 
@@ -15,7 +15,7 @@ static void update_code_w(struct Instruction *cur, WINDOW *w);
 static void update_mem_w(struct Tape *tape, WINDOW *w);
 
 void
-lbfd_main(struct Options *opts, struct Instruction *head)
+debugger_main(struct Options *opts, struct Instruction *head)
 {
 	bool execute = TRUE;
 
@@ -29,19 +29,19 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 
 	/* exit if terminal is too small */
 	if (LINES < 24 || COLS < 80) {
-		die("lbfd: error: terminal is too small.\n"
-			"lbfd: hint: minimum terminal size for "
+		die("bccd: error: terminal is too small.\n"
+			"bccd: hint: minimum terminal size for "
 			"debugger is 80x24.");
 	}
 
 	/* initialize brainfuck */
 	struct Tape *tape = malloc(1 * sizeof(struct Tape));
 	if (tape == NULL)
-		die("lbfd: error: cannot allocate memory for tape:");
+		die("bccd: error: cannot allocate memory for tape:");
 	tape->tp_size = opts->fopt_initial_tape_size;
 	tape->cells = calloc(tape->tp_size, sizeof(MEMTYPE));
 	if (tape->cells == NULL)
-		die("lbfd: error: cannot allocate memory for tape:");
+		die("bccd: error: cannot allocate memory for tape:");
 	tape->pointer = 0;
 
 	/* delay */
@@ -121,7 +121,7 @@ lbfd_main(struct Options *opts, struct Instruction *head)
 				tape->cells = realloc(tape->cells,
 						tape->tp_size);
 				if (tape->cells == NULL)
-					die("lbf: error: cannot allocate"
+					die("bccd: error: cannot allocate"
 							"memory for tape:");
 				for (usize z = tape->tp_size / 2;
 						z < tape->tp_size;++z,

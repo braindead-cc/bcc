@@ -1,5 +1,5 @@
-#ifndef LBF_H
-#define LBF_H
+#ifndef OPTIONS_H
+#define OPTIONS_H
 
 #include "bool.h"
 #include "instructions.h"

@@ -1,12 +1,12 @@
-lbf(1) "General Commands Manual"
+bcc(1) "General Commands Manual"
 
 # NAME
 
-lbf - an optimizing brainfsck compiler, interpreter, and debugger
+bcc - the Braindead Compiler Collection
 
 # SYNOPSIS
 
-lbf lbf[icd] [OPTION]... [FILE]
+bcc [cdi] [OPTION]... [FILE]
 
 # DESCRIPTION
 
@@ -74,7 +74,7 @@ The following unexpected behaviours are features and not bugs.
 # REPORTING BUGS
 
 Please report any encountered bugs to the Sourcehut ticket tracker
-at _https://todo.sr.ht/~kiedtl/lbf_.
+at _https://todo.sr.ht/~kiedtl/bcc_.
 
 # COPYRIGHT
 
@@ -102,10 +102,10 @@ the software.*
 
 *brainfsck*(7)
 
-The full documentation for *lbf* is not maintained as a Texinfo manual.
-If the *info* and *lbf* programs are properly installed on your system,
+The full documentation for *bcc* is not maintained as a Texinfo manual.
+If the *info* and *bcc* programs are properly installed on your system,
 the command
 
-	*info lbf*
+	*info bcc*
 
 should not give you access to the complete manual.

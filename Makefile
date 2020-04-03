@@ -1,6 +1,6 @@
 #
-# lbf: the LPTSTR Brainfsck Toolchain
-# https://github.com/lptstr/lbf
+# bcc: the braindead compiler collection
+# https://github.com/braindead-cc/bcc
 #
 # (c) Kiëd Llaentenn
 # See the LICENSE.md file for more information
@@ -79,27 +79,15 @@ clean:
 	rm -rf $(OBJDIR) *.tar *.tar.xz docs/*.1 docs/*.7
 
 dist-bin: $(OBJDIR)/$(BIN) docs/brainfuck.7 docs/$(BIN).1
-	mkdir -p $(BIN)-$(VERSION)-$(shell arch)-bin
-	cp -R $(OBJDIR) $(BIN) README.md LICENSE.md docs/ samples/ \
-		$(BIN)-$(VERSION)-$(shell arch)-bin/
-	tar -cf $(BIN)-$(VERSION)-$(shell arch)-bin.tar \
-		$(BIN)-$(VERSION)-$(shell arch)-bin/
-	xz $(BIN)-$(VERSION)-$(shell arch)-bin.tar
-	rm -rf $(BIN)-$(VERSION)-$(shell arch)-bin/
+	$(CMD)scripts/dist-bin
 
-dist-src: $(SRC) $(HDR)
-	mkdir -p $(BIN)-$(VERSION)-src
-	cp -R src/ include/ README.md LICENSE.md \
-		makefile config.mk docs/ samples/ ccommon/ etc/ \
-		$(BIN)-$(VERSION)-src/
-	tar -cf $(BIN)-$(VERSION)-src.tar $(BIN)-$(VERSION)-src/
-	xz $(BIN)-$(VERSION)-src.tar
-	rm -rf $(BIN)-$(VERSION)-src/
+dist-src: $(SRC)
+	$(CMD)scripts/dist-bin
 
 # for CI artifacts
 artifacts: dist-bin dist-src
-	mv $(BIN)-$(VERSION)-$(shell arch)-bin.tar.xz lbf-bin.tar.xz
-	mv $(BIN)-$(VERSION)-src.tar.xz lbf-src.tar.xz
+	mv $(BIN)-*-bin.tar.xz bcc-bin.tar.xz
+	mv $(BIN)-*-src.tar.xz bcc-src.tar.xz
 
 install: $(OBJDIR)/$(BIN) docs/$(BIN).1 docs/brainfuck.7
 	@echo "  INSTALL  $(BIN)"

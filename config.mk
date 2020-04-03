@@ -1,6 +1,6 @@
 #
-# lbf: the LPTSTR brainfsck toolchain
-# https://github.com/lptstr/lbf
+# bcc: the braindead compiler collection
+# https://github.com/braindead-cc/bcc
 #
 # (c) Kiëd Llaentenn
 # See the LICENSE.md file for more information
@@ -28,8 +28,8 @@ PREFIX = /usr/local
 # ---------------------
 
 # binary name
-# default: 'lbf'
-BIN = lbf
+# default: 'bcc'
+BIN = bcc
 
 # enable fancy Unicode spinners?
 # (may cause strange behaviour on terminals that don't support Unicode)

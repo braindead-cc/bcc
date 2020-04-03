@@ -7,7 +7,7 @@
 # See the LICENSE for copyright information.
 # MUST be run in project root
 
-tarname="lbf-${1:-unknown}-src"
+tarname="bcc-${1:-unknown}-src"
 
 mkdir -p "$tarname"
 cp -R docs/ etc/ include/ samples/ scripts/ src/ tests/ \

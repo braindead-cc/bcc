@@ -7,15 +7,15 @@
 # See the LICENSE for copyright information.
 # MUST be run in project root
 
-tarname="lbf-${1:-unknown}-$(uname -m)-bin"
+tarname="bcc-${1:-unknown}-$(uname -m)-bin"
 
 # check for dependencies
-[ -f "build/lbf"  ]       || ninja -C build
-[ -f "docs/lbf.1" ]       || scripts/genman
+[ -f "build/bcc"  ]       || ninja -C build
+[ -f "docs/bcc.1" ]       || scripts/genman
 [ -f "docs/brainfuck.7" ] || scripts/genman
 
 mkdir -p "$tarname"
-cp -R docs/brainfuck.7 docs/lbf.1 etc/ samples/ \
+cp -R docs/brainfuck.7 docs/bcc.1 etc/ samples/ \
     INSTALL.md LICENSE.md README.md ROADMAP.md "$tarname"
 tar -cf "${tarname}.tar" "${tarname}"
 xz "${tarname}.tar"

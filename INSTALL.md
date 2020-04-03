@@ -35,7 +35,7 @@ With CMake:
 ```
 $ mkdir -p build
 $ cd build
-$ cmake ..
+$ cmake .. -DCMAKE_BUILD_TYPE=Release
 # make install
 ```
 
@@ -43,5 +43,5 @@ With GNU Make:
 
 ```
 $ vi config.mk # do your configuring here
-# gmake install
+# make install
 ```

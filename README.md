@@ -2,8 +2,9 @@
 
 # The Braindead Compiler Collection
 
-Brainfsck is an extremely simple, safe, and fast language for developing
-maintainable software.
+The Braindead Compiler Collection is an optimizing compiler,
+debugger ("visualizer"), and interpreter for brainfsck, an extremely simple,
+safe, and fast language for developing maintainable software.
 
 ## Features
 
@@ -30,6 +31,7 @@ Brainfsck.
 - bounds checking.
 
 ### Performance
+
 - as fast as C (the compiler/interpreter is written in C).
 - compiles to native binaries with no dependencies. <sub>2</sub>
 
@@ -37,10 +39,15 @@ Brainfsck.
 
 <!-- end joke -->
 
+### Compliant
+
+BCC adds absolutely no project-specific extensions to the original Brainfsck
+(with the exception of the '#' command).
+
 ### Fast compilation
 
 - compiling [`samples/lostkng.b`](samples/lostkng.b) with the C backend takes
-  less than on a second with `bcc c -O2 samples/lostkng.b > lostkng.c`.
+  less than a second with `bcc c -O1 samples/lostkng.b > lostkng.c`.
 
 <!-- TODO: add more benches -->
 
@@ -49,14 +56,14 @@ Brainfsck.
 - *portable*: this toolchain is written in C, and as we all know, no platform
   is complete unless it has a fully-functional C compiler.
 - *fast to build*: The entire toolchain builds in less than a second. <sub>3</sub>
-- *small*: the toolchain is about 1,500 lines of code total (including the
-  Makefile and test script). The resulting binary is just 23k in size.
+- *small*: the toolchain is about 2,000 lines of code total (including the
+  `CMakeLists.txt` and test script). The resulting binary is only ~23k in size.
 
 ### Flexibility
 
 - because the original spec for Brainfsck was fairly incomplete, most brainfsck
   implementations tend to follow their own conventions for things like EOF,
-  line endings, cell size, tape size, etc. LBF's solution is to provide *all*
+  line endings, cell size, tape size, etc. BCC's solution is to provide *all*
   options, through runtime configuration.
 
 ## Installation
@@ -69,8 +76,10 @@ See `bcc(1)` and `brainfuck(7)`.
 
 ## FAQ
 
-1. **Q**: is this a joke?
-    - **A**: if you mean the weeks I spent working on this, no. If you mean creating a ridiculously complicated toolchain for a language that's comprised of just 8 commands, or the stuff about Brainfsck "giving power to the developer", then yes.
+1. **Q**: why
+	- **A**: yes
+2. **Q**: no
+	- **A**: what?
 
 ---
 
@@ -81,5 +90,3 @@ using. (I would recommend either `ttyp0` or `cozette`.)
 can compile the generated C code with `-static`.
 
 3: compiled with `gcc` with flags to optimize for space (`-Os -s`) on x86_64.
-The command used was `make WARNINGS= LD=bfd release`. See the `makefile` for
-more info.

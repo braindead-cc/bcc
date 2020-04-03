@@ -6,21 +6,22 @@
 
 You will need:
 
-- either Ninja/Samurai with Meson, or GNU Make
+- CMake
+- GNU Make (`gmake`)
 - a POSIX-compliant shell (e.g. bash or dash)
 - a C99 compiler (tested with Clang, GCC, and TCC)
 - [`scdoc`](https://git.sr.ht/~sircmpwn/scdoc)
 - TCL (*optional*, only required for test suite)
 
-## Retrieve LBF source
+## Retrieve the source
 
-There are two methods you may use to retrieve the source for `lbf`: via
+There are two methods you may use to retrieve the source: via
 `git`, or downloading a tarball from the releases.
 
 **via git**:
 
 ```
-$ git clone https://git.sr.ht/~kiedtl/lbf.git --recurse --depth=1
+$ git clone https://git.sr.ht/~kiedtl/bcc.git --recurse --depth=1
 ```
 
 **via source**:
@@ -29,11 +30,13 @@ TODO: add
 
 ## Building/Installing
 
-With Meson:
+With CMake:
 
 ```
-$ meson --buildtype=release build --unity on
-# ninja -C build install # or samu -C build install
+$ mkdir -p build
+$ cd build
+$ cmake ..
+# make install
 ```
 
 With GNU Make:

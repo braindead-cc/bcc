@@ -1,6 +1,6 @@
 <!-- begin joke -->
 
-# The LPTSTR Brainfsck Toolchain
+# The Braindead Compiler Collection
 
 Brainfsck is an extremely simple, safe, and fast language for developing
 maintainable software.
@@ -40,7 +40,7 @@ Brainfsck.
 ### Fast compilation
 
 - compiling [`samples/lostkng.b`](samples/lostkng.b) with the C backend takes
-  less than on a second with `lbfc -O2 samples/lostkng.b > lostkng.c`.
+  less than on a second with `bcc c -O2 samples/lostkng.b > lostkng.c`.
 
 <!-- TODO: add more benches -->
 
@@ -65,7 +65,7 @@ See [INSTALL.md](INSTALL.md).
 
 ## Usage
 
-See `lbf(1)` and `brainfuck(7)`.
+See `bcc(1)` and `brainfuck(7)`.
 
 ## FAQ
 

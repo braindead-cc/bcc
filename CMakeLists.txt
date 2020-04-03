@@ -24,11 +24,18 @@ set (BCC_LINK_LIBRARIES
 	ncurses
 )
 set (BCC_INCLUDE_DIRECTORIES
-	./include
-	./include/ccommon
+	include
+	include/ccommon
 )
 
+set (CMAKE_C_STANDARD 99)
+set (CMAKE_C_STANDARD_REQUIRED True)
+
 project (${BCC_TARGET} VERSION ${BCC_VERSION} LANGUAGES C)
+
+message ("-- Building ${BCC_TARGET} version ${BCC_VERSION}")
+message ("     System: ${CMAKE_SYSTEM}")
+message ("     C compiler: ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}")
 
 execute_process (COMMAND date "+%Y-%m-%d %H%M"
 	OUTPUT_VARIABLE BUILDDATE
@@ -45,43 +52,27 @@ target_include_directories (${BCC_TARGET} PUBLIC
 )
 
 include (CheckCCompilerFlag)
+check_c_compiler_flag("-Wimplicit-fallthrough=2" HAS_IMPLICIT_FALLTHROUGH)
+if (HAS_IMPLICIT_FALLTHROUGH)
+	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wimplicit-fallthrough=2")
+endif()
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -fdiagnostics-color=auto \
+-fmax-errors=32 -Wall -Wpedantic -Wextra -Wold-style-definition \
+-Wmissing-prototypes -Winit-self -Wfloat-equal -Wstrict-prototypes \
+-Wredundant-decls -Wendif-labels -Wstrict-aliasing=2 -Woverflow -Wformat=2 \
+-Wmissing-include-dirs -Wno-trigraphs -Wno-format-nonliteral")
 
-function (add_cflag flag)
-	check_c_compiler_flag('${flag}' "has_${flag}")
-	if ("has_${flag}")
-		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}")
-	endif()
-endfunction(add_cflag)
-
-add_cflag (-Wold-style-definition)
-add_cflag (-Wmissing-prototypes)
-add_cflag (-Winit-self)
-add_cflag (-Wfloat-equal)
-add_cflag (-Wstrict-prototypes)
-add_cflag (-Wredundant-decls)
-add_cflag (-Wimplicit-fallthrough=2)
-add_cflag (-Wendif-labels)
-add_cflag (-Wstrict-aliasing=2)
-add_cflag (-Woverflow)
-add_cflag (-Wformat=2)
-add_cflag (-Wmissing-include-dirs)
-
-# trigraphs are fun!
-# "if IsErr(err) ??!??! panic(err);" :^)
-add_cflag (-Wno-trigraphs)
-
-# see src/util.c
-add_cflag (-Wno-format-nonliteral)
+# unset this for non-fancy spinners
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSPINNER_FANCY")
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_GNU_SOURCE")
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILDDATE=\"\\\"${BUILDDATE}\\\"\"")
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DVERSION=\\\"${BCC_VERSION}\\\"")
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DMEMTYPE=u8")
 
-# unset this for non-fancy spinners
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSPINNER_FANCY")
-
-set (CMAKE_C_STANDARD 99)
-set (CMAKE_C_STANDARD_REQUIRED True)
+set (CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}   -O0 -ggdb")
+set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -march=native")
+set (CMAKE_EXE_LINKER_FLAGS_RELEASE
+	"${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto -s")
 
 install (TARGETS ${BCC_TARGET} DESTINATION bin)

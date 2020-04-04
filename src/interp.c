@@ -93,7 +93,7 @@ interp_main(struct Options *opts, struct Instruction *head)
 			}
 			break;
 		case '.':
-			fputc(tape->cells[tape->pointer] % 255, stdout);
+			fputc(tape->cells[tape->pointer] & 255, stdout);
 			break;
 		case '#':
 			/* TODO: allow -fdebug-context */

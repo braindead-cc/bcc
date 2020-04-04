@@ -37,9 +37,12 @@ interp_main(struct Options *opts, struct Instruction *head)
 			tape->cells[tape->pointer] -= cur->repeat;
 			break;
 		case '<':
+			; /* empty statement */
+			u64 tmp = tape->pointer - cur->repeat;
+
 			/* check for overflow */
-			if (!((tape->pointer - cur->repeat) > tape->pointer))
-				tape->pointer -= cur->repeat;
+			tape->pointer = tmp > tape->pointer ?
+				tape->pointer : tmp;
 			break;
 		case '>':
 			tape->pointer += cur->repeat;

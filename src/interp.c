@@ -67,16 +67,11 @@ interp_main(struct Options *opts, struct Instruction *head)
 			}
 			break;
 		case '[':
-			if (tape->cells[tape->pointer] == 0) {
-				cur = cur->loop;
-			}
-
+			/* use ternary operator instead of if() for speedup */
+			cur = tape->cells[tape->pointer] == 0 ? cur->loop : cur;
 			break;
 		case ']':
-			if (tape->cells[tape->pointer] != 0) {
-				cur = cur->loop;
-			}
-
+			cur = tape->cells[tape->pointer] != 0 ? cur->loop : cur;
 			break;
 		case ',':
 			; // empty statement

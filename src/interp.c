@@ -38,9 +38,7 @@ interp_main(struct Options *opts, struct Instruction *head)
 			break;
 		case '<':
 			/* check for overflow */
-			if ((tape->pointer - cur->repeat) > tape->pointer)
-				; /* ignore */
-			else
+			if (!((tape->pointer - cur->repeat) > tape->pointer))
 				tape->pointer -= cur->repeat;
 			break;
 		case '>':

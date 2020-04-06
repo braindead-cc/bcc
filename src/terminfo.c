@@ -9,7 +9,7 @@
  * damn complicated.
  *
  * (c) Kiëd Llaentenn and contributors
- * See the LICENSE.md file for copyright
+ * See COPYING file for copyright
  * information.
  */
 

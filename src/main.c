@@ -2,7 +2,8 @@
  * Main entrypoint for BCC.
  *
  * (c) Kiëd Llaentenn and contributors
- * See the LICENSE.md file for more information.
+ * See COPYING for more information.
+ * C
  */
 
 #include <stdio.h>

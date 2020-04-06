@@ -3,7 +3,7 @@
  * height and width.
  *
  * (c) Kiëd Llaentenn and contributors
- * See the LICENSE.md file for copyright
+ * See the COPYING file for copyright
  * information.
  */
 

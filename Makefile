@@ -3,7 +3,7 @@
 # https://github.com/braindead-cc/bcc
 #
 # (c) Kiëd Llaentenn
-# See the LICENSE.md file for more information
+# See the COPYING file for more information
 #
 
 include config.mk

@@ -2,7 +2,7 @@
 #
 # Some tests for the interpeter/compiler.
 # (c) Kiëd Llaentenn
-# See the LICENSE.md file for more information.
+# See ../COPYING for more information.
 
 # TODO: perform compiler tests on all backends
 

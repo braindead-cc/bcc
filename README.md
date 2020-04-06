@@ -74,6 +74,16 @@ See [INSTALL.md](INSTALL.md).
 
 See `bcc(1)` and `brainfuck(7)`.
 
+## Status
+
+This tool is in alpha stage. A lot remains to be done (see
+[docs/ROADMAP.md](docs/ROADMAP.md)), but the interpreter and compiler (with
+the C and Rust backends) are in a working state. The debugger is still mostly
+unimplemented.
+
+This project is expected to be in a beta-quality state by the time of the
+1.0.0 release.
+
 ## FAQ
 
 1. **Q**: why

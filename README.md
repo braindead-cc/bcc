@@ -68,7 +68,7 @@ BCC adds absolutely no project-specific extensions to the original Brainfsck
 
 ## Installation
 
-See [INSTALL.md](INSTALL.md).
+See [docs/INSTALL.md](docs/INSTALL.md).
 
 ## Usage
 

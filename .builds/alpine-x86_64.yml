@@ -7,18 +7,22 @@ packages:
         - binutils
         - xz
         - ncurses
+        - ncurses-dev
+        - cmake
+        - samurai
 sources:
         - https://git.sr.ht/~kiedtl/lbf.git
 tasks:
+        - configure: |
+                cd lbf
+                mkdir -p build
+                cd build
+                cmake .. \
+                        -DCMAKE_BUILD_TYPE=Release \
+                        -DCMAKE_UNITY_BUILD=True
         - build: |
                 cd lbf
-                make unity
+                samu -C build
         - test: |
-                cd lbf
-                make tests
-        - artifacts: |
-                cd lbf
-                make artifacts
-artifacts:
-        - lbf/lbf-bin.tar.xz
-        - lbf/lbf-src.tar.xz
+                cd lbf/tests
+                ./test.tcl

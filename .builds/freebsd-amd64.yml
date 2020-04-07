@@ -8,11 +8,19 @@ tasks:
         # first
         - dependencies: |
                 sudo pkg update -f
-                yes | sudo pkg install meson scdoc tcl87
+                yes | sudo pkg install scdoc tcl87
                 yes | sudo pkg install tcl-wrapper pixz ncurses
+                yes | sudo pkg install cmake ninja
+        - prepare: |
+                cd lbf
+                mkdir -p build && cd build
+                cmake .. \
+                        -DCMAKE_BUILD_TYPE=Release \
+                        -DCMAKE_UNITY_BUILD=True \
+                        -GNinja
         - build: |
                 cd lbf
-                make unity
+                ninja -C build
         - test: |
-                cd lbf
-                make tests
+                cd lbf/tests
+                ./test.tcl

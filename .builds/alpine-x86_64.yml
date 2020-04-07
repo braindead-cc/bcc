@@ -19,7 +19,8 @@ tasks:
                 cd build
                 cmake .. \
                         -DCMAKE_BUILD_TYPE=Release \
-                        -DCMAKE_UNITY_BUILD=True
+                        -DCMAKE_UNITY_BUILD=True \
+                        -GNinja
         - build: |
                 cd lbf
                 samu -C build

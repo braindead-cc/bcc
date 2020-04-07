@@ -54,6 +54,7 @@ release: $(OBJDIR)/$(BIN)
 unity: CFLAGS_OPT  = $(RELEASE_CFLAGS)
 unity: LDFLAGS_OPT = $(RELEASE_LDFLAGS)
 unity: $(SRC)
+	$(CMD)mkdir -p build
 	$(CMD)rm -f build/unity.c
 	$(CMD)for src in $(SRC); \
 	do \

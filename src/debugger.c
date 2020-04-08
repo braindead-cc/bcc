@@ -228,8 +228,6 @@ update_code_w(struct Instruction *cur, WINDOW *w)
 
 	/* draw code onto screen */
 	mvwprintw(w, 2, 1, "%s", code);
-	//for (usize i = 1; i < code_width; ++i)
-		//mvwaddch(w, 2, i, (const chtype) code[i]);
 
 	/* draw cursor
 	 * TODO: separate this into init_code_w */
@@ -247,29 +245,13 @@ update_mem_w(struct Tape *tape, WINDOW *w)
 	/* set initial value of buf */
 	for (usize i = 0; i < sz; buf[i] = ' ', ++i);
 
-	usize ptr = tape->pointer;
+	usize ptr = tape->pointer - ((sz / 2) / 4);
 
 	/* fill buffer left of ptr */
-	for (usize i = sz/2; i < 4; --ptr, i -= 4) {
-		if (ptr == 0) break;
-
-		char tmp[5];
-		tmp[0] = '\0';
-		sprintf((char*) &tmp, "%03i ", tape->cells[ptr]);
-		buf[i]   = tmp[3];
-		buf[i-1] = tmp[2];
-		buf[i-2] = tmp[1];
-		buf[i-3] = tmp[0];
-	}
-
-	/* fill buffer right of ptr */
-	ptr = tape->pointer;
-	for (usize i = sz/2; i < sz; ++ptr, i += 4) {
+	for (usize i = 0; i < sz; ++ptr, i += 4) {
 		if (ptr > tape->tp_size) {
-			buf[i]   = 'N';
-			buf[i+1] = 'U';
-			buf[i+2] = 'L';
-			buf[i+3] = ' ';
+			buf[i] = buf[i + 1] = buf[i + 2]
+				= buf[i + 3] = ' ';
 			continue;
 		}
 
@@ -289,5 +271,5 @@ update_mem_w(struct Tape *tape, WINDOW *w)
 
 	/* draw cursor
 	 * TODO: separate this into init_mem_w */
-	mvwaddch(w, 3, (sz/2), (const chtype) '^');
+	mvwprintw(w, 3, (sz / 2), "%s", "^^^");
 }

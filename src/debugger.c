@@ -237,7 +237,8 @@ update_code_w(struct Instruction *cur, WINDOW *w)
 static void
 update_mem_w(struct Tape *tape, WINDOW *w)
 {
-	mvwprintw(w, 0, 3, " memory "); /* label */
+	/* label */
+	mvwprintw(w, 0, 3, " memory (0x%X) ", tape->pointer);
 
 	usize sz = COLS - 2;
 	char buf[sz];

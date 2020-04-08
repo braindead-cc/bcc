@@ -14,6 +14,10 @@ static void setborder(WINDOW *w);
 static void update_code_w(struct Instruction *cur, WINDOW *w);
 static void update_mem_w(struct Tape *tape, WINDOW *w);
 
+static const usize code_w_height = 5;
+static const usize mem_w_height  = 5;
+static const usize prof_w_height = 4;
+
 void
 debugger_main(struct Options *opts, struct Instruction *head)
 {
@@ -50,13 +54,20 @@ debugger_main(struct Options *opts, struct Instruction *head)
 	};
 
 	/* windows */
-	WINDOW *code_w = newwin(5, COLS, 0, 0); /* code area */
-	WINDOW *mem_w  = newwin(5, COLS, 6, 0); /* memory */
+	WINDOW *code_w = newwin(code_w_height, COLS, 0, 0);  /* code area */
+	WINDOW *mem_w  = newwin(mem_w_height,  COLS, 6, 0);  /* memory */
+	WINDOW *io_w   = newwin(LINES
+			- code_w_height - mem_w_height
+			- prof_w_height, COLS, 12, 0);
 
 	/* set borders */
 	setborder(mem_w);
 	setborder(code_w);
+	setborder(io_w);
 
+	/* set label for io_w */
+	mvwprintw(io_w, 0, 3, " i/o ");
+	
 	int ch;
 	for (
 		struct Instruction *cur = head->next;
@@ -86,6 +97,7 @@ debugger_main(struct Options *opts, struct Instruction *head)
 		wrefresh(code_w);
 		update_mem_w(tape, mem_w);
 		wrefresh(mem_w);
+		wrefresh(io_w);
 
 		/* execute brainfsck */
 		switch (cur->command) {

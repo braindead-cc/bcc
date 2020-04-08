@@ -1,0 +1,14 @@
+# suggested macro syntax for upcoming macro compiler
+# macros compile to assembly, which in turn compiles to brainfuck
+
+div(x, y) =
+	? stdeq(x, 0) =>
+		_ = 0
+	: stdeq(y, 0) =>
+		_ = 0
+	;;
+
+	_ = x / y
+;;
+
+z = div(6, 3)

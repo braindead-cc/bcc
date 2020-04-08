@@ -50,7 +50,7 @@ debugger_main(struct Options *opts, struct Instruction *head)
 	};
 
 	/* windows */
-	WINDOW *code_w = newwin(5, COLS, 0, 0);              /* code area */
+	WINDOW *code_w = newwin(5, COLS, 0, 0); /* code area */
 	WINDOW *mem_w  = newwin(5, COLS, 6, 0); /* memory */
 
 	/* set borders */

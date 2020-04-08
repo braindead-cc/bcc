@@ -19,9 +19,8 @@
 - [ ] working debugger
 	- [x] code pane
 	- [x] memory pane
-		- [ ] scrolling
 	- [ ] I/O panes
 	- [ ] statistics pane
 - [ ] documentation
-	- [x] brainfsck reference
+	- [ ] brainfsck reference
 	- [x] BCC usage

@@ -1,0 +1,8 @@
+[package]
+name = "riir"
+version = "0.1.0"
+authors = ["Kiëd Llaentenn <kiedtl@tilde.team>"]
+edition = "2018"
+
+[dependencies]
+getopts = "0.2"

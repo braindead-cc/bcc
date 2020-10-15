@@ -1,4 +1,4 @@
-brainfuck(7) "Linux Programmer's Manual"
+brainfuck(7) "Useless Programmer's Manual"
 
 # NAME
 
@@ -15,9 +15,9 @@ language for which he could write the smallest possible compiler.
 Each character in a brainfuck program is executed as a command if it is
 recognized as such, and is ignored as a comment if it is not. Brainfuck programs
 operate on an array of memory cells called the *tape*, and the *pointer*, which
-points to the current memory cell. Each memory cell is typically 8-bits wide
-(although it can vary between implementations), and the array is usually at
-least 30,000 cells wide. Each memory cell is initialized to 0x00.
+points to the current memory cell. Each memory cell is typically an unsigned 8-bit
+integer (although that detail can vary between implementations), and the array is
+usually at least 30,000 cells wide. Each memory cell is initialized to zero.
 
 The list of recognized commands is as follows:
 
@@ -53,7 +53,7 @@ prints out the values of all memory cells for debugging purposes.
 
 # EXAMPLES
 
-The following program simply prints out it's input:
+The following program simply prints out its input:
 
 ```
 ,[.,]

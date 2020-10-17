@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum BFCommandKind {
     CellInc,
     CellDec,
@@ -11,10 +11,58 @@ pub enum BFCommandKind {
     LoopEnd(usize),
 }
 
+impl BFCommandKind {
+    pub fn collapsible(&self) -> bool {
+        match self {
+            BFCommandKind::CellInc
+            | BFCommandKind::CellDec
+            | BFCommandKind::MemPtrLeft
+            | BFCommandKind::MemPtrRight => true,
+            _ => false
+        }
+    }
+}
+
+impl Into<String> for BFCommandKind {
+    fn into(self) -> String {
+        match self {
+            BFCommandKind::CellInc => "+".to_string(),
+            BFCommandKind::CellDec => "-".to_string(),
+            BFCommandKind::Write => ".".to_string(),
+            BFCommandKind::Read => ",".to_string(),
+            BFCommandKind::MemPtrLeft => "<".to_string(),
+            BFCommandKind::MemPtrRight => ">".to_string(),
+            BFCommandKind::LoopStart(_) => "[".to_string(),
+            BFCommandKind::LoopEnd(_) => "]".to_string(),
+        }
+    }
+}
+
 #[derive(Copy, Clone, Debug)]
 pub struct BFCommand {
+    pub dead: bool,
     pub kind: BFCommandKind,
     pub count: usize,
+}
+
+impl ToString for BFCommand {
+    fn to_string(&self) -> String {
+        if self.dead {
+            return String::new();
+        }
+
+        let x: String = self.kind.into();
+
+        if self.count == 1 {
+            x
+        } else {
+            let mut buf = String::new();
+            for _ in 0..self.count {
+                buf += &format!("{}", x);
+            }
+            buf
+        }
+    }
 }
 
 pub struct Program {
@@ -29,7 +77,18 @@ impl Program {
     }
 }
 
+impl ToString for Program {
+    fn to_string(&self) -> String {
+        let mut buf = String::new();
+        for c in &self.cmds {
+            buf += &c.to_string()
+        }
+        buf
+    }
+}
+
 impl From<String> for Program {
+    // TODO: return result;
     fn from(stuff: String) -> Self {
         let mut prog = Program::new();
 
@@ -59,7 +118,9 @@ impl From<String> for Program {
             // match loops
             match kind {
                 BFCommandKind::LoopStart(_) => {
-                    let new = BFCommand { kind: kind, count: 1 };
+                    let new = BFCommand {
+                        dead: false, kind: kind, count: 1
+                    };
                     prog.cmds.push(new);
 
                     // push index of new BF command
@@ -69,6 +130,7 @@ impl From<String> for Program {
                 BFCommandKind::LoopEnd(_) => {
                     let last = unmatched.pop().unwrap();
                     let new = BFCommand {
+                        dead: false,
                         kind: BFCommandKind::LoopEnd(last),
                         count: 1
                     };
@@ -80,7 +142,7 @@ impl From<String> for Program {
                 },
 
                 _ => prog.cmds.push(BFCommand {
-                    kind: kind, count: 1,
+                    dead: false, kind: kind, count: 1,
                 }),
 
             }

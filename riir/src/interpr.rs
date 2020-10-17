@@ -22,6 +22,11 @@ impl Interpreter {
         while ctr < prog.cmds.len() {
             let cur = prog.cmds[ctr];
 
+            if cur.dead {
+                ctr += 1;
+                continue;
+            }
+
             match cur.kind {
                 BFCommandKind::CellInc =>
                     self.memory[self.pointer] = self.memory[self.pointer]

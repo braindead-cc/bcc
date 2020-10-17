@@ -65,6 +65,27 @@ impl Interpreter {
                         ctr = s;
                     }
                 },
+                BFCommandKind::Nullify => self.memory[self.pointer] = 0_u8,
+                BFCommandKind::ScanRight => {
+                    if let Some(z) = memchr::memchr(0x0, &self.memory) {
+                        self.pointer = z;
+                    } else {
+                        // if no cell with zero has been found
+                        // do what the normal "[>]" combination would do:
+                        // move to the right of the tape
+                        self.pointer = self.memory.len() - 1;
+                    }
+                },
+                BFCommandKind::ScanLeft => {
+                    if let Some(z) = memchr::memrchr(0x0, &self.memory) {
+                        self.pointer = z;
+                    } else {
+                        // if no cell with zero has been found
+                        // do what the normal "[<]" combination would do:
+                        // move to the beginning of the tape
+                        self.pointer = 0;
+                    }
+                },
 
                 #[allow(unreachable_patterns)]
                 _ => unreachable!(),

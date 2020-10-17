@@ -9,6 +9,10 @@ pub enum BFCommandKind {
 
     LoopStart(usize),
     LoopEnd(usize),
+
+    Nullify,
+    ScanRight,
+    ScanLeft,
 }
 
 impl BFCommandKind {
@@ -34,6 +38,9 @@ impl Into<String> for BFCommandKind {
             BFCommandKind::MemPtrRight => ">".to_string(),
             BFCommandKind::LoopStart(_) => "[".to_string(),
             BFCommandKind::LoopEnd(_) => "]".to_string(),
+            BFCommandKind::Nullify => "0".to_string(),
+            BFCommandKind::ScanRight => "»".to_string(),
+            BFCommandKind::ScanLeft => "«".to_string(),
         }
     }
 }
@@ -74,6 +81,99 @@ impl Program {
         Self {
             cmds: Vec::new(),
         }
+    }
+
+    /// Get number of commands inside the loop at position idx.
+    /// NOTE: idx must point to either a LoopStart or a LoopEnd.
+    /// NOTE: returned length does not count the opening and
+    /// closing brackets.
+    pub fn loop_len(&self, idx: usize) -> Result<usize, String> {
+        if idx >= self.cmds.len() {
+            Err(format!("idx out of range (idx is {}, but len is {})",
+                idx, self.cmds.len()))?
+        }
+
+        let cmd = self.cmds[idx];
+
+        // FIXME: should we really return Err if the cmd is dead?
+        // I'm not sure if there are cases where we'd want to check
+        // the length of a dead loop
+        if cmd.dead {
+            Err(format!("Command at position {} is dead", idx))?
+        }
+
+        if let BFCommandKind::LoopStart(endpos) = cmd.kind {
+            assert!(endpos < self.cmds.len());
+            Ok(endpos - idx - 1)
+        } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
+            assert!(startpos < self.cmds.len());
+            Ok(idx - startpos - 1)
+        } else {
+            Err(format!("Expected command LoopStart or LoopEnd, found {:?}",
+                    cmd.kind))
+        }
+    }
+
+    /// Get a list of items in a loop at position idx.
+    pub fn loop_items(&self, idx: usize)
+        -> Result<Vec<BFCommand>, String>
+    {
+        if idx >= self.cmds.len() {
+            Err(format!("idx out of range (idx is {}, but len is {})",
+                idx, self.cmds.len()))?
+        }
+
+        let cmd = self.cmds[idx];
+
+        // FIXME: should we really return Err if the cmd is dead?
+        if cmd.dead {
+            Err(format!("Command at position {} is dead", idx))?
+        }
+
+        if let BFCommandKind::LoopStart(endpos) = cmd.kind {
+            assert!(endpos < self.cmds.len());
+            Ok(self.cmds[idx..endpos].to_vec())
+        } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
+            assert!(startpos < self.cmds.len());
+            Ok(self.cmds[startpos..idx].to_vec())
+        } else {
+            Err(format!("Expected command LoopStart or LoopEnd, found {:?}",
+                    cmd.kind))
+        }
+    }
+
+    /// Replace the command at position <idx> with <new>.
+    pub fn replace_cmd(&mut self, idx: usize, new: BFCommand)
+        -> Result<(), String>
+    {
+        if idx >= self.cmds.len() {
+            Err(format!("idx out of range (idx is {}, but len is {})",
+                idx, self.cmds.len()))?
+        }
+
+        // FIXME: should we really return Err if the cmd is dead?
+        if self.cmds[idx].dead {
+            Err(format!("Command at position {} is dead", idx))?
+        }
+
+        self.cmds[idx] = new;
+        Ok(())
+    }
+
+    /// Make command at <idx> dead.
+    pub fn remove_cmd(&mut self, idx: usize) -> Result<(), String> {
+        if idx >= self.cmds.len() {
+            Err(format!("idx out of range (idx is {}, but len is {})",
+                idx, self.cmds.len()))?
+        }
+
+        // FIXME: should we really return Err if the cmd is dead?
+        if self.cmds[idx].dead {
+            Err(format!("Command at position {} is already dead", idx))?
+        }
+
+        self.cmds[idx].dead = true;
+        Ok(())
     }
 }
 

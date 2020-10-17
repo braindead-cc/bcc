@@ -4,6 +4,8 @@ mod interpr;
 
 mod optimize;
 mod collapse;
+mod nil_loop;
+mod scan_loop;
 
 use std::fs;
 use crate::optimize::*;
@@ -19,6 +21,8 @@ fn main() {
         let mut prog = program::Program::from(bf);
 
         collapse::Collapse::optimize(&mut prog);
+        scan_loop::ScanLoops::optimize(&mut prog);
+        nil_loop::NilLoops::optimize(&mut prog);
 
         interp.execute(&prog);
     }

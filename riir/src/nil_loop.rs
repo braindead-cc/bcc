@@ -12,9 +12,9 @@ impl Optimize for NilLoops {
             match p.cmds[ctr].kind {
                 BFCommandKind::LoopStart(_) => {
                     if p.loop_len(ctr).unwrap() == 1 {
-                        let loop_first = p.loop_items(ctr).unwrap()[0].kind;
-                        if loop_first == BFCommandKind::CellDec
-                                    || loop_first == BFCommandKind::CellInc {
+                        let loop_first = &p.loop_items(ctr).unwrap()[0].kind;
+                        if loop_first == &BFCommandKind::CellDec
+                                    || loop_first == &BFCommandKind::CellInc {
                             p.replace_cmd(ctr, BFCommand {
                                 dead: false,
                                 kind: BFCommandKind::Nullify,

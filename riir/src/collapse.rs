@@ -11,11 +11,10 @@ impl Optimize for Collapse {
                 && ctr + 1 < p.cmds.len()
                 && p.cmds[(ctr + 1)].kind == p.cmds[ctr].kind {
 
-                let kind = p.cmds[ctr].kind;
                 let mut repeated = 1;
 
                 while (ctr + 1) < p.cmds.len()
-                    && p.cmds[ctr + 1].kind == kind {
+                    && p.cmds[ctr + 1].kind == p.cmds[ctr].kind {
                         repeated += 1;
                         p.cmds[ctr].dead = true;
                         ctr += 1;

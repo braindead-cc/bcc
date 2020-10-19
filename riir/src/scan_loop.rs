@@ -12,12 +12,12 @@ impl Optimize for ScanLoops {
             match p.cmds[ctr].kind {
                 BFCommandKind::LoopStart(_) => {
                     if p.loop_len(ctr).unwrap() == 1 {
-                        let loop_first = p.loop_items(ctr).unwrap()[0].kind;
-                        if loop_first == BFCommandKind::MemPtrRight
-                                    || loop_first == BFCommandKind::MemPtrLeft {
+                        let loop_first = &p.loop_items(ctr).unwrap()[0].kind;
+                        if loop_first == &BFCommandKind::MemPtrRight
+                                    || loop_first == &BFCommandKind::MemPtrLeft {
                             p.replace_cmd(ctr, BFCommand {
                                 dead: false,
-                                kind: if loop_first == BFCommandKind::MemPtrRight {
+                                kind: if loop_first == &BFCommandKind::MemPtrRight {
                                     BFCommandKind::ScanRight
                                 } else {
                                     BFCommandKind::ScanLeft

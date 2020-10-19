@@ -1,4 +1,9 @@
-#[derive(Copy, Clone, Debug, PartialEq)]
+use std::collections::*;
+
+// TODO: remove LoopStart(usize)/LoopEnd(usize), replace with
+// Loop(Vec<BFCommand>)
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum BFCommandKind {
     CellInc,
     CellDec,
@@ -13,6 +18,8 @@ pub enum BFCommandKind {
     Nullify,
     ScanRight,
     ScanLeft,
+
+    MultiplyMove(HashMap<isize, i8>),
 }
 
 impl BFCommandKind {
@@ -41,11 +48,12 @@ impl Into<String> for BFCommandKind {
             BFCommandKind::Nullify => "0".to_string(),
             BFCommandKind::ScanRight => "»".to_string(),
             BFCommandKind::ScanLeft => "«".to_string(),
+            BFCommandKind::MultiplyMove(c) => format!("mmov({:?})", c),
         }
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct BFCommand {
     pub dead: bool,
     pub kind: BFCommandKind,
@@ -58,7 +66,7 @@ impl ToString for BFCommand {
             return String::new();
         }
 
-        let x: String = self.kind.into();
+        let x: String = self.kind.clone().into();
 
         if self.count == 1 {
             x
@@ -93,7 +101,7 @@ impl Program {
                 idx, self.cmds.len()))?
         }
 
-        let cmd = self.cmds[idx];
+        let cmd = &self.cmds[idx];
 
         // FIXME: should we really return Err if the cmd is dead?
         // I'm not sure if there are cases where we'd want to check
@@ -103,10 +111,10 @@ impl Program {
         }
 
         if let BFCommandKind::LoopStart(endpos) = cmd.kind {
-            assert!(endpos < self.cmds.len());
+            debug_assert!(endpos < self.cmds.len());
             Ok(endpos - idx - 1)
         } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
-            assert!(startpos < self.cmds.len());
+            debug_assert!(startpos < self.cmds.len());
             Ok(idx - startpos - 1)
         } else {
             Err(format!("Expected command LoopStart or LoopEnd, found {:?}",
@@ -123,7 +131,7 @@ impl Program {
                 idx, self.cmds.len()))?
         }
 
-        let cmd = self.cmds[idx];
+        let cmd = &self.cmds[idx];
 
         // FIXME: should we really return Err if the cmd is dead?
         if cmd.dead {
@@ -132,7 +140,7 @@ impl Program {
 
         if let BFCommandKind::LoopStart(endpos) = cmd.kind {
             assert!(endpos < self.cmds.len());
-            Ok(self.cmds[idx..endpos].to_vec())
+            Ok(self.cmds[(idx + 1)..endpos].to_vec())
         } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
             assert!(startpos < self.cmds.len());
             Ok(self.cmds[startpos..idx].to_vec())
@@ -151,11 +159,6 @@ impl Program {
                 idx, self.cmds.len()))?
         }
 
-        // FIXME: should we really return Err if the cmd is dead?
-        if self.cmds[idx].dead {
-            Err(format!("Command at position {} is dead", idx))?
-        }
-
         self.cmds[idx] = new;
         Ok(())
     }
@@ -170,6 +173,12 @@ impl Program {
         // FIXME: should we really return Err if the cmd is dead?
         if self.cmds[idx].dead {
             Err(format!("Command at position {} is already dead", idx))?
+        }
+
+        if let BFCommandKind::LoopStart(end) = self.cmds[idx].kind {
+            for i in idx..=end {
+                self.cmds[i].dead = true;
+            }
         }
 
         self.cmds[idx].dead = true;

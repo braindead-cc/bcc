@@ -20,14 +20,14 @@ impl Interpreter {
         let mut ctr = 0;
 
         while ctr < prog.cmds.len() {
-            let cur = prog.cmds[ctr];
+            let cur = &prog.cmds[ctr];
 
             if cur.dead {
                 ctr += 1;
                 continue;
             }
 
-            match cur.kind {
+            match &cur.kind {
                 BFCommandKind::CellInc =>
                     self.memory[self.pointer] = self.memory[self.pointer]
                         .wrapping_add(cur.count as u8),
@@ -55,14 +55,14 @@ impl Interpreter {
                     if self.memory[self.pointer] == 0 {
                         // nothing to do in the loop, so jump
                         // to the end
-                        ctr = e;
+                        ctr = *e;
                     }
                 },
                 BFCommandKind::LoopEnd(s) => {
                     if self.memory[self.pointer] != 0 {
                         // execute the loop again, so jump
                         // back the the loop's start
-                        ctr = s;
+                        ctr = *s;
                     }
                 },
                 BFCommandKind::Nullify => self.memory[self.pointer] = 0_u8,
@@ -86,9 +86,24 @@ impl Interpreter {
                         self.pointer = 0;
                     }
                 },
+                BFCommandKind::MultiplyMove(changes) => {
+                    // get the current cell's value
+                    let curval = self.memory[self.pointer];
+
+                    for change in changes {
+                        // multiply first, then add
+                        let product = ((curval as i8).wrapping_mul(*change.1)) as u8;
+
+                        self.memory[((self.pointer as isize) + change.0) as usize] = self.memory[((self.pointer as isize) + change.0) as usize].wrapping_add(product);
+                    }
+
+                    // set the current cell to zero, since that's what
+                    // a multiply-move loop would do
+                    self.memory[self.pointer] = 0;
+                },
 
                 #[allow(unreachable_patterns)]
-                _ => unreachable!(),
+                _ => unimplemented!(),
             }
 
             ctr += 1;

@@ -1,4 +1,4 @@
-use std::io::{ self, Read, Write };
+use std::io::{ self, Read }; //, Write };
 use crate::program::*;
 
 pub struct Interpreter {
@@ -22,10 +22,10 @@ impl Interpreter {
         while ctr < prog.cmds.len() {
             let cur = &prog.cmds[ctr];
 
-            if cur.dead {
-                ctr += 1;
-                continue;
-            }
+            // if a command is "dead", it has been optimized away
+            // skip over it, but increment the counter so as to not mess up
+            // the indexes stored by BFCommandKind::LoopStart/LoopEnd
+            if cur.dead { ctr += 1; continue; }
 
             match &cur.kind {
                 BFCommandKind::CellInc =>{
@@ -36,15 +36,13 @@ impl Interpreter {
                         .wrapping_sub(cur.count as u8),
                 BFCommandKind::Write => {
                     print!("{}", self.memory[self.pointer] as char);
-                    io::stdout().flush().unwrap();
+                    //io::stdout().flush().unwrap();
                 },
                 BFCommandKind::Read => {
-                    let chomp = io::stdin().bytes().next();
-                    if !chomp.is_some() {
-                        // set to EOF
-                        self.memory[self.pointer] = 0;
+                    if let Some(c) = io::stdin().bytes().next() {
+                        self.memory[self.pointer] = c.unwrap();
                     } else {
-                        self.memory[self.pointer] = chomp.unwrap().unwrap();
+                        self.memory[self.pointer] = 0;
                     }
                 },
                 BFCommandKind::MemPtrLeft =>

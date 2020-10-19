@@ -19,6 +19,7 @@ impl Optimize for NilLoops {
                                 dead: false,
                                 kind: BFCommandKind::Nullify,
                                 count: 1,
+                                pos: p.cmds[ctr].pos,
                             }).unwrap();
                             p.remove_cmd(ctr + 1).unwrap();
                             p.remove_cmd(ctr + 2).unwrap();

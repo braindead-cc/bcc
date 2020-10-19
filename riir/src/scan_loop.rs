@@ -23,6 +23,7 @@ impl Optimize for ScanLoops {
                                     BFCommandKind::ScanLeft
                                 },
                                 count: 1,
+                                pos: p.cmds[ctr].pos,
                             }).unwrap();
                             p.remove_cmd(ctr + 1).unwrap();
                             p.remove_cmd(ctr + 2).unwrap();

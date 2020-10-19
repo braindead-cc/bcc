@@ -58,6 +58,7 @@ pub struct BFCommand {
     pub dead: bool,
     pub kind: BFCommandKind,
     pub count: usize,
+    pub pos: (usize, usize),
 }
 
 impl ToString for BFCommand {
@@ -205,10 +206,24 @@ impl From<String> for Program {
         // by its index in Program::cmds
         let mut unmatched: Vec<usize> = Vec::new();
 
+        let mut line = 1;
+        let mut column = 0;
+
         let mut ctr = 0;
         let chs = stuff.chars().collect::<Vec<char>>();
 
         while ctr < chs.len() {
+            // track column, line
+            if chs[ctr] == '\n' {
+                line += 1;
+                column = 0;
+
+                ctr += 1;
+                continue;
+            } else {
+                column += 1;
+            }
+
             let kind = match chs[ctr] {
                 '+' => BFCommandKind::CellInc,
                 '-' => BFCommandKind::CellDec,
@@ -228,7 +243,8 @@ impl From<String> for Program {
             match kind {
                 BFCommandKind::LoopStart(_) => {
                     let new = BFCommand {
-                        dead: false, kind: kind, count: 1
+                        dead: false, kind: kind, count: 1,
+                        pos: (line, column),
                     };
                     prog.cmds.push(new);
 
@@ -241,7 +257,8 @@ impl From<String> for Program {
                     let new = BFCommand {
                         dead: false,
                         kind: BFCommandKind::LoopEnd(last),
-                        count: 1
+                        count: 1,
+                        pos: (line, column),
                     };
                     prog.cmds.push(new);
 
@@ -252,6 +269,7 @@ impl From<String> for Program {
 
                 _ => prog.cmds.push(BFCommand {
                     dead: false, kind: kind, count: 1,
+                    pos: (line, column),
                 }),
 
             }

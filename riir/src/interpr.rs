@@ -94,7 +94,13 @@ impl Interpreter {
                         // multiply first, then add
                         let product = ((curval as i8).wrapping_mul(*change.1)) as u8;
 
-                        self.memory[((self.pointer as isize) + change.0) as usize] = self.memory[((self.pointer as isize) + change.0) as usize].wrapping_add(product);
+                        let target = if ((self.pointer as isize) + change.0) < 0 {
+                            0
+                        } else {
+                            ((self.pointer as isize) + change.0) as usize
+                        };
+
+                        self.memory[target] = self.memory[target].wrapping_add(product);
                     }
 
                     // set the current cell to zero, since that's what

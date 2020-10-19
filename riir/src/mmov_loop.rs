@@ -100,6 +100,7 @@ impl Optimize for MultiplyMoveLoops {
                             dead: false,
                             kind: BFCommandKind::MultiplyMove(changes),
                             count: 1,
+                            pos: p.cmds[ctr].pos,
                         }).unwrap();
                     }
                 },

@@ -28,9 +28,9 @@ impl Interpreter {
             }
 
             match &cur.kind {
-                BFCommandKind::CellInc =>
+                BFCommandKind::CellInc =>{
                     self.memory[self.pointer] = self.memory[self.pointer]
-                        .wrapping_add(cur.count as u8),
+                        .wrapping_add(cur.count as u8);},
                 BFCommandKind::CellDec =>
                     self.memory[self.pointer] = self.memory[self.pointer]
                         .wrapping_sub(cur.count as u8),
@@ -67,7 +67,7 @@ impl Interpreter {
                 },
                 BFCommandKind::Nullify => self.memory[self.pointer] = 0_u8,
                 BFCommandKind::ScanRight => {
-                    if let Some(z) = memchr::memchr(0x0, &self.memory) {
+                    if let Some(z) = memchr::memrchr(0x0, &self.memory) {
                         self.pointer = z;
                     } else {
                         // if no cell with zero has been found
@@ -77,7 +77,7 @@ impl Interpreter {
                     }
                 },
                 BFCommandKind::ScanLeft => {
-                    if let Some(z) = memchr::memrchr(0x0, &self.memory) {
+                    if let Some(z) = memchr::memchr(0x0, &self.memory) {
                         self.pointer = z;
                     } else {
                         // if no cell with zero has been found

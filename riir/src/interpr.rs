@@ -94,6 +94,7 @@ impl Interpreter {
                         // multiply first, then add
                         let product = ((curval as i8).wrapping_mul(*change.1)) as u8;
 
+                        // get the target cell, accounting for undeflow
                         let target = if ((self.pointer as isize) + change.0) < 0 {
                             0
                         } else {

@@ -42,7 +42,7 @@ fn main() {
 }
 
 fn execute(config: &Options, interp: &mut Interpreter, data: String) {
-    let mut prog = Program::parse(config.comment_char, data);
+    let mut prog = Program::parse(config.comment_char, &data);
 
     Collapse::optimize(&mut prog);
     NilLoops::optimize(&mut prog);

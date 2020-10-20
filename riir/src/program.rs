@@ -53,7 +53,7 @@ impl Into<String> for BFCommandKind {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BFCommand {
     pub dead: bool,
     pub kind: BFCommandKind,
@@ -97,30 +97,7 @@ impl Program {
     /// NOTE: returned length does not count the opening and
     /// closing brackets.
     pub fn loop_len(&self, idx: usize) -> Result<usize, String> {
-        if idx >= self.cmds.len() {
-            Err(format!("idx out of range (idx is {}, but len is {})",
-                idx, self.cmds.len()))?
-        }
-
-        let cmd = &self.cmds[idx];
-
-        // FIXME: should we really return Err if the cmd is dead?
-        // I'm not sure if there are cases where we'd want to check
-        // the length of a dead loop
-        if cmd.dead {
-            Err(format!("Command at position {} is dead", idx))?
-        }
-
-        if let BFCommandKind::LoopStart(endpos) = cmd.kind {
-            debug_assert!(endpos < self.cmds.len());
-            Ok(endpos - idx - 1)
-        } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
-            debug_assert!(startpos < self.cmds.len());
-            Ok(idx - startpos - 1)
-        } else {
-            Err(format!("Expected command LoopStart or LoopEnd, found {:?}",
-                    cmd.kind))
-        }
+        Ok(self.loop_items(idx)?.len())
     }
 
     /// Get a list of items in a loop at position idx.
@@ -141,10 +118,14 @@ impl Program {
 
         if let BFCommandKind::LoopStart(endpos) = cmd.kind {
             assert!(endpos < self.cmds.len());
-            Ok(self.cmds[(idx + 1)..endpos].to_vec())
+            Ok(self.cmds[(idx + 1)..endpos].to_vec()
+                .iter().filter(|i| !i.dead)
+                .map(|i| i.clone()).collect::<Vec<_>>())
         } else if let BFCommandKind::LoopEnd(startpos) = cmd.kind {
             assert!(startpos < self.cmds.len());
-            Ok(self.cmds[startpos..idx].to_vec())
+            Ok(self.cmds[startpos..idx].to_vec()
+                .iter().filter(|i| !i.dead)
+                .map(|i| i.clone()).collect::<Vec<_>>())
         } else {
             Err(format!("Expected command LoopStart or LoopEnd, found {:?}",
                     cmd.kind))
@@ -187,7 +168,7 @@ impl Program {
     }
 
     // TODO: return result;
-    pub fn parse(comment_char: Option<char>, stuff: String) -> Self {
+    pub fn parse(comment_char: Option<char>, stuff: &str) -> Self {
         let mut prog = Program::new();
 
         // stack of unmatched brackets. accessed
@@ -289,5 +270,82 @@ impl ToString for Program {
             buf += &c.to_string()
         }
         buf
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use super::BFCommandKind::*;
+
+    #[test]
+    fn test_parse() {
+        let samples = vec![
+            ("++[", vec![]),
+            ("]", vec![]),
+            ("[]", vec![
+                LoopStart(1),
+                LoopEnd(0)
+            ]),
+            ("+-[-]+ This is a comment [-<+> Comment ]", vec![
+                CellInc, CellDec, LoopStart(4), CellDec, LoopEnd(2),
+                LoopStart(6), CellDec, MemPtrLeft, CellInc,
+                MemPtrRight, LoopEnd(11),
+            ]),
+        ];
+
+        for sample in samples {
+            let p = Program::parse(None, sample.0);
+            assert_eq!(sample.1, p.cmds.iter()
+                .map(|i| i.kind.clone()).collect::<Vec<_>>());
+        }
+    }
+
+    #[test]
+    fn test_loop_len() {
+        fn assert_ok(bf: &str, shouldbe: usize, idx: usize) {
+            assert!(shouldbe == Program::parse(None, bf).loop_len(idx)
+                .unwrap());
+        }
+
+        fn assert_err(bf: &str, idx: usize) {
+            assert!(Program::parse(None, bf).loop_len(idx).is_err());
+        }
+
+        assert_ok("[]    ", 0, 0); assert_ok("[-]   ", 1, 0);
+        assert_ok("[+-]  ", 2, 0); assert_ok("[->+<]", 4, 0);
+
+        assert_ok(">>+[-]", 1, 3); assert_ok("[[]]->", 0, 1);
+        assert_ok("[->][]", 0, 4); assert_ok("[[]]->", 2, 0);
+
+        assert_err(">++>>.[<]", 0);
+    }
+
+    #[test]
+    fn test_loop_items() {
+        let res = Program::parse(None, "[-]").loop_items(0);
+        assert!(res.unwrap() == vec![BFCommand {
+            dead: false, kind: BFCommandKind::CellDec,
+            count: 1, pos: (1, 2),
+        }]);
+    }
+
+    #[test]
+    fn test_replace_cmd() {
+        let mut prog = Program::parse(None, "[-]");
+        let replacement = BFCommand {
+            dead: false, kind: BFCommandKind::CellInc,
+            count: 1, pos: prog.cmds[1].pos,
+        };
+
+        prog.replace_cmd(1, replacement.clone()).unwrap();
+        assert!(prog.loop_items(0) == Ok(vec![replacement]));
+    }
+
+    #[test]
+    fn test_remove_cmd() {
+        let mut prog = Program::parse(None, "[-]");
+        prog.remove_cmd(1).unwrap();
+        assert!(prog.loop_len(0) == Ok(0));
     }
 }

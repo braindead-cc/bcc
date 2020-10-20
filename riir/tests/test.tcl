@@ -126,12 +126,8 @@ proc test_p_comments { } {
 	global bcc
 
 	# test commenting
-
-	# test default comments
-	assert_eq [exec $bcc "test-comments.b"] \
+	assert_eq [exec $bcc -fcomment-char=\; "test-comments.b"] \
 		"C" "comments (default)"
-
-	# others
 	assert_eq [exec $bcc -fcomment-char=\# "test-comments.b"] \
 		"@" "comments (-fcomment-char='#')"
 	assert_eq [exec $bcc -fcomment-char=\% "test-comments.b"] \

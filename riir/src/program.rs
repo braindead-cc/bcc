@@ -185,21 +185,9 @@ impl Program {
         self.cmds[idx].dead = true;
         Ok(())
     }
-}
 
-impl ToString for Program {
-    fn to_string(&self) -> String {
-        let mut buf = String::new();
-        for c in &self.cmds {
-            buf += &c.to_string()
-        }
-        buf
-    }
-}
-
-impl From<String> for Program {
     // TODO: return result;
-    fn from(stuff: String) -> Self {
+    pub fn parse(comment_char: Option<char>, stuff: String) -> Self {
         let mut prog = Program::new();
 
         // stack of unmatched brackets. accessed
@@ -236,7 +224,20 @@ impl From<String> for Program {
                 ']' => BFCommandKind::LoopEnd(0),
 
                 // ignore other characters
-                _ => { ctr += 1; continue; },
+                _ => {
+                    if let Some(c) = comment_char {
+                        if chs[ctr] == c {
+                            while chs[ctr] != '\n' {
+                                ctr += 1;
+                            }
+
+                            continue;
+                        }
+                    }
+
+                    ctr += 1;
+                    continue;
+                },
             };
 
             // match loops
@@ -278,5 +279,15 @@ impl From<String> for Program {
         }
 
         prog
+    }
+}
+
+impl ToString for Program {
+    fn to_string(&self) -> String {
+        let mut buf = String::new();
+        for c in &self.cmds {
+            buf += &c.to_string()
+        }
+        buf
     }
 }

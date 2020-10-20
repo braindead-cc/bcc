@@ -11,6 +11,7 @@ pub enum EofChar {
 #[derive(Clone, Debug)]
 pub struct Options {
     pub file: Vec<String>,
+    pub comment_char: Option<char>,
     pub eof_char: EofChar,
 }
 
@@ -19,6 +20,7 @@ impl Options {
     pub fn new() -> Self {
         Self {
             file: Vec::new(),
+            comment_char: None,
             eof_char: EofChar::Zero,
         }
     }
@@ -79,6 +81,8 @@ impl Options {
                         }
                     };
                 },
+                "comment-char" => self.comment_char = Some(value.chars()
+                    .collect::<Vec<_>>()[0]),
                 _ => {
                     eprintln!("error: invalid option: {}", option);
                     return Err(());

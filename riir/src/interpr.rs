@@ -1,19 +1,29 @@
 use std::io::{ self, Read }; //, Write };
 use crate::program::*;
+use crate::options::*;
+
+#[inline(always)]
+fn set_eof(mem: &mut Vec<u8>, ptr: usize, eof: EofChar) {
+    mem[ptr] = match eof {
+        EofChar::MinusOne => -1_i8 as u8,
+        EofChar::Zero => 0,
+        EofChar::NoChange => mem[ptr],
+    };
+}
 
 pub struct Interpreter {
     memory: Vec<u8>,
     pointer: usize,
+    eof_char: EofChar,
 }
 
 impl Interpreter {
-    pub fn new() -> Self {
-        let i = Interpreter {
+    pub fn new(eof: EofChar) -> Self {
+        Self {
             memory: [0; 30_000].to_vec(),
             pointer: 0,
-        };
-
-        i
+            eof_char: eof,
+        }
     }
 
     pub fn execute(&mut self, prog: &Program) {
@@ -42,7 +52,8 @@ impl Interpreter {
                     if let Some(c) = io::stdin().bytes().next() {
                         self.memory[self.pointer] = c.unwrap();
                     } else {
-                        self.memory[self.pointer] = 0;
+                        set_eof(&mut self.memory, self.pointer, self.eof_char);
+                        //self.memory[self.pointer] = 0;
                     }
                 },
                 BFCommandKind::MemPtrLeft =>

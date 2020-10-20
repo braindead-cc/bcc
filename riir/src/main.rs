@@ -15,8 +15,12 @@ use crate::optimize::*;
 pub const VERSION: &'static str = "0.1.0";
 
 fn main() {
-    let config = options::Options::new().parse().unwrap();
-    let mut interp = interpr::Interpreter::new();
+    let config = match options::Options::new().parse() {
+        Ok(con) => con,
+        Err(()) => std::process::exit(1),
+    };
+
+    let mut interp = interpr::Interpreter::new(config.eof_char);
 
     if config.file.len() == 0 {
         let mut buf = String::new();

@@ -1,9 +1,17 @@
 use getopts::Options as g_Options;
 use std::env;
 
+#[derive(Copy, Clone, Debug)]
+pub enum EofChar {
+    MinusOne,
+    Zero,
+    NoChange,
+}
+
 #[derive(Clone, Debug)]
 pub struct Options {
     pub file: Vec<String>,
+    pub eof_char: EofChar,
 }
 
 impl Options {
@@ -11,6 +19,7 @@ impl Options {
     pub fn new() -> Self {
         Self {
             file: Vec::new(),
+            eof_char: EofChar::Zero,
         }
     }
 
@@ -20,8 +29,15 @@ impl Options {
 
         let mut opts = g_Options::new();
 
+        // NOTE: empty hints/descriptions are given, because
+        // we create our own help message instead of relying on
+        // getopts' poorly-formatted help string.
+
         opts.optflag("h", "help",     "");
         opts.optflag("V", "version",  "");
+
+        // options, similar to gcc's -f argument
+        opts.optmulti("f", "option", "", "");
 
         let matches = match opts.parse(&args[1..]) {
             Ok(ma) => ma,
@@ -37,6 +53,37 @@ impl Options {
         } else if matches.opt_present("V") {
             Options::version();
             return Err(());
+        }
+
+        for argument in matches.opt_strs("option") {
+            // options take the form -fOPTION[=VALUE]
+            let parsed = argument.split("=").collect::<Vec<_>>();
+
+            let option = parsed[0];
+            let value = if parsed.len() > 1 {
+                parsed[1]
+            } else {
+                ""
+            };
+
+            match option {
+                "eof" => {
+                    self.eof_char = match value {
+                        "-1" => EofChar::MinusOne,
+                        "zero" | "0" => EofChar::Zero,
+                        "none" => EofChar::NoChange,
+                        _ => {
+                            eprintln!("error: invalid value for -feof: {:?}", value);
+                            eprintln!("hint: valid values for -feof are '-1', '0', or 'none'.");
+                            return Err(());
+                        }
+                    };
+                },
+                _ => {
+                    eprintln!("error: invalid option: {}", option);
+                    return Err(());
+                },
+            }
         }
 
         self.file = if !matches.free.is_empty() {

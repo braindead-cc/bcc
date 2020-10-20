@@ -3,6 +3,13 @@ use crate::program::*;
 use crate::options::*;
 
 #[inline(always)]
+fn check_memory_bounds(mem: &mut Vec<u8>, ptr: usize) {
+    if ptr >= mem.len() {
+        mem.extend(vec![0; mem.len() * 2]);
+    }
+}
+
+#[inline(always)]
 fn set_eof(mem: &mut Vec<u8>, ptr: usize, eof: EofChar) {
     mem[ptr] = match eof {
         EofChar::MinusOne => -1_i8 as u8,
@@ -20,7 +27,7 @@ pub struct Interpreter {
 impl Interpreter {
     pub fn new(eof: EofChar) -> Self {
         Self {
-            memory: [0; 30_000].to_vec(),
+            memory: [0; 32768].to_vec(),
             pointer: 0,
             eof_char: eof,
         }
@@ -36,6 +43,9 @@ impl Interpreter {
             // skip over it, but increment the counter so as to not mess up
             // the indexes stored by BFCommandKind::LoopStart/LoopEnd
             if cur.dead { ctr += 1; continue; }
+
+            // check if we need to reallocate more memory
+            check_memory_bounds(&mut self.memory, self.pointer);
 
             match &cur.kind {
                 BFCommandKind::CellInc =>{
@@ -110,6 +120,7 @@ impl Interpreter {
                             ((self.pointer as isize) + change.0) as usize
                         };
 
+                        check_memory_bounds(&mut self.memory, target);
                         self.memory[target] = self.memory[target].wrapping_add(product);
                     }
 

@@ -13,6 +13,10 @@ pub struct Options {
     pub file: Vec<String>,
     pub comment_char: Option<char>,
     pub eof_char: EofChar,
+
+    // brainfuck extensions
+    pub exten_debug: bool,
+    pub debug_context: usize,
 }
 
 impl Options {
@@ -22,6 +26,9 @@ impl Options {
             file: Vec::new(),
             comment_char: None,
             eof_char: EofChar::Zero,
+
+            exten_debug: false,
+            debug_context: 32,
         }
     }
 
@@ -41,6 +48,10 @@ impl Options {
         // options, similar to gcc's -f argument
         opts.optmulti("f", "option", "", "");
 
+        // enable an extension
+        opts.optmulti("e", "extension", "", "");
+
+        // parse
         let matches = match opts.parse(&args[1..]) {
             Ok(ma) => ma,
             Err(e) => {
@@ -83,8 +94,24 @@ impl Options {
                 },
                 "comment-char" => self.comment_char = Some(value.chars()
                     .collect::<Vec<_>>()[0]),
+                "debug-context" => {
+                    match value.parse::<usize>() {
+                        Ok(nm) => self.debug_context = nm,
+                        Err(_) => eprintln!("error: invalid value for -fdebug-context: {:?}", value),
+                    }
+                },
                 _ => {
                     eprintln!("error: invalid option: {}", option);
+                    return Err(());
+                },
+            }
+        }
+
+        for argument in matches.opt_strs("extension") {
+            match argument.as_str() {
+                "debug" => self.exten_debug = true,
+                _ => {
+                    eprintln!("error: invalid extension: {}", argument);
                     return Err(());
                 },
             }

@@ -1,12 +1,15 @@
 mod options;
-mod program;
-mod interpr;
+mod tty;
 
 mod optimize;
 mod collapse;
 mod nil_loop;
 mod scan_loop;
 mod mmov_loop;
+
+mod errors;
+mod program;
+mod interpr;
 
 use std::fs;
 use std::io::{ stdin, Read };
@@ -42,7 +45,20 @@ fn main() {
 }
 
 fn execute(config: &Options, interp: &mut Interpreter, data: String) {
-    let mut prog = Program::parse(config.comment_char, &data);
+    let mut prog = match Program::parse(config.comment_char, &data) {
+        Ok(pr) => pr,
+        Err(e) => {
+            for error in e {
+                if tty::is_tty(tty::OutputStream::Stdout) {
+                    error.pretty_print();
+                } else {
+                    println!("error: {}", error);
+                }
+            }
+
+            std::process::exit(1);
+        },
+    };
 
     Collapse::optimize(&mut prog);
     NilLoops::optimize(&mut prog);

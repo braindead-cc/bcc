@@ -1,4 +1,5 @@
 use std::collections::*;
+use crate::errors::*;
 
 // TODO: remove LoopStart(usize)/LoopEnd(usize), replace with
 // Loop(Vec<BFCommand>)
@@ -168,7 +169,9 @@ impl Program {
     }
 
     // TODO: return result;
-    pub fn parse(comment_char: Option<char>, stuff: &str) -> Self {
+    pub fn parse(comment_char: Option<char>, stuff: &str)
+        -> Result<Self, Vec<Error>>
+    {
         let mut prog = Program::new();
 
         // stack of unmatched brackets. accessed
@@ -235,31 +238,51 @@ impl Program {
                 },
 
                 BFCommandKind::LoopEnd(_) => {
-                    let last = unmatched.pop().unwrap();
-                    let new = BFCommand {
-                        dead: false,
-                        kind: BFCommandKind::LoopEnd(last),
-                        count: 1,
-                        pos: (line, column),
-                    };
-                    prog.cmds.push(new);
+                    if let Some(last) = unmatched.pop() {
+                        let new = BFCommand {
+                            dead: false,
+                            kind: BFCommandKind::LoopEnd(last),
+                            count: 1,
+                            pos: (line, column),
+                        };
+                        prog.cmds.push(new);
 
-                    // set the matching bracket for the opening bracket
-                    prog.cmds[last].kind
-                        = BFCommandKind::LoopStart(prog.cmds.len() - 1);
+                        // set the matching bracket for the opening bracket
+                        prog.cmds[last].kind
+                            = BFCommandKind::LoopStart(prog.cmds.len() - 1);
+                    } else {
+                        return Err(vec![
+                            Error::new(ErrorKind::UnmatchedCloseBrace,
+                                BFCommand {
+                                    dead: false, kind: BFCommandKind::LoopEnd(0),
+                                    count: 1, pos: (line, column),
+                                }, stuff
+                            )
+                        ]);
+                    }
                 },
 
                 _ => prog.cmds.push(BFCommand {
                     dead: false, kind: kind, count: 1,
                     pos: (line, column),
                 }),
-
             }
 
             ctr += 1;
         }
 
-        prog
+        // check if there are any unmatched opening braces, and if so,
+        // whine and cry even though we could easily ignore it
+        if unmatched.len() > 0 {
+            return Err(vec![
+                Error::new(ErrorKind::UnmatchedOpenBrace,
+                    prog.cmds[unmatched.pop().unwrap()].clone(),
+                    stuff
+                )
+            ]);
+        }
+
+        Ok(prog)
     }
 }
 

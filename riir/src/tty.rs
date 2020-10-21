@@ -102,19 +102,3 @@ pub fn is_tty(fd: OutputStream) -> bool {
     let r = unsafe { isatty(fd.into()) };
     r != 0
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_strip() {
-        assert_eq!(&TermStyle::strip("Thi\x1b[0ms is a test"), "This is a test");
-        assert_eq!(&TermStyle::strip("Thi\x1b[1ms is a test"), "This is a test");
-        assert_eq!(&TermStyle::strip("Thi\x1b[107ms is a test\x1b[0m"), "This is a test");
-        assert_eq!(&TermStyle::strip("Thi\x1b[107ms test has some \x1b[1mmmms \x1b[0m"), "This test has some mmms ");
-        assert_eq!(&TermStyle::strip("Thi\x1b[107ms test \x1b[mhas some \x1b[1mmmms \x1b[0m"), "This test has some mmms ");
-        assert_eq!(&TermStyle::strip("\x1b[90m[\x1b[m     0\x1b[90m]\x1b[m"), "[     0]");
-        assert_eq!(&TermStyle::strip("\u{1b}[90m[\u{1b}[m          8\u{1b}[90m]\u{1b}[m\u{1b}[90m[\u{1b}[m          3\u{1b}[90m]\u{1b}[m"), "[          8][          3]");
-    }
-}

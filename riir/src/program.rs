@@ -318,7 +318,7 @@ mod tests {
         ];
 
         for sample in samples {
-            let p = Program::parse(None, sample.0);
+            let p = Program::parse(None, sample.0).unwrap();
             assert_eq!(sample.1, p.cmds.iter()
                 .map(|i| i.kind.clone()).collect::<Vec<_>>());
         }
@@ -327,12 +327,12 @@ mod tests {
     #[test]
     fn test_loop_len() {
         fn assert_ok(bf: &str, shouldbe: usize, idx: usize) {
-            assert!(shouldbe == Program::parse(None, bf).loop_len(idx)
+            assert!(shouldbe == Program::parse(None, bf).unwrap().loop_len(idx)
                 .unwrap());
         }
 
         fn assert_err(bf: &str, idx: usize) {
-            assert!(Program::parse(None, bf).loop_len(idx).is_err());
+            assert!(Program::parse(None, bf).unwrap().loop_len(idx).is_err());
         }
 
         assert_ok("[]    ", 0, 0); assert_ok("[-]   ", 1, 0);
@@ -346,7 +346,7 @@ mod tests {
 
     #[test]
     fn test_loop_items() {
-        let res = Program::parse(None, "[-]").loop_items(0);
+        let res = Program::parse(None, "[-]").unwrap().loop_items(0);
         assert!(res.unwrap() == vec![BFCommand {
             dead: false, kind: BFCommandKind::CellDec,
             count: 1, pos: (1, 2),
@@ -355,7 +355,7 @@ mod tests {
 
     #[test]
     fn test_replace_cmd() {
-        let mut prog = Program::parse(None, "[-]");
+        let mut prog = Program::parse(None, "[-]").unwrap();
         let replacement = BFCommand {
             dead: false, kind: BFCommandKind::CellInc,
             count: 1, pos: prog.cmds[1].pos,
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn test_remove_cmd() {
-        let mut prog = Program::parse(None, "[-]");
+        let mut prog = Program::parse(None, "[-]").unwrap();
         prog.remove_cmd(1).unwrap();
         assert!(prog.loop_len(0) == Ok(0));
     }

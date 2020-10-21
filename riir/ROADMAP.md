@@ -1,0 +1,54 @@
+# Roadmap
+
+- [ ] compiler/interpreter warnings & errors
+	- [ ] internal error: invalid index for loop{start, end}
+	- [ ] warning: line longer than 80 characters
+	- [ ] warning: ignored debug command
+	- [ ] warning: ignored debug command due to following '!'
+	- [ ] warning: dead code right here
+- [ ] various brainfsck extensions
+	- [ ] research other commonly-used extensions
+	- [x] '#': debug command
+	- [ ] labels/goto instruction
+- [ ] optimizations
+	- [x] command squashing
+	- [x] optimize nullifying loops
+	- [x] optimize scan loops
+	- [x] optimize multiply-move loops
+	- [ ] remove commands that cancel each other out
+	- [ ] implement speculative execution
+	- [ ] implement static analysis to detemine
+	      amount of memory to allocate
+	- [ ] remove obviously dead code
+		- [ ] adjacent loops
+		- [ ] empty loops
+		- [ ] loops at the beginning of the program
+	- [ ] remove other dead loops via speculative exec
+- [x] working interpreter
+- [ ] working compiler
+	- [ ] C99 backend
+		- [ ] 8 bit
+		- [ ] 16 bit
+		- [ ] 32 bit
+		- [ ] 64 bit
+	- [ ] LLVM backend
+		- [ ] 8 bit
+		- [ ] 16 bit
+		- [ ] 32 bit
+		- [ ] 64 bit
+	- [ ] QBE backend
+		- [ ] 8 bit
+		- [ ] 16 bit
+		- [ ] 32 bit
+		- [ ] 64 bit
+- [ ] working debugger
+	- [ ] code pane
+	- [ ] memory pane
+	- [ ] I/O panes
+	- [ ] statistics pane
+- [ ] documentation
+	- [ ] brainfsck reference
+	- [ ] RIIR BCC usage and docs
+- [ ] write some nice programs in brainfsck
+	- [ ] TUI Game of Life?
+	- [ ] some kind of text adventure?

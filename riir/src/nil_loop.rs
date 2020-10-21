@@ -33,3 +33,14 @@ impl Optimize for NilLoops {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::program::*;
+
+    #[test]
+    fn test_optimizer_nil_loops() {
+        
+    }
+}

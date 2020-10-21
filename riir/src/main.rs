@@ -31,7 +31,7 @@ fn main() {
         Err(()) => std::process::exit(1),
     };
 
-    let mut interp = Interpreter::new(config.eof_char);
+    let mut interp = Interpreter::new(&config);
 
     if config.file.len() == 0 {
         let mut buf = String::new();
@@ -45,7 +45,8 @@ fn main() {
 }
 
 fn execute(config: &Options, interp: &mut Interpreter, data: String) {
-    let mut prog = match Program::parse(config.comment_char, &data) {
+    let mut prog = match Program::parse(config.exten_debug,
+            config.comment_char, &data) {
         Ok(pr) => pr,
         Err(e) => {
             for error in e {

@@ -2,6 +2,25 @@ use std::io::{ self, Read }; //, Write };
 use crate::program::*;
 use crate::options::*;
 
+// lookup table to display some nice strings for control characters
+// when executing the debug command (see: ascii(7))
+// TODO: handle DEL character (0x7F), which won't go neatly into this
+// table
+const CHARACTER_STRINGS: [&'static str; 33] = [
+    /*   0 */ "NUL",      /*  12 */ "'\\f'",    /*  24 */ "CAN",
+    /*   1 */ "SOH",      /*  13 */ "'\\r'",    /*  25 */ "EM",
+    /*   2 */ "STX",      /*  14 */ "SO",       /*  26 */ "SUB",
+    /*   3 */ "ETX",      /*  15 */ "SI",       /*  27 */ "ESC",
+    /*   4 */ "EOT",      /*  16 */ "DLE",      /*  28 */ "FS",
+    /*   5 */ "ENQ",      /*  17 */ "DC1",      /*  29 */ "GS",
+    /*   6 */ "ACK",      /*  18 */ "DC2",      /*  30 */ "RS",
+    /*   7 */ "BEL",      /*  19 */ "DC3",      /*  31 */ "US",
+    /*   8 */ "BS",       /*  20 */ "DC4",      /*  32 */ "SPACE",
+    /*   9 */ "'\\t'",    /*  21 */ "NAK",
+    /*  10 */ "'\\n'",    /*  22 */ "SYN",
+    /*  11 */ "'\\v'",    /*  23 */ "ETB",
+];
+
 #[inline(always)]
 fn check_memory_bounds(mem: &mut Vec<u8>, ptr: usize) {
     if ptr >= mem.len() {
@@ -21,15 +40,42 @@ fn set_eof(mem: &mut Vec<u8>, ptr: usize, eof: EofChar) {
 pub struct Interpreter {
     memory: Vec<u8>,
     pointer: usize,
+
     eof_char: EofChar,
+    debug_context: usize,
 }
 
 impl Interpreter {
-    pub fn new(eof: EofChar) -> Self {
+    pub fn new(opts: &Options) -> Self {
         Self {
             memory: [0; 32768].to_vec(),
             pointer: 0,
-            eof_char: eof,
+            eof_char: opts.eof_char,
+            debug_context: opts.debug_context,
+        }
+    }
+
+    pub fn handle_debug(&mut self) {
+        // TODO: fancier output
+
+        let ctx_begin = self.pointer.saturating_sub(self.debug_context / 2);
+        let ctx_end   = std::cmp::min(self.pointer + (self.debug_context / 2),
+            self.memory.len() - 1);
+
+        for cell in ctx_begin..ctx_end {
+            let value = self.memory[cell];
+
+            println!("{}{}{}\t\t{}\t\t{:x}\t\t{:o}\t\t{}",
+                if cell == self.pointer { "[" } else { " " },
+                cell,
+                if cell == self.pointer { "]" } else { " " },
+                value, value, value,
+                if value > 32 {
+                    format!("'{}'", value as char)
+                } else {
+                    CHARACTER_STRINGS[value as usize].to_owned()
+                }
+            );
         }
     }
 
@@ -84,6 +130,7 @@ impl Interpreter {
                         ctr = *s;
                     }
                 },
+                BFCommandKind::Debug => self.handle_debug(),
                 BFCommandKind::Nullify => self.memory[self.pointer] = 0_u8,
                 BFCommandKind::ScanRight => {
                     if let Some(z) = memchr::memrchr(0x0, &self.memory) {

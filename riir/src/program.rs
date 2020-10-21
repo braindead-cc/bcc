@@ -16,6 +16,8 @@ pub enum BFCommandKind {
     LoopStart(usize),
     LoopEnd(usize),
 
+    Debug,
+
     Nullify,
     ScanRight,
     ScanLeft,
@@ -46,6 +48,7 @@ impl Into<String> for BFCommandKind {
             BFCommandKind::MemPtrRight => ">".to_string(),
             BFCommandKind::LoopStart(_) => "[".to_string(),
             BFCommandKind::LoopEnd(_) => "]".to_string(),
+            BFCommandKind::Debug => "#".to_string(),
             BFCommandKind::Nullify => "0".to_string(),
             BFCommandKind::ScanRight => "»".to_string(),
             BFCommandKind::ScanLeft => "«".to_string(),
@@ -168,8 +171,7 @@ impl Program {
         Ok(())
     }
 
-    // TODO: return result;
-    pub fn parse(comment_char: Option<char>, stuff: &str)
+    pub fn parse(exten_debug: bool, comment_char: Option<char>, stuff: &str)
         -> Result<Self, Vec<Error>>
     {
         let mut prog = Program::new();
@@ -206,6 +208,8 @@ impl Program {
 
                 '[' => BFCommandKind::LoopStart(0),
                 ']' => BFCommandKind::LoopEnd(0),
+
+                '#' if exten_debug => BFCommandKind::Debug,
 
                 // ignore other characters
                 _ => {

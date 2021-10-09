@@ -1,14 +1,46 @@
-# suggested macro syntax for upcoming macro compiler
-# macros compile to assembly, which in turn compiles to brainfuck
+# syntax for upcoming Harebrained compiler
 
-div(x, y) =
-	? stdeq(x, 0) =>
-		_ = 0
-	: stdeq(y, 0) =>
-		_ = 0
-	;;
+let cell foo 2          # `let` declares a new variable.
+			# syntax: let <type> <name> <width>
+			# <type> can be "cell", "word", or "dword":
+			#     cell:  one cell
+			#     word:  two cells
+			#     dword: four cells
+			# <width> is one for a single-length variable,
+			# or can be more than one for an array.
+ 
+@foo                    # @<name> statements move the memory pointer
+			# to a variable's location.
+@foo:2          	# If the variable is an array, the @<name>:<offset>
+			# statement can be used instead.
+ 
+256                     # Numbers set the current memory location to that value.
+			# The maximum value depends on the type of the memory
+			# location: 
+			#     cell:  0..255
+			#     word:  0..65535
+			#     dword: 0..4294836225
+ 
+'v                      # '<value> statements set the current memory location to
+			# that character.
+			# Characters that are above 255 may only be stored in a
+			# word or dword, depending on what the character's codepoint
+			# is. 
+ 
+\++--++--<>,.           # \<...> statements insert raw brainfsck.
 
-	_ = x / y
-;;
+mac foo a b c [ ... ]   # `mac` declares a new macro.
+			# syntax: mac <name> <args> [ <stmts> ]
+			# A special variable is defined for macros, the
+			# @_ variable (which holds the memory location to
+			# put the return value.)
 
-z = div(6, 3)
+%div [ $a $b ]          # %<name> calls a macro.
+
+# There will be a number of standard library functions.
+
+%div [ $x $y ]          # Divide.
+%mul [ $x $y ]          # Multiply.
+%eql [ $x $y ]          # Check for equality.
+%neq [ $x $y ]          # Check for inequality.
+%cpy [ $x $y ]          # Copy $x to $y.
